@@ -82,22 +82,7 @@ class ApiClient {
     console.log(`🚀 [API Request] ${method} ${url}`);
     console.log(`📋 [API Headers]`, { ...normalizedHeaders, Authorization: normalizedHeaders.Authorization ? 'Bearer ****' : undefined });
 
-    // Log payload if it exists
-    if (options.body) {
-      if (options.body instanceof FormData) {
-        const formDataObj: Record<string, any> = {};
-        options.body.forEach((value, key) => {
-          formDataObj[key] = value instanceof File ? `File: ${value.name} (${value.size} bytes)` : value;
-        });
-        console.log(`📦 [API Payload] (FormData):`, formDataObj);
-      } else {
-        try {
-          console.log(`📦 [API Payload]:`, JSON.parse(options.body as string));
-        } catch {
-          console.log(`📦 [API Payload]:`, options.body);
-        }
-      }
-    }
+
 
     const config: RequestInit = {
       ...options,
@@ -137,14 +122,12 @@ class ApiClient {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           data = await response.json();
-          console.log(`📥 [API Data]`, data);
         } else {
           const text = await response.text();
           data = {
             message: text || 'Request completed successfully',
             success: true
           } as ApiResponse<T>;
-          console.log(`📥 [API Response Text]`, text);
         }
       } catch (parseError) {
         console.error(`❌ [API Parse Error] Failed to parse response from ${endpoint}:`, parseError);

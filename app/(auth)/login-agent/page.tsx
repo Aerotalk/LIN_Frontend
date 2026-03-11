@@ -51,7 +51,6 @@ function AgentLoginForm() {
     }
 
     const handleLoginSubmit = async (data: LoginFormData) => {
-        console.log("[Login] Submitting credentials...", { email: data.email });
         setIsLoading(true);
         setError(null);
 
@@ -59,7 +58,7 @@ function AgentLoginForm() {
             console.log("[Login] Calling API...");
             const response = await apiClient.loginPartner(data.email, data.password);
 
-            console.log("[Login] API Response received:", response);
+
 
             if (response.token) {
                 console.log("[Login] Success! Token received for:", response.partnerType);

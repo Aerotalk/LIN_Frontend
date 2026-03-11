@@ -160,7 +160,6 @@ function RegisterAgentContent() {
 
             // Call API
             const response = await apiClient.registerPartner(payload as any);
-            console.log(`Registering ${partnerType} with data:`, data)
 
             // Handle File Download if credentials returned
             if ((response as any).rawPassword) {

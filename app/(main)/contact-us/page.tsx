@@ -18,7 +18,6 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
     alert('Thank you for contacting us! We will get back to you soon.');
   };
 
