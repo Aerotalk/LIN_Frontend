@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api";
+import { toast } from "sonner";
 
 import {
     LayoutDashboard,
@@ -48,7 +49,7 @@ function DSADashboardContent() {
     const handleLogout = () => {
         localStorage.removeItem('partnerAuthToken');
         localStorage.removeItem('partnerData');
-        router.push(getLinkWithRef("/"));
+        window.location.replace(getLinkWithRef("/"));
     };
 
     // Fetch dashboard data on mount
@@ -440,7 +441,23 @@ function DSADashboardContent() {
                         </div>
                     ))}
                 </div>
-                <button className="bg-[#EF4444] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 text-[15px]">
+                <button
+                    onClick={async () => {
+                        try {
+                            const fieldMap: Record<string, string> = {
+                                address: inputRefs.current['address']?.value || '',
+                                city: inputRefs.current['city']?.value || '',
+                                state: inputRefs.current['state']?.value || '',
+                                pincode: inputRefs.current['pincode']?.value || '',
+                            };
+                            await apiClient.updatePartnerProfile(fieldMap);
+                            toast.success('Profile updated successfully!');
+                        } catch (err) {
+                            console.error('Failed to update profile:', err);
+                            toast.error('Failed to update profile. Please try again.');
+                        }
+                    }}
+                    className="bg-[#EF4444] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 text-[15px]">
                     Update now
                 </button>
             </section>

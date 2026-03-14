@@ -559,7 +559,7 @@ function DashboardContent() {
                                 onClick={() => {
                                     localStorage.removeItem('authToken');
                                     localStorage.removeItem('userData');
-                                    router.push(getLinkWithRef("/"));
+                                    window.location.replace(getLinkWithRef("/"));
                                 }}
                             >
 

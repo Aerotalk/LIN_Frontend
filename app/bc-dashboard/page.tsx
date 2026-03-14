@@ -38,7 +38,7 @@ function BCDashboardContent() {
     const handleLogout = () => {
         localStorage.removeItem('partnerAuthToken');
         localStorage.removeItem('partnerData');
-        router.push(getLinkWithRef("/"));
+        window.location.replace(getLinkWithRef("/"));
     };
 
     const [editingFields, setEditingFields] = React.useState<Record<string, boolean>>({});
@@ -297,7 +297,7 @@ function BCDashboardContent() {
                     <p className="text-[15px] font-medium text-gray-500">My consultant referral link</p>
                     <div className="flex items-center justify-between bg-red-50/30 p-4 rounded-2xl border border-red-50/50">
                         <span className="text-[14px] text-gray-600 truncate mr-4">
-                            {referralLink || (typeof window !== 'undefined' ? `${window.location.origin}/signup?ref=${affiliateRef || 'YOUR_CODE'}` : 'loading...')}
+                            {referralLink || `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://seahorse-app-92emo.ondigitalocean.app'}/signup?ref=${affiliateRef || 'YOUR_CODE'}`}
                         </span>
                         <button
                             className="text-gray-400 hover:text-red-500 transition-colors"
@@ -305,8 +305,9 @@ function BCDashboardContent() {
                                 if (referralLink) {
                                     navigator.clipboard.writeText(referralLink);
                                     toast.success("Link copied to clipboard!");
-                                } else if (typeof window !== 'undefined') {
-                                    navigator.clipboard.writeText(`${window.location.origin}/signup?ref=${affiliateRef || 'YOUR_CODE'}`);
+                                } else {
+                                    const fallbackLink = `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://seahorse-app-92emo.ondigitalocean.app'}/signup?ref=${affiliateRef || 'YOUR_CODE'}`;
+                                    navigator.clipboard.writeText(fallbackLink);
                                     toast.success("Link copied!");
                                 }
                             }}
@@ -467,7 +468,28 @@ function BCDashboardContent() {
                         </div>
                     ))}
                 </div>
-                <button className="bg-[#EF4444] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 text-[15px]">
+                <button
+                    onClick={async () => {
+                        try {
+                            const updates: Record<string, string> = {};
+                            document.querySelectorAll<HTMLInputElement>('[data-profile-field]').forEach(el => {
+                                if (el.dataset.profileField) updates[el.dataset.profileField] = el.value;
+                            });
+                            // Collect from inputRefs
+                            const fieldMap: Record<string, string> = {
+                                address: inputRefs.current['address']?.value || '',
+                                city: inputRefs.current['city']?.value || '',
+                                state: inputRefs.current['state']?.value || '',
+                                pincode: inputRefs.current['pincode']?.value || '',
+                            };
+                            await apiClient.updatePartnerProfile(fieldMap);
+                            toast.success('Profile updated successfully!');
+                        } catch (err) {
+                            console.error('Failed to update profile:', err);
+                            toast.error('Failed to update profile. Please try again.');
+                        }
+                    }}
+                    className="bg-[#EF4444] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 text-[15px]">
                     Update now
                 </button>
             </section>

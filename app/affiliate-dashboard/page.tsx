@@ -38,7 +38,7 @@ function AffiliateDashboardContent() {
     const handleLogout = () => {
         localStorage.removeItem('partnerAuthToken');
         localStorage.removeItem('partnerData');
-        router.push(getLinkWithRef("/"));
+        window.location.replace(getLinkWithRef("/"));
     };
 
     const [editingFields, setEditingFields] = React.useState<Record<string, boolean>>({});
@@ -304,7 +304,7 @@ function AffiliateDashboardContent() {
                     <p className="text-[15px] font-medium text-gray-500">My referral link</p>
                     <div className="flex items-center justify-between bg-red-50/30 p-4 rounded-2xl border border-red-50/50">
                         <span className="text-[14px] text-gray-600 truncate mr-4">
-                            {referralLink || (typeof window !== 'undefined' ? `${window.location.origin}/signup?ref=${affiliateRef || 'YOUR_CODE'}` : 'loading...')}
+                            {referralLink || `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://seahorse-app-92emo.ondigitalocean.app'}/signup?ref=${affiliateRef || 'YOUR_CODE'}`}
                         </span>
                         <button
                             className="text-gray-400 hover:text-red-500 transition-colors"
@@ -312,8 +312,9 @@ function AffiliateDashboardContent() {
                                 if (referralLink) {
                                     navigator.clipboard.writeText(referralLink);
                                     toast.success("Link copied to clipboard!");
-                                } else if (typeof window !== 'undefined') {
-                                    navigator.clipboard.writeText(`${window.location.origin}/signup?ref=${affiliateRef || 'YOUR_CODE'}`);
+                                } else {
+                                    const fallbackLink = `${process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://seahorse-app-92emo.ondigitalocean.app'}/signup?ref=${affiliateRef || 'YOUR_CODE'}`;
+                                    navigator.clipboard.writeText(fallbackLink);
                                     toast.success("Link copied!");
                                 }
                             }}
