@@ -30,6 +30,7 @@ export const dynamic = "force-dynamic";
 function DashboardContent() {
     const router = useRouter();
     const { getLinkWithRef } = useAffiliate();
+    const [activeTab, setActiveTab] = React.useState("Dashboard");
     const [isLoading, setIsLoading] = React.useState(true); // Loading state
     const [loanHistoryData, setLoanHistoryData] = React.useState<any[]>([]);
     const [searchQuery, setSearchQuery] = React.useState({ appId: "", phone: "" });
@@ -69,8 +70,7 @@ function DashboardContent() {
         { id: "addr_3", label: "Permanent address", value: "Not added" },
     ]);
 
-    // Add state for real loan history
-    const [loanHistoryData, setLoanHistoryData] = React.useState<any[]>([]);
+    // State for real loan history already declared above
 
     // Fetch data on mount
     React.useEffect(() => {
