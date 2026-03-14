@@ -30,8 +30,10 @@ export const dynamic = "force-dynamic";
 function DashboardContent() {
     const router = useRouter();
     const { getLinkWithRef } = useAffiliate();
-    const [activeTab, setActiveTab] = React.useState("Dashboard");
     const [isLoading, setIsLoading] = React.useState(true); // Loading state
+    const [loanHistoryData, setLoanHistoryData] = React.useState<any[]>([]);
+    const [searchQuery, setSearchQuery] = React.useState({ appId: "", phone: "" });
+    const [trackResult, setTrackResult] = React.useState<any>(null);
 
     const [editingFields, setEditingFields] = React.useState<Record<string, boolean>>({});
 
@@ -114,20 +116,56 @@ function DashboardContent() {
                         ]);
                     }
 
-                    // Extract actual loan applications from the profile
+                    // Extract and merge actual loan applications/loans from the profile
+                    const allData: any[] = [];
+                    
                     if (p.loanApplications && Array.isArray(p.loanApplications)) {
-                        const formattedLoans = p.loanApplications.map((app: any) => ({
-                            id: app.id.toString(),
-                            number: `APP-${app.id.toString().padStart(8, '0')}`,
-                            amount: app.loanAmount ? `₹${app.loanAmount.toLocaleString()}` : "Evaluating",
-                            date: new Date(app.createdAt).toLocaleDateString("en-GB", {
-                                day: '2-digit', month: 'short', year: 'numeric'
-                            }),
-                            status: app.status || "Pending",
-                            type: app.loanType?.replace(/_/g, " ") || "Personal Loan"
-                        }));
-                        setLoanHistoryData(formattedLoans);
+                        p.loanApplications.forEach((app: any) => {
+                            allData.push({
+                                id: `APP-${app.id}`,
+                                rawId: app.id,
+                                number: `APP-${app.id.toString().padStart(8, '0')}`,
+                                amount: app.loanAmount ? `₹${app.loanAmount.toLocaleString()}` : "Evaluating",
+                                rawAmount: app.loanAmount,
+                                date: new Date(app.createdAt).toLocaleDateString("en-GB", {
+                                    day: '2-digit', month: 'short', year: 'numeric'
+                                }),
+                                status: app.status || "PENDING",
+                                type: app.loanType?.replace(/_/g, " ") || "Personal Loan",
+                                source: 'Application'
+                            });
+                        });
                     }
+
+                    if (p.loans && Array.isArray(p.loans)) {
+                        p.loans.forEach((loan: any) => {
+                            // Check if already captured by application (basic de-dupe attempt by amount/date if needed, but safer to show both if distinct)
+                            // Actually, just show both.
+                            allData.push({
+                                id: `LOAN-${loan.id}`,
+                                rawId: loan.id,
+                                number: `L-ID-${loan.id.toString().padStart(8, '0')}`,
+                                amount: `₹${loan.loanAmount.toLocaleString()}`,
+                                rawAmount: loan.loanAmount,
+                                date: new Date(loan.createdAt).toLocaleDateString("en-GB", {
+                                    day: '2-digit', month: 'short', year: 'numeric'
+                                }),
+                                status: loan.status || "PENDING",
+                                type: loan.purposeOfLoan || "Personal Loan",
+                                source: 'Loan'
+                            });
+                        });
+                    }
+
+                    // De-duplicate if they have very similar traits (same date and amount)
+                    const uniqueData = allData.filter((item, index, self) =>
+                        index === self.findIndex((t) => (
+                            t.rawAmount === item.rawAmount && t.date === item.date && t.status === item.status
+                        ))
+                    );
+
+                    setLoanHistoryData(uniqueData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+
                 }
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
@@ -358,6 +396,8 @@ function DashboardContent() {
                     <input
                         type="text"
                         placeholder="Enter application number"
+                        value={searchQuery.appId}
+                        onChange={(e) => setSearchQuery(prev => ({ ...prev, appId: e.target.value }))}
                         className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
                     />
                 </div>
@@ -368,15 +408,49 @@ function DashboardContent() {
                     <input
                         type="text"
                         placeholder="Enter mobile number"
+                        value={searchQuery.phone}
+                        onChange={(e) => setSearchQuery(prev => ({ ...prev, phone: e.target.value }))}
                         className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
                     />
                 </div>
             </div>
             <div>
-                <button className="bg-[#EF4444] text-white px-10 py-4 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100">
+                <button
+                    onClick={() => {
+                        const found = loanHistoryData.find(l =>
+                            l.number.toLowerCase().includes(searchQuery.appId.toLowerCase()) && searchQuery.appId.length > 3
+                        );
+                        setTrackResult(found || "NOT_FOUND");
+                    }}
+                    className="bg-[#EF4444] text-white px-10 py-4 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100">
                     Track now
                 </button>
             </div>
+
+            {trackResult && (
+                <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                    {trackResult === "NOT_FOUND" ? (
+                        <p className="text-red-500 font-bold text-center">No application found with these details.</p>
+                    ) : (
+                        <div className="space-y-4">
+                            <div className="flex justify-between border-b pb-2">
+                                <span className="font-bold">Application Number:</span>
+                                <span className="text-gray-600">{trackResult.number}</span>
+                            </div>
+                            <div className="flex justify-between border-b pb-2">
+                                <span className="font-bold">Status:</span>
+                                <span className={`font-bold ${trackResult.status === 'PENDING' ? 'text-amber-500' : 'text-emerald-500'}`}>
+                                    {trackResult.status}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="font-bold">Last Update:</span>
+                                <span className="text-gray-600">{trackResult.date}</span>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 
