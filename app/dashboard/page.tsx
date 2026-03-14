@@ -67,6 +67,9 @@ function DashboardContent() {
         { id: "addr_3", label: "Permanent address", value: "Not added" },
     ]);
 
+    // Add state for real loan history
+    const [loanHistoryData, setLoanHistoryData] = React.useState<any[]>([]);
+
     // Fetch data on mount
     React.useEffect(() => {
         async function fetchData() {
@@ -110,6 +113,21 @@ function DashboardContent() {
                             { id: "addr_3", label: "Permanent address", value: p.address.permanentAddress || "-" },
                         ]);
                     }
+
+                    // Extract actual loan applications from the profile
+                    if (p.loanApplications && Array.isArray(p.loanApplications)) {
+                        const formattedLoans = p.loanApplications.map((app: any) => ({
+                            id: app.id.toString(),
+                            number: `APP-${app.id.toString().padStart(8, '0')}`,
+                            amount: app.loanAmount ? `₹${app.loanAmount.toLocaleString()}` : "Evaluating",
+                            date: new Date(app.createdAt).toLocaleDateString("en-GB", {
+                                day: '2-digit', month: 'short', year: 'numeric'
+                            }),
+                            status: app.status || "Pending",
+                            type: app.loanType?.replace(/_/g, " ") || "Personal Loan"
+                        }));
+                        setLoanHistoryData(formattedLoans);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
@@ -119,12 +137,6 @@ function DashboardContent() {
         }
         fetchData();
     }, []);
-
-    const loanHistory = [
-        { id: "h1", number: "5442898006777", amount: "₹52,000", date: "02 May, 2025", status: "Repaid", type: "Personal Loan" },
-        { id: "h2", number: "5442898006778", amount: "₹46,000", date: "15 Apr, 2024", status: "Repaid", type: "Personal Loan" },
-        { id: "h3", number: "5442898006779", amount: "₹35,500", date: "26 Mar, 2024", status: "Repaid", type: "Personal Loan" },
-    ];
 
     // Refs for all editable inputs to focus them
     const inputRefs = React.useRef<Record<string, HTMLInputElement | null>>({});
@@ -370,26 +382,32 @@ function DashboardContent() {
 
     const renderRepayLoanContent = () => (
         <div className="max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start py-4">
-                <div className="space-y-2">
-                    <p className="text-[16px] font-bold text-gray-900">Loan number</p>
-                    <p className="text-[15px] font-medium text-gray-500">54428980008777</p>
+            {loanHistoryData.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start py-4">
+                    <div className="space-y-2">
+                        <p className="text-[16px] font-bold text-gray-900">Loan number</p>
+                        <p className="text-[15px] font-medium text-gray-500">{loanHistoryData[0].number}</p>
+                    </div>
+                    <div className="space-y-2">
+                        <p className="text-[16px] font-bold text-gray-900">Loan amount</p>
+                        <p className="text-[15px] font-medium text-gray-500">{loanHistoryData[0].amount}</p>
+                    </div>
+                    <div className="flex flex-col items-center space-y-4">
+                        <button className="bg-[#EF4444] text-white px-6 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 w-full text-center text-sm">
+                            Make payment via WhatsApp
+                        </button>
+                        <p className="text-[14px] text-gray-600 font-medium">(WABA link)</p>
+                        <p className="text-sm text-gray-400 font-bold">or</p>
+                        <button className="text-gray-900 font-bold hover:underline">
+                            Net bank details
+                        </button>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                    <p className="text-[16px] font-bold text-gray-900">Loan amount</p>
-                    <p className="text-[15px] font-medium text-gray-500">₹52,000</p>
+            ) : (
+                <div className="py-12 text-center text-gray-500 font-medium">
+                    You do not currently have any active loans requiring repayment.
                 </div>
-                <div className="flex flex-col items-center space-y-4">
-                    <button className="bg-[#EF4444] text-white px-6 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 w-full text-center text-sm">
-                        Make payment via WhatsApp
-                    </button>
-                    <p className="text-[14px] text-gray-600 font-medium">(WABA link)</p>
-                    <p className="text-sm text-gray-400 font-bold">or</p>
-                    <button className="text-gray-900 font-bold hover:underline">
-                        Net bank details
-                    </button>
-                </div>
-            </div>
+            )}
         </div>
     );
 
@@ -411,37 +429,53 @@ function DashboardContent() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {loanHistory.map((loan) => (
-                                <tr key={loan.id} className="group hover:bg-red-50/20 transition-all">
-                                    <td className="px-8 py-6 text-[15px] font-bold text-gray-900">
-                                        {loan.number}
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex flex-col">
-                                            <p className="text-[17px] font-extrabold text-[#111827]">{loan.amount}</p>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6 text-gray-600 font-medium">
-                                        <div className="flex items-center gap-2">
-                                            <Calendar size={14} className="text-gray-300" />
-                                            <span className="text-[14px]">{loan.date}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6 text-right">
-                                        <button className="inline-flex items-center gap-2 text-red-500 font-bold text-sm bg-red-50 hover:bg-red-500 hover:text-white px-5 py-2.5 rounded-xl transition-all shadow-sm active:scale-95 group/btn">
-                                            <span>Reapply</span>
-                                            <ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                                        </button>
+                            {loanHistoryData.length > 0 ? (
+                                loanHistoryData.map((loan) => (
+                                    <tr key={loan.id} className="group hover:bg-red-50/20 transition-all">
+                                        <td className="px-8 py-6 text-[15px] font-bold text-gray-900 flex flex-col items-start gap-1">
+                                            <span>{loan.number}</span>
+                                            <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider
+                                                ${loan.status === 'PENDING' ? 'bg-amber-100 text-amber-700' :
+                                                    loan.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                                                    loan.status === 'REJECTED' ? 'bg-red-100 text-red-700' :
+                                                    'bg-gray-100 text-gray-700'}`}>
+                                                {loan.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-8 py-6">
+                                            <div className="flex flex-col">
+                                                <p className="text-[17px] font-extrabold text-[#111827]">{loan.amount}</p>
+                                                <p className="text-[12px] text-gray-500">{loan.type}</p>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6 text-gray-600 font-medium">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar size={14} className="text-gray-300" />
+                                                <span className="text-[14px]">{loan.date}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-6 text-right">
+                                            <button className="inline-flex items-center gap-2 text-red-500 font-bold text-sm bg-red-50 hover:bg-red-500 hover:text-white px-5 py-2.5 rounded-xl transition-all shadow-sm active:scale-95 group/btn">
+                                                <span>Reapply</span>
+                                                <ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={4} className="px-8 py-12 text-center text-gray-500 font-medium">
+                                        No loan history found.
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
 
                 {/* Footer simple summary */}
                 <div className="bg-gray-50/50 px-8 py-4 border-t border-gray-50">
-                    <p className="text-xs font-medium text-gray-400">Showing {loanHistory.length} loan records found in your account.</p>
+                    <p className="text-xs font-medium text-gray-400">Showing {loanHistoryData.length} loan records found in your account.</p>
                 </div>
             </div>
         </div>
