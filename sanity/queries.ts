@@ -63,3 +63,12 @@ export const testimonialsQuery = groq`
   featured
 }
 `;
+
+// TERMS OF SERVICE
+export const termsOfServiceQuery = groq`
+*[_type == "termsOfService"][0] {
+  _id,
+  title,
+  content
+}
+`;
