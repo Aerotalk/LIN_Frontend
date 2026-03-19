@@ -348,8 +348,8 @@ export default function Footer() {
         <p>© 2025 Loan in need. All rights reserved.</p>
         <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
           <Link href="/privacy-policy">Privacy policy</Link>
-          <Link href="/terms-and-conditions">Terms & conditions</Link>
-          <Link href="/refunds-and-cancellation">Refunds & cancellation</Link>
+          <Link href="/terms-conditions">Terms & conditions</Link>
+          <Link href="/refunds-cancellations">Refunds & cancellation</Link>
           <Link href="/disclaimer">Disclaimer</Link>
         </div>
       </div>

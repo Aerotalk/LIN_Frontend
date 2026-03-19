@@ -64,11 +64,12 @@ export const testimonialsQuery = groq`
 }
 `;
 
-// TERMS OF SERVICE
-export const termsOfServiceQuery = groq`
-*[_type == "termsOfService"][0] {
+// LEGAL PAGES
+export const legalPageByIdQuery = groq`
+*[_type == "legal" && _id == $id][0] {
   _id,
   title,
+  lastUpdated,
   content
 }
 `;
