@@ -63,3 +63,13 @@ export const testimonialsQuery = groq`
   featured
 }
 `;
+
+// LEGAL PAGES
+export const legalPageByIdQuery = groq`
+*[_type == "legal" && _id == $id][0] {
+  _id,
+  title,
+  lastUpdated,
+  content
+}
+`;
