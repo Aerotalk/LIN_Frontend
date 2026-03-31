@@ -194,8 +194,8 @@ function ApplyNowContent() {
         return (
             <div className="min-h-screen w-full max-w-7xl bg-white mt-20 mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[80vh]">
-                    {/* Left Panel - Branding */}
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 flex flex-col justify-center p-8 lg:p-12 rounded-l-3xl">
+                    {/* Left Panel - Branding (hidden on mobile so form shows first) */}
+                    <div className="hidden lg:flex bg-gradient-to-br from-purple-50 to-pink-50 flex-col justify-center p-8 lg:p-12 rounded-l-3xl">
                         <div className="max-w-md mx-auto">
                             <div className="mb-8">
                                 <Link href={getLinkWithRef("/")} className="flex items-center">
@@ -237,8 +237,8 @@ function ApplyNowContent() {
     return (
         <div className="min-h-screen w-full max-w-7x bg-white mt-24 mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[80vh]">
-                {/* Left Panel - Branding */}
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 flex flex-col justify-center p-8 lg:p-12 rounded-l-3xl">
+                {/* Left Panel - Branding (hidden on mobile so form shows first) */}
+                <div className="hidden lg:flex bg-gradient-to-br from-purple-50 to-pink-50 flex-col justify-center p-8 lg:p-12 rounded-l-3xl">
                     <div className="max-w-md mx-auto">
                         <div className="mb-8">
                             <Link href={getLinkWithRef("/")} className="flex items-center">

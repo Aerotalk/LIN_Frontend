@@ -19,8 +19,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
-import { Menu, User } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAffiliate } from "@/hooks/useAffiliate";
 
@@ -88,6 +95,7 @@ export default function Navbar() {
   const { getLinkWithRef } = useAffiliate();
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [dashboardLink, setDashboardLink] = React.useState("/dashboard");
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
   React.useEffect(() => {
     const userToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
@@ -120,12 +128,23 @@ export default function Navbar() {
     }
   }, [pathname]);
 
+  // Helper: wrap Link to auto-close the sheet on mobile nav
+  const MobileLink = ({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) => (
+    <Link
+      href={getLinkWithRef(href)}
+      className={className}
+      onClick={() => setSheetOpen(false)}
+    >
+      {children}
+    </Link>
+  );
+
   return (
-    <nav className="w-full mx-auto py-4 px-6 md:px-12 lg:px-24 fixed top-0 left-0 right-0 z-50 bg-red-50 shadow-sm">
+    <nav className="w-full mx-auto py-3 px-4 sm:px-6 md:px-12 lg:px-24 fixed top-0 left-0 right-0 z-50 bg-red-50 shadow-sm">
       <div className="flex justify-between items-center">
         {/* Logo */}
-        <Link href={getLinkWithRef("/")} className="flex items-center">
-          <Image src="/lin-logo.png" alt="Logo" width={120} height={40} />
+        <Link href={getLinkWithRef("/")} className="flex items-center flex-shrink-0">
+          <Image src="/lin-logo.png" alt="Logo" width={120} height={40} className="h-8 w-auto sm:h-10" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -165,11 +184,6 @@ export default function Navbar() {
                           Eligibility Loan Calculator
                         </Link>
                       </NavigationMenuLink>
-                      {/* <NavigationMenuLink asChild>
-                        <Link href={getLinkWithRef("/loan-calculators/cibil-score-checker")}>
-                          Cibil Score Checker
-                        </Link>
-                      </NavigationMenuLink> */}
                       <NavigationMenuLink asChild>
                         <Link href={getLinkWithRef("/loan-calculators/loan-comparison-calculator")}>
                           Loan Comparison Calculator
@@ -264,13 +278,13 @@ export default function Navbar() {
 
         {/* Mobile Hamburger */}
         <div className="lg:hidden">
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72">
+            <SheetContent side="right" className="w-[85vw] max-w-sm overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>
                   <Image
@@ -281,22 +295,116 @@ export default function Navbar() {
                   />
                 </SheetTitle>
               </SheetHeader>
-              <div className="mt-6 flex flex-col space-y-4 px-4">
-                <Link href={getLinkWithRef("/apply-loan")}>Personal Loan</Link>
-                <Link href={getLinkWithRef("#")}>Loan Calculators</Link>
-                <Link href={getLinkWithRef("/loan/mumbai")}>Cities</Link>
-                <Link href={getLinkWithRef("/blog")}>Learn</Link>
-                <Link href={getLinkWithRef("/contact")}>Support</Link>
-                {isLoggedIn ? (
-                  <Link href={getLinkWithRef("/dashboard")}>
-                    <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">View Dashboard</Button>
-                  </Link>
-                ) : (
-                  <Link href={getLinkWithRef("/login")}>Login</Link>
-                )}
-                <Link href={getLinkWithRef("/apply-now")} className="w-full">
-                  <Button variant="default" className="w-full">Apply now</Button>
-                </Link>
+              <div className="mt-4 flex flex-col space-y-2 px-4">
+                <Accordion type="multiple" className="w-full">
+                  {/* Personal Loan */}
+                  <AccordionItem value="personal-loan" className="border-b">
+                    <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                      Personal Loan
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col space-y-2 pl-3">
+                        <MobileLink href="/personal-loan" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          All Personal Loans
+                        </MobileLink>
+                        <MobileLink href="/personal-loan/insta-loan" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Insta Loan
+                        </MobileLink>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Loan Calculators */}
+                  <AccordionItem value="calculators" className="border-b">
+                    <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                      Loan Calculators
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col space-y-2 pl-3">
+                        <MobileLink href="/loan-calculators/personal-emi-calculator" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Personal EMI Calculator
+                        </MobileLink>
+                        <MobileLink href="/loan-calculators/eligibility-loan-calculator" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Eligibility Loan Calculator
+                        </MobileLink>
+                        <MobileLink href="/loan-calculators/loan-comparison-calculator" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Loan Comparison Calculator
+                        </MobileLink>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Cities */}
+                  <AccordionItem value="cities" className="border-b">
+                    <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                      Cities
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col space-y-2 pl-3">
+                        {cities.map((city) => (
+                          <MobileLink key={city.title} href={city.href} className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                            {city.title}
+                          </MobileLink>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Learn */}
+                  <AccordionItem value="learn" className="border-b">
+                    <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                      Learn
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col space-y-2 pl-3">
+                        <MobileLink href="/blog" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Blogs
+                        </MobileLink>
+                        <MobileLink href="/about-us" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          About Us
+                        </MobileLink>
+                        <MobileLink href="/careers" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Careers
+                        </MobileLink>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Support */}
+                  <AccordionItem value="support" className="border-b-0">
+                    <AccordionTrigger className="text-sm font-medium py-3 hover:no-underline">
+                      Support
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col space-y-2 pl-3">
+                        <MobileLink href="/contact-us" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Contact Us
+                        </MobileLink>
+                        <MobileLink href="/enquire-now" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Enquire Now
+                        </MobileLink>
+                        <MobileLink href="/track-loan" className="text-sm text-gray-700 py-1.5 hover:text-primary transition-colors">
+                          Track Loan
+                        </MobileLink>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+
+                <div className="pt-4 flex flex-col space-y-3">
+                  {isLoggedIn ? (
+                    <MobileLink href={dashboardLink}>
+                      <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">View Dashboard</Button>
+                    </MobileLink>
+                  ) : (
+                    <MobileLink href="/login" className="text-sm font-medium py-2 hover:text-primary transition-colors">
+                      Login
+                    </MobileLink>
+                  )}
+                  <MobileLink href="/apply-now" className="w-full">
+                    <Button variant="default" className="w-full">Apply now</Button>
+                  </MobileLink>
+                </div>
               </div>
 
             </SheetContent>

@@ -62,7 +62,7 @@ export default function LoanCalculator({ loanType }: { loanType?: string }) {
               <div className="w-full flex justify-between items-center">
                 <span className="text-start font-medium">Principal Amount</span>
                 <Input
-                  className="justify-end w-1/6 max-w-[80px] bg-gray-200 border-0 focus:ring-0"
+                  className="justify-end w-1/4 max-w-[100px] bg-gray-200 border-0 focus:ring-0 text-sm"
                   type="text"
                   value={`₹ ${principal}`}
                   onChange={(e) =>
@@ -89,7 +89,7 @@ export default function LoanCalculator({ loanType }: { loanType?: string }) {
               <div className="w-full flex justify-between items-center">
                 <span className="font-medium">Annual Interest Rate</span>
                 <Input
-                  className="justify-end w-1/6 max-w-[80px] bg-gray-200 border-0 focus:ring-0"
+                  className="justify-end w-1/4 max-w-[100px] bg-gray-200 border-0 focus:ring-0 text-sm"
                   type="text"
                   value={annualInterestRate}
                   onChange={(e) =>
@@ -116,7 +116,7 @@ export default function LoanCalculator({ loanType }: { loanType?: string }) {
               <div className="w-full flex justify-between items-center">
                 <span className="font-semibold">Tenure (In Months)</span>
                 <Input
-                  className="justify-end w-1/6 max-w-[80px] bg-gray-200 border-0 focus:ring-0"
+                  className="justify-end w-1/4 max-w-[100px] bg-gray-200 border-0 focus:ring-0 text-sm"
                   type="text"
                   value={tenureMonths}
                   onChange={(e) => setTenureMonths(Number(e.target.value))}

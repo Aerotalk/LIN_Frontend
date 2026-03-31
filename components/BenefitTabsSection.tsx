@@ -27,7 +27,7 @@ const BenefitTabsSection = () => {
         </div>
         <div className="flex w-full">
           <Tabs defaultValue={benefitTabsData[0].value} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 rounded-sm gap-1 p-1 bg-background lg:mb-auto mb-24">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 rounded-sm gap-1 p-1 bg-background mb-8 lg:mb-auto">
               {benefitTabsData.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
@@ -43,20 +43,20 @@ const BenefitTabsSection = () => {
               <TabsContent key={tab.value} value={tab.value}>
                 <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8 justify-between items-center">
                   <div className="flex flex-col space-y-6 lg:w-1/2">
-                    <h3 className="text-2xl font-semibold">{tab.title}</h3>
-                    <p className="text-muted-foreground">{tab.description}</p>
+                    <h3 className="text-xl sm:text-2xl font-semibold">{tab.title}</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base">{tab.description}</p>
                     <Link href={getLinkWithRef(tab.link)}>
 
-                      <Button className="text-base w-fit">Apply now</Button>
+                      <Button className="text-base w-full sm:w-fit">Apply now</Button>
                     </Link>
                   </div>
-                  <div className="flex">
+                  <div className="flex w-full lg:w-auto justify-center">
                     <Image
                       src={tab.imageUrl}
                       alt={tab.title}
                       width={600}
                       height={600}
-                      className="rounded-lg w-96 h-auto object-cover"
+                      className="rounded-lg w-full max-w-96 h-auto object-cover"
                       priority
                     />
                   </div>

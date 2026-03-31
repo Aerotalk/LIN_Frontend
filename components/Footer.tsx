@@ -14,7 +14,7 @@ export default function Footer() {
     <footer className="bg-[#FEF5F5] py-10 px-6 md:px-12 lg:px-20 mt-32">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-10">
         {/* Left side */}
-        <div className="space-y-6 lg:col-span-[1.5]">
+        <div className="space-y-6 lg:col-span-1">
           {/* Logo & Info */}
           <Image
             src="/lin-logo.png"
@@ -109,7 +109,7 @@ export default function Footer() {
         </div>
 
         {/* Right side (links) */}
-        <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {/* Useful Links */}
           <div>
             <h4 className="font-semibold text-primary mb-3">Useful links</h4>
@@ -344,9 +344,9 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="mt-10 border-t border-gray-300 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
+      <div className="mt-10 border-t border-gray-300 pt-6 flex flex-col items-center text-center gap-4 md:flex-row md:justify-between md:text-left text-sm text-gray-600">
         <p>© 2025 Loan in need. All rights reserved.</p>
-        <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
+        <div className="flex flex-wrap justify-center md:justify-end gap-x-4 gap-y-2">
           <Link href="/privacy-policy">Privacy policy</Link>
           <Link href="/terms-conditions">Terms & conditions</Link>
           <Link href="/refunds-cancellations">Refunds & cancellation</Link>

@@ -113,8 +113,8 @@ function SignupContent() {
   return (
     <div className="min-h-screen w-full max-w-7xl bg-white">
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-        {/* Left Panel - Branding */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 flex flex-col justify-center p-8 lg:p-12">
+        {/* Left Panel - Branding (hidden on mobile so form shows first) */}
+        <div className="hidden lg:flex bg-gradient-to-br from-purple-50 to-pink-50 flex-col justify-center p-8 lg:p-12">
           <div className="max-w-md mx-auto">
             {/* Logo */}
             <div className="mb-8">

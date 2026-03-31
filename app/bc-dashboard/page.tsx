@@ -200,7 +200,7 @@ function BCDashboardContent() {
                 {isDateMenuOpen && (
                     <>
                         <div className="fixed inset-0 z-10" onClick={() => setIsDateMenuOpen(false)}></div>
-                        <div className="absolute top-14 left-0 w-[320px] bg-white rounded-[2.5rem] shadow-[0_30px_80px_-15px_rgba(0,0,0,0.2)] border border-gray-100 p-7 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="absolute top-14 left-0 w-[calc(100vw-3rem)] sm:w-[320px] bg-white rounded-[2.5rem] shadow-[0_30px_80px_-15px_rgba(0,0,0,0.2)] border border-gray-100 p-5 sm:p-7 z-20 animate-in fade-in slide-in-from-top-4 duration-300">
                             <div className="space-y-8">
                                 <div className="flex bg-gray-50/80 p-1.5 rounded-2xl">
                                     <button
@@ -277,7 +277,7 @@ function BCDashboardContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {stats.map((stat, index) => (
-                    <div key={index} className="bg-white p-8 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 flex justify-between items-start group hover:-translate-y-1 transition-all duration-300">
+                    <div key={index} className="bg-white p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 flex justify-between items-start group hover:-translate-y-1 transition-all duration-300">
                         <div className="space-y-4">
                             <p className="text-[15px] font-medium text-gray-500">{stat.label}</p>
                             <h3 className="text-3xl font-bold text-gray-900">{stat.value}</h3>
@@ -328,18 +328,18 @@ function BCDashboardContent() {
 
     const renderEarnings = () => (
         <div className="space-y-10">
-            <h2 className="text-[28px] font-bold text-[#EF4444]">Consultant Earnings</h2>
+            <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444]">Consultant Earnings</h2>
 
             <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-[0_15px_50px_-15px_rgba(0,0,0,0.05)] overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-gray-50 bg-gray-50/30">
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider">Name</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider">Loan amount</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider text-left">Status</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider text-right">Applied on</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider text-right">Earning</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Name</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Loan amount</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider text-left whitespace-nowrap">Status</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider text-right whitespace-nowrap">Applied on</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider text-right whitespace-nowrap">Earning</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -387,7 +387,7 @@ function BCDashboardContent() {
 
     const renderTrackLoan = () => (
         <div className="max-w-5xl space-y-12">
-            <h2 className="text-[28px] font-bold text-[#EF4444]">Track Loan</h2>
+            <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444]">Track Loan</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                 <div className="space-y-2.5">
                     <label className="text-[15px] font-medium text-[#111827] block px-1">
@@ -421,7 +421,7 @@ function BCDashboardContent() {
     const renderProfile = () => (
         <div className="space-y-16">
             <section className="max-w-5xl">
-                <h2 className="text-[28px] font-bold text-[#EF4444] mb-8">Profile Details</h2>
+                <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444] mb-8">Profile Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mb-8">
                     {[
                         { id: "fullName", label: "Full Name", value: loading ? "Loading..." : (profileData?.name || ""), editable: false },
@@ -498,7 +498,7 @@ function BCDashboardContent() {
 
     const renderSupport = () => (
         <div className="space-y-12">
-            <h2 className="text-[28px] font-bold text-[#EF4444]">Connect us</h2>
+            <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444]">Connect us</h2>
 
             <div className="flex flex-col md:flex-row items-start gap-12 md:gap-24">
                 <div className="flex items-center gap-5">
@@ -540,8 +540,8 @@ function BCDashboardContent() {
     );
 
     return (
-        <div className="min-h-screen bg-white pt-40 pb-24 px-4 md:px-12 lg:px-24">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
+        <div className="min-h-screen bg-white pt-24 sm:pt-32 md:pt-40 pb-12 md:pb-24 px-4 md:px-12 lg:px-24">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16">
                 {/* Sidebar */}
                 <aside className="w-full lg:w-72 lg:sticky lg:top-40 h-fit self-start">
                     <div className="bg-white rounded-[2rem] p-4 shadow-[0_8px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col h-fit space-y-2">

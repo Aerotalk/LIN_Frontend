@@ -222,7 +222,7 @@ Please change your password after your first login.
                         </Link>
                     </div>
 
-                    <h1 className="text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
+                    <h1 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
                         {isSuccess ? "Success!" : !isAdminVerified ? "Admin Port" : partnerType ? `New ${partnerType.toUpperCase()}` : "Partner Selection"}
                     </h1>
 
