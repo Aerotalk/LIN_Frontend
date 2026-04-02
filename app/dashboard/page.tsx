@@ -261,7 +261,7 @@ function DashboardContent() {
         <div className="space-y-16">
             {/* Personal Details Section */}
             <section className="max-w-5xl">
-                <h2 className="text-[28px] font-bold text-[#EF4444] mb-8">Personal Details</h2>
+                <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444] mb-8">Personal Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                     {personalDetails.map((detail) => (
                         <div key={detail.label} className="space-y-2.5">
@@ -286,7 +286,7 @@ function DashboardContent() {
 
             {/* Employment Details Section */}
             <section className="max-w-5xl">
-                <h2 className="text-[28px] font-bold text-[#EF4444] mb-8">Employment Details</h2>
+                <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444] mb-8">Employment Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mb-8">
                     {employmentData.map((detail) => (
                         <div key={detail.id} className="space-y-2.5">
@@ -346,7 +346,7 @@ function DashboardContent() {
 
             {/* Address Details Section */}
             <section className="max-w-5xl">
-                <h2 className="text-[28px] font-bold text-[#EF4444] mb-8">Address Details</h2>
+                <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444] mb-8">Address Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mb-8">
                     {addressData.map((detail) => (
                         <div key={detail.id} className="space-y-2.5">
@@ -496,10 +496,10 @@ function DashboardContent() {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-gray-50 bg-gray-50/30">
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider">Loan Reference</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider">Disbursement Date</th>
-                                <th className="px-8 py-5 text-[13px] font-bold text-gray-400 uppercase tracking-wider text-right"></th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Loan Reference</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Amount</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Disbursement Date</th>
+                                <th className="px-4 md:px-8 py-4 md:py-5 text-[12px] md:text-[13px] font-bold text-gray-400 uppercase tracking-wider text-right"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -557,7 +557,7 @@ function DashboardContent() {
 
     const renderSupport = () => (
         <div className="space-y-12">
-            <h2 className="text-[28px] font-bold text-[#EF4444]">Connect us</h2>
+            <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-[#EF4444]">Connect us</h2>
 
             <div className="flex flex-col md:flex-row items-start gap-12 md:gap-24">
                 <div className="flex items-center gap-5">
@@ -599,8 +599,8 @@ function DashboardContent() {
     );
 
     return (
-        <div className="min-h-screen bg-white pt-40 pb-24 px-4 md:px-12 lg:px-24">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
+        <div className="min-h-screen bg-white pt-24 sm:pt-32 md:pt-40 pb-12 md:pb-24 px-4 md:px-12 lg:px-24">
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16">
                 {/* Sidebar */}
                 <aside className="w-full lg:w-72 lg:sticky lg:top-40 h-fit self-start">
                     <div className="bg-white rounded-[2rem] p-4 shadow-[0_8px_40px_rgb(0,0,0,0.06)] border border-gray-100 flex flex-col h-fit space-y-2">

@@ -75,7 +75,7 @@ function WhyPartnerSection() {
 // Commission Structure Section
 function CommissionStructure() {
     return (
-        <section className="py-10">
+        <section className="py-10 px-4">
             <h5 className="text-red-500 text-center font-medium mb-2">
                 Attractive Commission Structure
             </h5>
@@ -134,7 +134,7 @@ function CommissionStructure() {
 // Eligibility Criteria Section
 function EligibilityCriteria() {
     return (
-        <section className="py-14">
+        <section className="py-14 px-4">
             <h3 className="text-2xl font-semibold text-center mb-2">
                 What are the Eligibility Criteria for Valid
             </h3>

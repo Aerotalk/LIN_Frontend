@@ -26,7 +26,7 @@ const CardGrids = ({
     <div
       className={`grid ${getGridCols(
         colsNoMdScreen
-      )} grid-cols-1 gap-6 w-full my-8`}
+      )} grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full my-8`}
     >
       {cardsData.map((card, index) => (
         <Card

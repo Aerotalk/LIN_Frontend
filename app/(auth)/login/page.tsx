@@ -114,8 +114,8 @@ function LoginForm() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
       <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-        {/* Left Panel - Branding */}
-        <div className="flex flex-col justify-center p-8 lg:p-16">
+        {/* Left Panel - Branding (hidden on mobile so form shows first) */}
+        <div className="hidden lg:flex flex-col justify-center p-8 lg:p-16">
           <div className="max-w-md mx-auto">
             {/* Logo */}
             <div className="mb-12">

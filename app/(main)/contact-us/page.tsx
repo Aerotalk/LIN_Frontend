@@ -48,7 +48,7 @@ export default function ContactPage() {
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
-              <h1 className="text-5xl font-bold text-red-500 mb-4">Contact us</h1>
+              <h1 className="text-3xl sm:text-5xl font-bold text-red-500 mb-4">Contact us</h1>
               <p className="text-gray-600">Have questions? Our team is just a message away.</p>
             </div>
             {/* <div className="hidden lg:block"> */}
@@ -56,7 +56,7 @@ export default function ContactPage() {
               alt="Contact Us"
               width={300}
               height={300}
-              className="h-full object-contain w-[42%]" />
+              className="h-full object-contain w-[30%] sm:w-[42%]" />
             {/* </div> */}
           </div>
         </div>
