@@ -412,6 +412,29 @@ class ApiClient {
     });
   }
 
+  async downloadApplicationPdf(applicationId: number): Promise<void> {
+    const url = `${this.baseURL}/api/loans/${applicationId}/pdf`;
+    const headers: Record<string, string> = {};
+    if (this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      throw new Error('Failed to download PDF');
+    }
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = `LoanApplication_${applicationId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  }
+
   // Aadhaar verification endpoints (if implemented in backend)
   async requestAadhaarOtp(aadhaarNumber: string): Promise<ApiResponse> {
     // Note: This endpoint may not exist in backend yet

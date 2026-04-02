@@ -7,6 +7,8 @@ interface UseSignupReturn {
   formData: SignupFormData;
   isLoading: boolean;
   error: string | null;
+  applicationId: number | null;
+  applicationCreatedAt: string | null;
   setCurrentStep: (step: number) => void;
   updateFormData: (step: keyof SignupFormData, data: any) => void;
   submitStep: (step: number, data: any) => Promise<boolean>;
@@ -52,6 +54,8 @@ export function useSignup(): UseSignupReturn {
   const [formData, setFormData] = useState<SignupFormData>(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [applicationId, setApplicationId] = useState<number | null>(null);
+  const [applicationCreatedAt, setApplicationCreatedAt] = useState<string | null>(null);
 
   const updateFormData = useCallback((step: keyof SignupFormData, data: any) => {
     setFormData(prev => ({ ...prev, [step]: data }));
@@ -96,7 +100,7 @@ export function useSignup(): UseSignupReturn {
 
         case 3:
           // Submit KYC details
-          await apiClient.submitKYC({
+          const kycResponse = await apiClient.submitKYC({
             companyName: data.companyName,
             companyAddress: data.companyAddress,
             monthlyIncome: data.monthlyIncome,
@@ -108,6 +112,11 @@ export function useSignup(): UseSignupReturn {
             loanAmount: data.loanAmount,
             purpose: data.purposeOfLoan,
           });
+          // Capture the application ID from KYC response
+          if ((kycResponse as any)?.data?.application) {
+            setApplicationId((kycResponse as any).data.application.id);
+            setApplicationCreatedAt((kycResponse as any).data.application.createdAt);
+          }
           return true;
 
         case 4:
@@ -193,6 +202,8 @@ export function useSignup(): UseSignupReturn {
     formData,
     isLoading,
     error,
+    applicationId,
+    applicationCreatedAt,
     setCurrentStep,
     updateFormData,
     submitStep,

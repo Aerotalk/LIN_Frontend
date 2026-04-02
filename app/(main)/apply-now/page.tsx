@@ -16,6 +16,7 @@ import {
     DocumentVerificationData,
 } from "@/lib/types"
 import { AadhaarOtpForm, BasicDetailsForm, PhotoLocationForm } from "@/lib/signup-schemas"
+import { apiClient } from "@/lib/api"
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,8 @@ function ApplyNowContent() {
         formData,
         isLoading,
         error,
+        applicationId,
+        applicationCreatedAt,
         setCurrentStep,
         updateFormData,
         submitStep,
@@ -58,6 +61,7 @@ function ApplyNowContent() {
     const [aadhaarOtpSent, setAadhaarOtpSent] = useState<boolean>(false)
     const [aadhaarOtpResendTimer, setAadhaarOtpResendTimer] = useState<number>(0)
     const [applicationSubmitted, setApplicationSubmitted] = useState<boolean>(false)
+    const [isDownloadingPdf, setIsDownloadingPdf] = useState<boolean>(false)
 
     const progress = (internalStep / STEPS.length) * 100
 
@@ -190,7 +194,30 @@ function ApplyNowContent() {
         );
     }
 
+    // Helper to format application number
+    const formatAppNumber = (id: number, createdAt: string) => {
+        const year = new Date(createdAt).getFullYear();
+        return `LIN/${year}/${String(id).padStart(5, '0')}`;
+    };
+
+    const handleDownloadPdf = async () => {
+        if (!applicationId) return;
+        setIsDownloadingPdf(true);
+        try {
+            await apiClient.downloadApplicationPdf(applicationId);
+        } catch (err) {
+            console.error('Failed to download PDF:', err);
+            alert('Failed to download PDF. Please try again from your dashboard.');
+        } finally {
+            setIsDownloadingPdf(false);
+        }
+    };
+
     if (applicationSubmitted) {
+        const appNumber = applicationId && applicationCreatedAt
+            ? formatAppNumber(applicationId, applicationCreatedAt)
+            : null;
+
         return (
             <div className="min-h-screen w-full max-w-7xl bg-white mt-20 mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[80vh]">
@@ -218,13 +245,45 @@ function ApplyNowContent() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-800 mb-4">Loan application submitted</h3>
-                            <p className="text-gray-600 mb-8">Our representative will contact you soon</p>
+                            <h3 className="text-2xl font-bold text-gray-800 mb-2">Loan application submitted</h3>
+                            <p className="text-gray-600 mb-6">Our representative will contact you soon</p>
+
+                            {/* Application Number Display */}
+                            {appNumber && (
+                                <div className="bg-red-50 border border-red-100 rounded-2xl p-5 mb-6">
+                                    <p className="text-xs font-medium text-red-400 uppercase tracking-wider mb-1">Your Application Number</p>
+                                    <p className="text-2xl font-extrabold text-red-600 tracking-wide">{appNumber}</p>
+                                    <p className="text-xs text-gray-500 mt-2">Save this number for future reference with the LOS team</p>
+                                </div>
+                            )}
+
+                            {/* Download PDF Button */}
+                            {applicationId && (
+                                <Button
+                                    onClick={handleDownloadPdf}
+                                    disabled={isDownloadingPdf}
+                                    className="w-full bg-gray-900 hover:bg-gray-800 text-white h-12 text-base font-medium mb-3 rounded-xl"
+                                >
+                                    {isDownloadingPdf ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Generating PDF...
+                                        </span>
+                                    ) : (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            Download Application PDF
+                                        </span>
+                                    )}
+                                </Button>
+                            )}
+
                             <Button
                                 onClick={() => router.push(getLinkWithRef('/dashboard'))}
-                                className="w-full bg-red-600 hover:bg-red-700 text-white h-12 text-base font-medium"
+                                className="w-full bg-red-600 hover:bg-red-700 text-white h-12 text-base font-medium rounded-xl"
                             >
-
                                 View dashboard
                             </Button>
                         </div>
