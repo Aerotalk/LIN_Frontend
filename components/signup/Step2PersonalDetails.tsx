@@ -57,9 +57,30 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
       const response = await apiClient.verifyPan(panNumber, panImage);
 
       if (response.success && response.data) {
-        // We do NOT autofill anymore, just mark as verified
-        // const data = response.data;
-        // The user must fill firstName, lastName etc. manually.
+        // Autofill fetched details from PAN API
+        const data = response.data;
+        
+        if (data.full_name) {
+          const nameParts = data.full_name.split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+          setValue("firstName", firstName);
+          setValue("lastName", lastName);
+        }
+        
+        if (data.dob && data.dob.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          setValue("dateOfBirth", data.dob);
+        } else if (data.dob && data.dob.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+          // Format DD/MM/YYYY to YYYY-MM-DD
+          const parts = data.dob.split('/');
+          setValue("dateOfBirth", `${parts[2]}-${parts[1]}-${parts[0]}`);
+        }
+        
+        if (data.gender) {
+           const g = data.gender.toUpperCase();
+           if (g === 'MALE' || g === 'M') setValue("gender", "Male");
+           if (g === 'FEMALE' || g === 'F') setValue("gender", "Female");
+        }
 
         setIsPanVerified(true);
       } else {
