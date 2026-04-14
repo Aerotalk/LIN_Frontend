@@ -191,12 +191,6 @@ function SignupContent() {
               <p className="text-gray-600 mb-8 leading-relaxed">
                 Thank you for your application, at present, you do not meet the eligibility criteria for the loan.
               </p>
-              <Button
-                  onClick={handleGoToDashboard}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white h-12 text-base font-medium rounded-xl"
-              >
-                  Return to Home
-              </Button>
             </div>
           ) : (
           <div className="max-w-md mx-auto w-full">
@@ -204,7 +198,7 @@ function SignupContent() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-red-600">
-                  {eligibilityStatus === 'pending' ? "Loan & Income Details" : STEPS[currentStep - 1].title}
+                  {eligibilityStatus === 'pending' ? "Check Eligibility" : STEPS[currentStep - 1].title}
                 </h3>
                 {eligibilityStatus === 'eligible' && (
                   <span className="text-sm text-gray-600">{currentStep}/2</span>

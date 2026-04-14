@@ -16,14 +16,7 @@ const loanAmountOptions = Array.from({ length: 30 }, (_, i) => (i + 1) * 5000)
 
 export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
   const { register, handleSubmit, formState: { errors } } = useForm<EligibilityForm>({
-    resolver: zodResolver(eligibilitySchema),
-    defaultValues: {
-      loanAmount: 50000, // Reasonable default
-      monthlySalaryRange: "Rs.25,000/- - Rs.50,000/-",
-      salaryReceivedIn: "Bank Transfer",
-      cibilScore: "700 - 749 (Good)",
-      pinCode: ""
-    }
+    resolver: zodResolver(eligibilitySchema)
   })
 
   return (
@@ -36,8 +29,10 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           </label>
           <select 
             {...register("loanAmount", { valueAsNumber: true })}
+            defaultValue=""
             className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
           >
+            <option value="" disabled>Select Loan Amount</option>
             {loanAmountOptions.map(amount => (
               <option key={amount} value={amount}>
                 ₹{amount.toLocaleString('en-IN')}
@@ -53,8 +48,10 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           </label>
           <select 
             {...register("monthlySalaryRange")}
+            defaultValue=""
             className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
           >
+            <option value="" disabled>Select Monthly Salary Range</option>
             <option value="Less than Rs.25,000/-">Less than Rs.25,000/-</option>
             <option value="Rs.25,000/- - Rs.50,000/-">Rs.25,000/- - Rs.50,000/-</option>
             <option value="Rs.50,000/- - 75,000/-">Rs.50,000/- - 75,000/-</option>
@@ -70,8 +67,10 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           </label>
           <select 
             {...register("salaryReceivedIn")}
+            defaultValue=""
             className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
           >
+            <option value="" disabled>Select Salary Received Mode</option>
             <option value="Cash">Cash</option>
             <option value="Bank Transfer">Bank Transfer</option>
             <option value="Cheque">Cheque</option>
@@ -85,8 +84,10 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           </label>
           <select 
             {...register("cibilScore")}
+            defaultValue=""
             className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
           >
+            <option value="" disabled>Select CIBIL Score Range</option>
             <option value="750+ (Excellent)">750+ (Excellent)</option>
             <option value="700 - 749 (Good)">700 - 749 (Good)</option>
             <option value="650 - 699 (Fair)">650 - 699 (Fair)</option>
