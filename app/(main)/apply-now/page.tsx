@@ -163,8 +163,7 @@ function ApplyNowContent() {
 
     // Helper to format application number
     const formatAppNumber = (id: number, createdAt: string) => {
-        const year = new Date(createdAt).getFullYear();
-        return `LIN/${year}/${String(id).padStart(5, '0')}`;
+        return `LN${String(id).padStart(10, '0')}`;
     };
 
     const handleDownloadPdf = async () => {

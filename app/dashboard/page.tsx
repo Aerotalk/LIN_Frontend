@@ -124,7 +124,7 @@ function DashboardContent() {
                             allData.push({
                                 id: `APP-${app.id}`,
                                 rawId: app.id,
-                                number: `LIN/${new Date(app.createdAt).getFullYear()}/${app.id.toString().padStart(5, '0')}`,
+                                number: `LN${app.id.toString().padStart(10, '0')}`,
                                 amount: app.loanAmount ? `₹${app.loanAmount.toLocaleString()}` : "Evaluating",
                                 rawAmount: app.loanAmount,
                                 date: new Date(app.createdAt).toLocaleDateString("en-GB", {
@@ -144,7 +144,7 @@ function DashboardContent() {
                             allData.push({
                                 id: `LOAN-${loan.id}`,
                                 rawId: loan.id,
-                                number: `LIN/${new Date(loan.createdAt).getFullYear()}/${loan.id.toString().padStart(5, '0')}`,
+                                number: `LN${loan.id.toString().padStart(10, '0')}`,
                                 amount: `₹${loan.loanAmount.toLocaleString()}`,
                                 rawAmount: loan.loanAmount,
                                 date: new Date(loan.createdAt).toLocaleDateString("en-GB", {
