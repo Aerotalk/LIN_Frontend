@@ -97,17 +97,15 @@ export function Step4DocumentVerification({ onSubmit, formData, setFormData }: S
 
             <div className="w-full">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Aadhaar number <span className="text-primary">*</span>
+                Aadhaar image (Max 5MB) <span className="text-primary">*</span>
               </label>
-              <Input
-                {...register("aadhaarNumber")}
-                placeholder="Enter your Aadhaar number"
-                className="w-full"
-                maxLength={12}
-                type="tel"
+              <FileUpload
+                accept="image/*,application/pdf"
+                placeholder="Click to upload Aadhaar image here"
+                onFileChange={(file) => handleFileChange("aadhaarImage", file as any)}
               />
-              {errors.aadhaarNumber && (
-                <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>
+              {errors.aadhaarImage && (
+                <p className="text-red-500 text-sm mt-1">{errors.aadhaarImage.message as string}</p>
               )}
             </div></div>
 

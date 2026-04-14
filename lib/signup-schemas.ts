@@ -137,8 +137,10 @@ export const documentVerificationSchema = z.object({
   panNumber: z.string()
     .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number"),
 
-  aadhaarNumber: z.string()
-    .regex(/^\d{12}$/, "Aadhaar number must be 12 digits"),
+  aadhaarImage: z
+    .instanceof(File)
+    .refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB")
+    .optional(), // Optional initially until uploaded
 });
 
 
