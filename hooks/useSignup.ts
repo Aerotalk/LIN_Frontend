@@ -39,7 +39,7 @@ const initialFormData: SignupFormData = {
     payslipFile: createEmptyFile("payslip.pdf", "application/pdf"),
     bankStatementFile: createEmptyFile("bankstatement.pdf", "application/pdf"),
     panNumber: "",
-    aadhaarNumber: ""
+    aadhaarImage: undefined
   },
   aadhaarOtp: { aadhaarOtp: "" },
   photoAndLocationSchema: {
@@ -144,7 +144,8 @@ export function useSignup(): UseSignupReturn {
 
         case 5:
           // Verify Aadhaar OTP
-          await apiClient.verifyAadhaarOtp(formData.documentVerification.aadhaarNumber, data.aadhaarOtp);
+          // In the new flow this step is skipped, but if used, Aadhaar number might have to be collected differently.
+          await apiClient.verifyAadhaarOtp("skipped-in-new-flow", data.aadhaarOtp);
           return true;
 
         case 6:

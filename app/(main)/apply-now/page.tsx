@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react"
 import { useSignup } from "@/hooks/useSignup"
 import { Step3BasicDetails } from "@/components/signup/Step3BasicDetails"
 import { Step4DocumentVerification } from "@/components/signup/Step4DocumentVerification"
-import { Step5AadhaarOtp } from "@/components/signup/Step5AadhaarOtp"
 import { Step6PhotoGPS } from "@/components/signup/Step6PhotoGPS"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -12,10 +11,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useAffiliate } from "@/hooks/useAffiliate"
 
-import {
-    DocumentVerificationData,
-} from "@/lib/types"
-import { AadhaarOtpForm, BasicDetailsForm, PhotoLocationForm } from "@/lib/signup-schemas"
+import { AadhaarOtpForm, BasicDetailsForm, PhotoLocationForm, DocumentVerificationForm } from "@/lib/signup-schemas"
 import { apiClient } from "@/lib/api"
 
 export const dynamic = "force-dynamic";
@@ -29,8 +25,7 @@ interface Step {
 const STEPS: Step[] = [
     { id: 1, title: "Basic details", description: "Get Instant Financial Support You Can Rely On" },
     { id: 2, title: "Verifying documents", description: "Get Instant Financial Support You Can Rely On" },
-    { id: 3, title: "Aadhaar verification", description: "Get Instant Financial Support You Can Rely On" },
-    { id: 4, title: "Photo & Location", description: "Get Instant Financial Support You Can Rely On" },
+    { id: 3, title: "Photo & Location", description: "Get Instant Financial Support You Can Rely On" },
 ]
 
 import { Suspense } from "react"
@@ -58,8 +53,6 @@ function ApplyNowContent() {
     // apply-now step 4 = useSignup step 6
     const [internalStep, setInternalStep] = useState(1)
 
-    const [aadhaarOtpSent, setAadhaarOtpSent] = useState<boolean>(false)
-    const [aadhaarOtpResendTimer, setAadhaarOtpResendTimer] = useState<number>(0)
     const [applicationSubmitted, setApplicationSubmitted] = useState<boolean>(false)
     const [isDownloadingPdf, setIsDownloadingPdf] = useState<boolean>(false)
 
@@ -85,20 +78,9 @@ function ApplyNowContent() {
         }
     }
 
-    const handleDocumentVerificationSubmit = async (data: DocumentVerificationData): Promise<void> => {
+    const handleDocumentVerificationSubmit = async (data: DocumentVerificationForm): Promise<void> => {
         updateFormData('documentVerification', data)
         const success = await submitStep(4, data)
-        if (success) {
-            setAadhaarOtpSent(true)
-            setAadhaarOtpResendTimer(30)
-            startTimer(setAadhaarOtpResendTimer)
-            handleNext()
-        }
-    }
-
-    const handleAadhaarOtpSubmit = async (data: AadhaarOtpForm): Promise<void> => {
-        updateFormData('aadhaarOtp', data)
-        const success = await submitStep(5, data)
         if (success) {
             handleNext()
         }
@@ -112,22 +94,7 @@ function ApplyNowContent() {
         }
     }
 
-    const startTimer = (setter: React.Dispatch<React.SetStateAction<number>>): void => {
-        const timer = setInterval(() => {
-            setter(prev => {
-                if (prev <= 1) {
-                    clearInterval(timer)
-                    return 0
-                }
-                return prev - 1
-            })
-        }, 1000)
-    }
 
-    const resendAadhaarOtp = (): void => {
-        setAadhaarOtpResendTimer(30)
-        startTimer(setAadhaarOtpResendTimer)
-    }
 
     const router = useRouter()
     const [isAuthenticated, setIsAuthenticated] = React.useState<boolean | null>(null);
@@ -341,18 +308,6 @@ function ApplyNowContent() {
                             )}
 
                             {internalStep === 3 && (
-                                <Step5AadhaarOtp
-                                    onSubmit={handleAadhaarOtpSubmit}
-                                    onBack={handlePrevious}
-                                    otpSent={aadhaarOtpSent}
-                                    resendTimer={aadhaarOtpResendTimer}
-                                    onResend={resendAadhaarOtp}
-                                    formData={formData.aadhaarOtp}
-                                    setFormData={(data) => updateFormData('aadhaarOtp', data)}
-                                />
-                            )}
-
-                            {internalStep === 4 && (
                                 <Step6PhotoGPS
                                     onSubmit={handlePhotoLocationSubmit}
                                     onBack={handlePrevious}

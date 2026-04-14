@@ -134,7 +134,7 @@ export function Step4DocumentVerification({ onSubmit, formData, setFormData }: S
         </div>
 
         <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white">
-          Get OTP
+          Next
         </Button>
       </div>
     </form>
