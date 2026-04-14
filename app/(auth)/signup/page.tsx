@@ -47,6 +47,7 @@ function SignupContent() {
   const [otpSent, setOtpSent] = useState<boolean>(false)
   const [otpResendTimer, setOtpResendTimer] = useState<number>(0)
   const [eligibilityStatus, setEligibilityStatus] = useState<'pending' | 'eligible' | 'rejected'>('pending')
+  const [isCheckingEligibility, setIsCheckingEligibility] = useState(false)
 
   const progress = (currentStep / STEPS.length) * 100
 
@@ -62,16 +63,38 @@ function SignupContent() {
     }
   }
 
-  const handleEligibilitySubmit = (data: EligibilityForm) => {
-    if (
-      data.salaryReceivedIn !== "Bank Transfer" || 
-      data.cibilScore === "< 650 (Poor)" || 
-      data.monthlySalaryRange === "Less than Rs.25,000/-"
-    ) {
-      setEligibilityStatus('rejected')
-    } else {
-      // Passes checks
-      setEligibilityStatus('eligible')
+  const handleEligibilitySubmit = async (data: EligibilityForm) => {
+    setIsCheckingEligibility(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          salaryReceivedIn: data.salaryReceivedIn,
+          cibilScore: data.cibilScore,
+          monthlySalaryRange: data.monthlySalaryRange
+        })
+      });
+      const result = await response.json();
+      if (result.eligible) {
+        setEligibilityStatus('eligible');
+      } else {
+        setEligibilityStatus('rejected');
+      }
+    } catch (e) {
+      console.error("Eligibility check failed", e);
+      // Fallback to local offline check if API fails
+      if (
+        data.salaryReceivedIn !== "Bank Transfer" || 
+        data.cibilScore === "< 650 (Poor)" || 
+        data.monthlySalaryRange === "Less than Rs.25,000/-"
+      ) {
+        setEligibilityStatus('rejected')
+      } else {
+        setEligibilityStatus('eligible')
+      }
+    } finally {
+      setIsCheckingEligibility(false);
     }
   }
 
@@ -211,7 +234,7 @@ function SignupContent() {
               {eligibilityStatus === 'pending' && (
                 <Step0EligibilityCheck 
                    onSubmit={handleEligibilitySubmit}
-                   isLoading={isLoading}
+                   isLoading={isCheckingEligibility}
                 />
               )}
 

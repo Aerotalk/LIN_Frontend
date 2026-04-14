@@ -16,16 +16,33 @@ export default function EligibilityCalculator() {
   const [eligibleAmount, setEligibleAmount] = useState(0);
   const [emi, setEmi] = useState(0);
 
-  // Calculate eligible loan on state change
+  // Calculate eligible loan on state change with debounce calling backend
   useEffect(() => {
-    const expenseAmount = (income * expense) / 100;
-    const netIncome = income - expenseAmount;
-    const maxEmi = netIncome * 0.4; // 40% EMI rule
-    const totalMonths = tenure * 12;
-    const eligibleLoan = maxEmi * totalMonths;
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ income, expense, tenure })
+        });
+        const data = await res.json();
+        if (data.eligible) {
+          setEligibleAmount(data.eligibleAmount);
+          setEmi(data.emi);
+        }
+      } catch (e) {
+        console.error("Failed to check calculator eligibility", e);
+        // Fallback local logic
+        const expenseAmount = (income * expense) / 100;
+        const netIncome = income - expenseAmount;
+        const maxEmi = netIncome * 0.4; // 40% EMI rule
+        const totalMonths = tenure * 12;
+        setEligibleAmount(maxEmi * totalMonths);
+        setEmi(maxEmi);
+      }
+    }, 300);
 
-    setEligibleAmount(eligibleLoan);
-    setEmi(maxEmi);
+    return () => clearTimeout(timer);
   }, [income, tenure, expense]);
 
   const handleApplyLoan = () => {
