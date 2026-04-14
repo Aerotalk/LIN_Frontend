@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { useSignup } from "@/hooks/useSignup"
+import { Step0EligibilityCheck } from "@/components/signup/Step0EligibilityCheck"
 import { Step1PhoneVerification } from "@/components/signup/Step1PhoneVerification"
 import { Step2PersonalDetails } from "@/components/signup/Step2PersonalDetails"
 import { Button } from "@/components/ui/button"
@@ -13,6 +14,7 @@ import {
   PhoneVerificationData,
   PersonalDetailsData,
 } from "@/lib/types"
+import { EligibilityForm } from "@/lib/signup-schemas"
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +46,7 @@ function SignupContent() {
 
   const [otpSent, setOtpSent] = useState<boolean>(false)
   const [otpResendTimer, setOtpResendTimer] = useState<number>(0)
+  const [eligibilityStatus, setEligibilityStatus] = useState<'pending' | 'eligible' | 'rejected'>('pending')
 
   const progress = (currentStep / STEPS.length) * 100
 
@@ -56,6 +59,19 @@ function SignupContent() {
   const handlePrevious = (): void => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
+    }
+  }
+
+  const handleEligibilitySubmit = (data: EligibilityForm) => {
+    if (
+      data.salaryReceivedIn !== "Bank Transfer" || 
+      data.cibilScore === "< 650 (Poor)" || 
+      data.monthlySalaryRange === "Less than Rs.25,000/-"
+    ) {
+      setEligibilityStatus('rejected')
+    } else {
+      // Passes checks
+      setEligibilityStatus('eligible')
     }
   }
 
@@ -139,23 +155,48 @@ function SignupContent() {
           </div>
         </div>
 
-        {/* Right Panel - Form */}
+        {/* Right Panel - Form / Rejection UI */}
         <div className="bg-white flex flex-col justify-center p-8 lg:p-12">
+          {eligibilityStatus === 'rejected' ? (
+            <div className="max-w-md mx-auto w-full text-center">
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                 <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                 </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Application Unsuccessful</h3>
+              <p className="text-gray-600 mb-8 leading-relaxed">
+                Thank you for your application, at present, you do not meet the eligibility criteria for the loan.
+              </p>
+              <Button
+                  onClick={handleGoToDashboard}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white h-12 text-base font-medium rounded-xl"
+              >
+                  Return to Home
+              </Button>
+            </div>
+          ) : (
           <div className="max-w-md mx-auto w-full">
             {/* Step Header */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-red-600">{STEPS[currentStep - 1].title}</h3>
-                <span className="text-sm text-gray-600">{currentStep}/2</span>
+                <h3 className="text-xl font-bold text-red-600">
+                  {eligibilityStatus === 'pending' ? "Loan & Income Details" : STEPS[currentStep - 1].title}
+                </h3>
+                {eligibilityStatus === 'eligible' && (
+                  <span className="text-sm text-gray-600">{currentStep}/2</span>
+                )}
               </div>
 
-              {/* Progress Bar */}
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-red-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
+              {/* Progress Bar (hidden during eligibility) */}
+              {eligibilityStatus === 'eligible' && (
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              )}
             </div>
 
             {/* Error Display */}
@@ -167,7 +208,14 @@ function SignupContent() {
 
             {/* Form Content */}
             <div className="space-y-6">
-              {currentStep === 1 && (
+              {eligibilityStatus === 'pending' && (
+                <Step0EligibilityCheck 
+                   onSubmit={handleEligibilitySubmit}
+                   isLoading={isLoading}
+                />
+              )}
+
+              {eligibilityStatus === 'eligible' && currentStep === 1 && (
                 <Step1PhoneVerification
                   onSubmit={otpSent ? handleOtpVerify : handlePhoneSubmit}
                   otpSent={otpSent}
@@ -179,7 +227,7 @@ function SignupContent() {
                 />
               )}
 
-              {currentStep === 2 && (
+              {eligibilityStatus === 'eligible' && currentStep === 2 && (
                 <Step2PersonalDetails
                   onSubmit={handlePersonalDetailsSubmit}
                   onGoToDashboard={handleGoToDashboard}
@@ -190,6 +238,7 @@ function SignupContent() {
               )}
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>

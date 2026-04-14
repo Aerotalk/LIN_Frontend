@@ -3,6 +3,24 @@ import { z } from "zod"
 const MAX_5MB = 5 * 1024 * 1024;
 const MAX_2MB = 2 * 1024 * 1024;
 
+// Step 0: Eligibility Check
+export const eligibilitySchema = z.object({
+  loanAmount: z.number().min(5000, "Minimum loan amount is ₹5,000").max(150000, "Maximum loan amount is ₹1,50,000"),
+  monthlySalaryRange: z.enum([
+    "Less than Rs.25,000/-",
+    "Rs.25,000/- - Rs.50,000/-",
+    "Rs.50,000/- - 75,000/-",
+    "Rs.75,000/- - 1,00,000/-",
+    "Rs.1,00,000/- and above"
+  ]),
+  salaryReceivedIn: z.enum(["Cash", "Bank Transfer", "Cheque"]),
+  cibilScore: z.enum(["750+ (Excellent)", "700 - 749 (Good)", "650 - 699 (Fair)", "< 650 (Poor)"]),
+  pinCode: z.string()
+    .min(6, "Pin code must be 6 digits")
+    .max(6, "Pin code must be 6 digits")
+    .regex(/^\d{6}$/, "Pin code must contain only numbers"),
+})
+
 // Step 1: Phone verification
 export const phoneVerificationSchema = z.object({
   phoneNumber: z.string()
@@ -174,6 +192,7 @@ export const signupFormSchema = z.object({
   photoAndLocationSchema: photoAndLocationSchema
 })
 
+export type EligibilityForm = z.infer<typeof eligibilitySchema>
 export type PhoneVerificationForm = z.infer<typeof phoneVerificationSchema>
 export type PhoneNumberForm = z.infer<typeof phoneNumberSchema>
 export type OtpVerificationForm = z.infer<typeof otpVerificationSchema>
