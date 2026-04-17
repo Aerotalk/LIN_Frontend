@@ -122,15 +122,24 @@ export function useSignup(): UseSignupReturn {
 
           // === STAGE 3: Submit Documents (For 3-Step Flow) ===
           try {
+             // Upload PAN separately
+             if (data.panImage && data.panImage instanceof File) {
+                 await apiClient.uploadDocument('PAN', data.panImage);
+             }
+             
+             // Upload Aadhaar separately  
+             if (data.aadhaarImage && data.aadhaarImage instanceof File) {
+                 await apiClient.uploadDocument('AADHAAR', data.aadhaarImage);
+             }
+
+             // Upload Salary & Bank Statement via bulk endpoint
              const documentFormData = new FormData();
-             let hasDocs = false;
+             let hasBulkDocs = false;
 
-             if (data.panImage && data.panImage instanceof File) { documentFormData.append('panFile', data.panImage); hasDocs = true; }
-             if (data.aadhaarImage && data.aadhaarImage instanceof File) { documentFormData.append('aadhaarFiles', data.aadhaarImage); hasDocs = true; }
-             if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData.append('salarySlips', data.salarySlipImage); hasDocs = true; }
-             if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData.append('bankStatements', data.bankStatementImage); hasDocs = true; }
+             if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData.append('salarySlips', data.salarySlipImage); hasBulkDocs = true; }
+             if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData.append('bankStatements', data.bankStatementImage); hasBulkDocs = true; }
 
-             if (hasDocs) {
+             if (hasBulkDocs) {
                 await apiClient.submitDocuments(documentFormData);
              }
           } catch (docErr) {

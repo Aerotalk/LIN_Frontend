@@ -454,12 +454,12 @@ class ApiClient {
 
   // PAN Verification (if implemented in backend)
   // PAN Verification (Bypass implemented)
-  async verifyPan(panNumber: string, panImage: File): Promise<ApiResponse<any>> {
+  async verifyPan(panNumber: string, panImage?: File): Promise<ApiResponse<any>> {
     const formData = new FormData();
     formData.append('panNumber', panNumber);
-    formData.append('panImage', panImage);
-
-    // Using the KYC route where we implemented the bypass
+    if (panImage) {
+      formData.append('panImage', panImage);
+    }
     return this.request<ApiResponse>('/api/kyc/verify-pan', {
       method: 'POST',
       body: formData,

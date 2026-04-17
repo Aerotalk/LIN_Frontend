@@ -48,16 +48,28 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
     
     setIsVerifyingPan(true);
     
-    // Simulate API call to fetch PAN details
-    setTimeout(() => {
-      setValue("firstName", "RAHUL", { shouldValidate: true });
-      setValue("middleName", "KUMAR", { shouldValidate: true });
-      setValue("lastName", "SHARMA", { shouldValidate: true });
-      setValue("gender", "Male", { shouldValidate: true });
-      setValue("dateOfBirth", "1992-06-15", { shouldValidate: true });
-      
-      setIsVerifyingPan(false);
-    }, 1500);
+    try {
+       // Hit the real backend API (imported from lib/api or via standard fetch)
+       const { apiClient } = await import('@/lib/api');
+       // Send only the panNumber text. The new backend expects optional panImage.
+       const response = await apiClient.verifyPan(pan);
+       
+       if (response && response.data) {
+          // Pre-fill fields from the backend
+          const parsed = response.data.client_id ? response.data : null; // Validate data shape based on your payload
+          if(parsed || response.data.firstName) {
+             if (response.data.firstName) setValue("firstName", response.data.firstName, { shouldValidate: true });
+             if (response.data.lastName) setValue("lastName", response.data.lastName, { shouldValidate: true });
+             if (response.data.middleName) setValue("middleName", response.data.middleName, { shouldValidate: true });
+             if (response.data.gender) setValue("gender", response.data.gender === "M" || response.data.gender === "Male" ? "Male" : "Female", { shouldValidate: true });
+             // We could format the DOB depending on what the Surepass wrapper returns
+          }
+       }
+    } catch (e) {
+       console.error("PAN Verification execution failed", e);
+    } finally {
+       setIsVerifyingPan(false);
+    }
   };
 
   return (
