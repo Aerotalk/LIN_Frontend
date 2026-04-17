@@ -19,8 +19,9 @@ interface Step2Props {
 
 export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setFormData, phoneNumber }: Step2Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerifyingPan, setIsVerifyingPan] = useState(false);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PersonalDetailsForm>({
+  const { register, handleSubmit, setValue, watch, formState: { errors }, trigger } = useForm<PersonalDetailsForm>({
     resolver: zodResolver(personalDetailsSchema) as any,
     defaultValues: formData,
     mode: "onChange",
@@ -39,6 +40,26 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
     setIsLoading(false);
   };
 
+  const handleVerifyPan = async () => {
+    const pan = watch("panNumber");
+    const isValid = await trigger("panNumber");
+    
+    if (!isValid || !pan || pan.length !== 10) return;
+    
+    setIsVerifyingPan(true);
+    
+    // Simulate API call to fetch PAN details
+    setTimeout(() => {
+      setValue("firstName", "RAHUL", { shouldValidate: true });
+      setValue("middleName", "KUMAR", { shouldValidate: true });
+      setValue("lastName", "SHARMA", { shouldValidate: true });
+      setValue("gender", "Male", { shouldValidate: true });
+      setValue("dateOfBirth", "1992-06-15", { shouldValidate: true });
+      
+      setIsVerifyingPan(false);
+    }, 1500);
+  };
+
   return (
     <form onSubmit={handleSubmit(onValidSubmit)} className="space-y-6 form-fade-in pb-4">
        
@@ -46,6 +67,61 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
       <div className="flex items-center space-x-3 mb-6 border-b border-gray-100 pb-3">
         <User className="w-6 h-6 text-blue-600" />
         <h2 className="text-xl font-bold text-[#1c2b4f]">Personal Details</h2>
+      </div>
+
+      {/* PAN & Aadhaar row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full">
+          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">
+            PAN Number <span className="text-red-500">*</span>
+          </label>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+               <FileBadge2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
+               <Input
+                 {...register("panNumber")}
+                 placeholder="10-digit PAN"
+                 className="w-full h-11 pl-10 text-sm uppercase border-gray-300 shadow-sm focus-visible:ring-red-600"
+                 maxLength={10}
+               />
+            </div>
+            <Button 
+               type="button" 
+               variant="outline" 
+               className="h-11 border-green-600 text-green-700 hover:bg-green-50 font-bold px-4 md:px-6 shadow-sm whitespace-nowrap min-w-[120px]"
+               onClick={handleVerifyPan}
+               disabled={isVerifyingPan}
+            >
+               {isVerifyingPan ? (
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Verifying...
+                  </div>
+               ) : (
+                  "Verify PAN"
+               )}
+            </Button>
+          </div>
+          {errors.panNumber && (
+            <p className="text-red-500 text-sm mt-1">{errors.panNumber.message}</p>
+          )}
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
+          <div className="relative">
+            <div className="absolute left-0 top-0 h-full w-10 bg-blue-50 border-r border-gray-300 rounded-l-md flex items-center justify-center">
+              <User className="w-4 h-4 text-blue-400 opacity-70" />
+            </div>
+            <Input 
+              {...register("aadhaarNumber")} 
+              className="pl-14 h-11 border-gray-300 shadow-sm tracking-[0.2em] font-medium" 
+              placeholder="0000 - 0000 - 0000" 
+              maxLength={12} 
+            />
+          </div>
+          {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
+        </div>
       </div>
 
       {/* Name row */}
@@ -72,53 +148,6 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
             <Input {...register("lastName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="Surname" />
           </div>
           {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
-        </div>
-      </div>
-
-      {/* PAN & Aadhaar row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="w-full">
-          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">
-            PAN Number <span className="text-red-500">*</span>
-          </label>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-               <FileBadge2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
-               <Input
-                 {...register("panNumber")}
-                 placeholder="10-digit PAN"
-                 className="w-full h-11 pl-10 text-sm uppercase border-gray-300 shadow-sm focus-visible:ring-red-600"
-                 maxLength={10}
-               />
-            </div>
-            <Button 
-               type="button" 
-               variant="outline" 
-               className="h-11 border-green-600 text-green-700 hover:bg-green-50 font-bold px-4 md:px-6 shadow-sm whitespace-nowrap"
-               onClick={(e) => { e.preventDefault(); alert("Verification Successful"); }}
-            >
-               Verify PAN
-            </Button>
-          </div>
-          {errors.panNumber && (
-            <p className="text-red-500 text-sm mt-1">{errors.panNumber.message}</p>
-          )}
-        </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
-          <div className="relative">
-            <div className="absolute left-0 top-0 h-full w-10 bg-blue-50 border-r border-gray-300 rounded-l-md flex items-center justify-center">
-              <User className="w-4 h-4 text-blue-400 opacity-70" />
-            </div>
-            <Input 
-              {...register("aadhaarNumber")} 
-              className="pl-14 h-11 border-gray-300 shadow-sm tracking-[0.2em] font-medium" 
-              placeholder="0000 - 0000 - 0000" 
-              maxLength={12} 
-            />
-          </div>
-          {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
         </div>
       </div>
 
