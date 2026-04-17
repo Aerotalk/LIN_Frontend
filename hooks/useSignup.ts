@@ -120,6 +120,32 @@ export function useSignup(): UseSignupReturn {
              console.error("KYC Sync Error (Non-blocking): ", kycErr);
           }
 
+          // === STAGE 2.5: Verify & Save Aadhaar Number ===
+          if (data.aadhaarNumber) {
+             const cleanAadhaar = data.aadhaarNumber.replace(/\D/g, '');
+             if (cleanAadhaar.length === 12) {
+               try {
+                  // We send a generic OTP. The backend authController will hit Surepass Aadhaar Validation API 
+                  // to verify the structure and log it to the database table AadhaarVerification.
+                  await apiClient.verifyAadhaarOtp(cleanAadhaar, "000000");
+               } catch (aadhaarErr) {
+                  console.error("Aadhaar Sync Error: ", aadhaarErr);
+                  // We catch it so failure doesn't block final document upload, or throw it to enforce validation.
+               }
+             }
+          }
+
+          // === STAGE 2.6: Background Persist PAN Status ===
+          if (data.panNumber) {
+             try {
+                // If the user already pressed the button, this will act as an idempotent database overwrite update.
+                // If they didn't press the button, this gracefully registers their text input in the backend natively. 
+                await apiClient.verifyPan(data.panNumber);
+             } catch (panErr) {
+                console.error("PAN Background Sync Error: ", panErr);
+             }
+          }
+
           // === STAGE 3: Submit Documents (For 3-Step Flow) ===
           try {
              // Upload PAN separately
