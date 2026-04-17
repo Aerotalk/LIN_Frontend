@@ -294,7 +294,8 @@ function ApplyNowContent() {
                                     onBack={() => router.back()}
                                     formData={formData.basicDetails}
                                     setFormData={(data) => updateFormData('basicDetails', data)}
-                                    employmentType={formData.personalDetails.employmentType}
+                                    // Default to salaried as a stopgap since occupation moved to eligibility step
+                                    employmentType={"Salaried"}
                                 />
                             )}
 
