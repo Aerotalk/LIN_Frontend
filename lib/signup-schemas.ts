@@ -6,6 +6,8 @@ const MAX_2MB = 2 * 1024 * 1024;
 // Step 0: Eligibility Check
 export const eligibilitySchema = z.object({
   loanAmount: z.number().min(5000, "Minimum loan amount is ₹5,000").max(150000, "Maximum loan amount is ₹1,50,000"),
+  purposeOfLoan: z.string().min(2, "Please select a purpose"),
+  occupation: z.enum(["Salaried", "Self Employed", "Business", "Student", "Other"]),
   monthlySalaryRange: z.enum([
     "Less than Rs.25,000/-",
     "Rs.25,000/- - Rs.50,000/-",
@@ -14,11 +16,7 @@ export const eligibilitySchema = z.object({
     "Rs.1,00,000/- and above"
   ]),
   salaryReceivedIn: z.enum(["Cash", "Bank Transfer", "Cheque"]),
-  cibilScore: z.enum(["750+ (Excellent)", "700 - 749 (Good)", "650 - 699 (Fair)", "< 650 (Poor)"]),
-  pinCode: z.string()
-    .min(6, "Pin code must be 6 digits")
-    .max(6, "Pin code must be 6 digits")
-    .regex(/^\d{6}$/, "Pin code must contain only numbers"),
+  city: z.string().min(2, "Please select a city"),
 })
 
 // Step 1: Phone verification

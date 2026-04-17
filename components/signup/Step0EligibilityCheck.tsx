@@ -1,22 +1,39 @@
 "use client"
 
 import React from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { eligibilitySchema, type EligibilityForm } from "@/lib/signup-schemas"
+import { IndianRupee, Banknote, Building2, CreditCard } from "lucide-react"
 
 interface Step0Props {
   onSubmit: (data: EligibilityForm) => void
   isLoading?: boolean
 }
 
-const loanAmountOptions = Array.from({ length: 30 }, (_, i) => (i + 1) * 5000)
+const COMMON_CITIES = [
+  "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad",
+  "Chennai", "Kolkata", "Surat", "Pune", "Jaipur", "Other"
+]
+
+const LOAN_PURPOSES = [
+  "Medical Emergency", "Debt Consolidation", "Home Renovation", 
+  "Education", "Wedding", "Business", "Travel", "Other"
+]
 
 export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
-  const { register, handleSubmit, formState: { errors } } = useForm<EligibilityForm>({
-    resolver: zodResolver(eligibilitySchema)
+  const { register, handleSubmit, control, formState: { errors } } = useForm<EligibilityForm>({
+    resolver: zodResolver(eligibilitySchema),
+    defaultValues: {
+      loanAmount: undefined,
+      purposeOfLoan: "",
+      occupation: undefined,
+      monthlySalaryRange: undefined,
+      salaryReceivedIn: undefined,
+      city: ""
+    }
   })
 
   return (
@@ -27,19 +44,56 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           <label className="block text-sm font-medium text-gray-700">
             Loan Amount Required <span className="text-primary">*</span>
           </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+               <IndianRupee className="h-4 w-4 text-gray-500" />
+            </div>
+            <Input 
+              {...register("loanAmount", { valueAsNumber: true })}
+              type="number"
+              placeholder="Enter Loan Amount"
+              className="pl-9 h-10 w-full hover:border-gray-400 focus:border-red-600 focus:ring-red-600"
+            />
+          </div>
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>Minimum: ₹5,000</span>
+            <span>Maximum: ₹1,50,000</span>
+          </div>
+          {errors.loanAmount && <p className="text-red-500 text-sm mt-1">{errors.loanAmount.message}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Purpose of Loan <span className="text-primary">*</span>
+          </label>
           <select 
-            {...register("loanAmount", { valueAsNumber: true })}
-            defaultValue=""
-            className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
+            {...register("purposeOfLoan")}
+            className="w-full h-10 px-3 py-2 border border-input rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600"
           >
-            <option value="" disabled>Select Loan Amount</option>
-            {loanAmountOptions.map(amount => (
-              <option key={amount} value={amount}>
-                ₹{amount.toLocaleString('en-IN')}
-              </option>
+            <option value="" disabled>Select Purpose of Loan</option>
+            {LOAN_PURPOSES.map(purpose => (
+              <option key={purpose} value={purpose}>{purpose}</option>
             ))}
           </select>
-          {errors.loanAmount && <p className="text-red-500 text-sm mt-1">{errors.loanAmount.message}</p>}
+          {errors.purposeOfLoan && <p className="text-red-500 text-sm mt-1">{errors.purposeOfLoan.message}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Occupation <span className="text-primary">*</span>
+          </label>
+          <select 
+            {...register("occupation")}
+            className="w-full h-10 px-3 py-2 border border-input rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600"
+          >
+            <option value="" disabled>Select Occupation</option>
+            <option value="Salaried">Salaried</option>
+            <option value="Self Employed">Self Employed</option>
+            <option value="Business">Business</option>
+            <option value="Student">Student</option>
+            <option value="Other">Other</option>
+          </select>
+          {errors.occupation && <p className="text-red-500 text-sm mt-1">{errors.occupation.message}</p>}
         </div>
 
         <div className="space-y-2">
@@ -48,8 +102,7 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           </label>
           <select 
             {...register("monthlySalaryRange")}
-            defaultValue=""
-            className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
+            className="w-full h-10 px-3 py-2 border border-input rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600"
           >
             <option value="" disabled>Select Monthly Salary Range</option>
             <option value="Less than Rs.25,000/-">Less than Rs.25,000/-</option>
@@ -65,52 +118,54 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           <label className="block text-sm font-medium text-gray-700">
             Salary Received In <span className="text-primary">*</span>
           </label>
-          <select 
-            {...register("salaryReceivedIn")}
-            defaultValue=""
-            className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
-          >
-            <option value="" disabled>Select Salary Received Mode</option>
-            <option value="Cash">Cash</option>
-            <option value="Bank Transfer">Bank Transfer</option>
-            <option value="Cheque">Cheque</option>
-          </select>
+          <Controller
+            name="salaryReceivedIn"
+            control={control}
+            render={({ field }) => (
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { value: "Cash", icon: <Banknote className="w-5 h-5 mb-1" /> },
+                  { value: "Bank Transfer", icon: <Building2 className="w-5 h-5 mb-1" /> },
+                  { value: "Cheque", icon: <CreditCard className="w-5 h-5 mb-1" /> }
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => field.onChange(option.value)}
+                    className={`flex flex-col items-center justify-center p-3 border rounded-lg transition-all ${
+                      field.value === option.value
+                        ? "border-red-600 bg-red-50 text-red-700"
+                        : "border-gray-200 hover:border-red-300 hover:bg-gray-50 text-gray-600"
+                    }`}
+                  >
+                    {option.icon}
+                    <span className="text-xs font-medium">{option.value}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          />
           {errors.salaryReceivedIn && <p className="text-red-500 text-sm mt-1">{errors.salaryReceivedIn.message}</p>}
         </div>
 
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            CIBIL Score <span className="text-primary">*</span>
+            City <span className="text-primary">*</span>
           </label>
           <select 
-            {...register("cibilScore")}
-            defaultValue=""
-            className="w-full h-10 px-3 py-2 border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600"
+            {...register("city")}
+            className="w-full h-10 px-3 py-2 border border-input rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-red-600 focus:border-red-600"
           >
-            <option value="" disabled>Select CIBIL Score Range</option>
-            <option value="750+ (Excellent)">750+ (Excellent)</option>
-            <option value="700 - 749 (Good)">700 - 749 (Good)</option>
-            <option value="650 - 699 (Fair)">650 - 699 (Fair)</option>
-            <option value="< 650 (Poor)">{"< 650 (Poor)"}</option>
+            <option value="" disabled>Select City</option>
+            {COMMON_CITIES.map(city => (
+              <option key={city} value={city}>{city}</option>
+            ))}
           </select>
-          {errors.cibilScore && <p className="text-red-500 text-sm mt-1">{errors.cibilScore.message}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            City PIN Code <span className="text-primary">*</span>
-          </label>
-          <Input 
-            {...register("pinCode")}
-            placeholder="Enter 6-digit PIN Code"
-            maxLength={6}
-            type="tel"
-          />
-          {errors.pinCode && <p className="text-red-500 text-sm mt-1">{errors.pinCode.message}</p>}
+          {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
         </div>
 
         <div className="pt-2">
-          <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isLoading}>
+          <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white h-11" disabled={isLoading}>
             {isLoading ? "Checking..." : "Check Loan Eligibility"}
           </Button>
           <div className="text-center mt-3 text-xs text-green-600 flex items-center justify-center gap-1">

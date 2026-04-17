@@ -65,14 +65,26 @@ function SignupContent() {
 
   const handleEligibilitySubmit = async (data: EligibilityForm) => {
     setIsCheckingEligibility(true);
+    
+    // Store it in our global formData context so it's not lost
+    updateFormData('basicDetails', {
+      ...formData.basicDetails,
+      loanAmount: data.loanAmount,
+      purposeOfLoan: data.purposeOfLoan,
+      // occupation could map to professionName or employmentType later
+    });
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          loanAmount: data.loanAmount,
+          purposeOfLoan: data.purposeOfLoan,
+          occupation: data.occupation,
           salaryReceivedIn: data.salaryReceivedIn,
-          cibilScore: data.cibilScore,
-          monthlySalaryRange: data.monthlySalaryRange
+          monthlySalaryRange: data.monthlySalaryRange,
+          city: data.city
         })
       });
       const result = await response.json();
@@ -86,7 +98,6 @@ function SignupContent() {
       // Fallback to local offline check if API fails
       if (
         data.salaryReceivedIn !== "Bank Transfer" || 
-        data.cibilScore === "< 650 (Poor)" || 
         data.monthlySalaryRange === "Less than Rs.25,000/-"
       ) {
         setEligibilityStatus('rejected')
