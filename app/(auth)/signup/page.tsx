@@ -13,6 +13,7 @@ import {
 } from "@/lib/types"
 import { EligibilityForm } from "@/lib/signup-schemas"
 import { Suspense } from "react"
+import Image from "next/image"
 import { Loader2, CheckCircle2, Calendar, FileX2, Check, ClipboardList, Clock, IndianRupee, MessageCircle } from "lucide-react"
 
 export const dynamic = "force-dynamic";
@@ -252,8 +253,11 @@ function SignupContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex py-10 px-4 items-center justify-center font-sans tracking-wide">
-      <div className="max-w-[600px] w-full bg-white rounded-3xl shadow-xl p-8 pt-10">
+    <div className="min-h-screen bg-gray-50 flex flex-col py-10 px-4 items-center justify-center font-sans tracking-wide">
+      <div className="mb-6">
+         <Image src="/lin-logo.png" alt="LoanInNeed Logo" width={180} height={60} className="object-contain" />
+      </div>
+      <div className="max-w-[850px] w-full bg-white rounded-3xl shadow-xl p-8 lg:p-10 transition-all duration-500">
         {registrationSuccessful ? (
            <div className="flex flex-col items-center py-2 text-center fade-in">
               {/* Checkmark icon */}

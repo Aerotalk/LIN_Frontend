@@ -48,32 +48,13 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
         <h2 className="text-xl font-bold text-[#1c2b4f]">Personal Details</h2>
       </div>
 
-      {/* PAN Section */}
-      <div className="w-full">
-        <label className="block text-sm font-bold text-[#1c2b4f] mb-2">
-          PAN Number <span className="text-red-500">*</span>
-        </label>
-        <div className="relative">
-           <FileBadge2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
-           <Input
-             {...register("panNumber")}
-             placeholder="Enter 10-digit PAN"
-             className="w-full h-12 pl-12 text-base uppercase border-gray-300 shadow-sm focus-visible:ring-red-600"
-             maxLength={10}
-           />
-        </div>
-        {errors.panNumber && (
-          <p className="text-red-500 text-sm mt-1">{errors.panNumber.message}</p>
-        )}
-      </div>
-
       {/* Name row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">First Name <span className="text-red-500">*</span></label>
           <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input {...register("firstName")} className="pl-10 h-12 border-gray-300 shadow-sm" placeholder="Enter First Name" />
+            <Input {...register("firstName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="First Name" />
           </div>
           {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
         </div>
@@ -81,82 +62,106 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Middle Name <span className="font-normal text-gray-500">(Optional)</span></label>
            <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input {...register("middleName")} className="pl-10 h-12 border-gray-300 shadow-sm" placeholder="Enter Middle Name" />
+            <Input {...register("middleName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="Middle Name" />
           </div>
         </div>
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Surname <span className="text-red-500">*</span></label>
            <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input {...register("lastName")} className="pl-10 h-12 border-gray-300 shadow-sm" placeholder="Enter Surname" />
+            <Input {...register("lastName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="Surname" />
           </div>
           {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
         </div>
       </div>
 
-      {/* Sex & DOB row */}
+      {/* PAN & Aadhaar row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="w-full">
+          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">
+            PAN Number <span className="text-red-500">*</span>
+          </label>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+               <FileBadge2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
+               <Input
+                 {...register("panNumber")}
+                 placeholder="10-digit PAN"
+                 className="w-full h-11 pl-10 text-sm uppercase border-gray-300 shadow-sm focus-visible:ring-red-600"
+                 maxLength={10}
+               />
+            </div>
+            <Button 
+               type="button" 
+               variant="outline" 
+               className="h-11 border-green-600 text-green-700 hover:bg-green-50 font-bold px-4 md:px-6 shadow-sm whitespace-nowrap"
+               onClick={(e) => { e.preventDefault(); alert("Verification Successful"); }}
+            >
+               Verify PAN
+            </Button>
+          </div>
+          {errors.panNumber && (
+            <p className="text-red-500 text-sm mt-1">{errors.panNumber.message}</p>
+          )}
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
+          <div className="relative">
+            <div className="absolute left-0 top-0 h-full w-10 bg-blue-50 border-r border-gray-300 rounded-l-md flex items-center justify-center">
+              <User className="w-4 h-4 text-blue-400 opacity-70" />
+            </div>
+            <Input 
+              {...register("aadhaarNumber")} 
+              className="pl-14 h-11 border-gray-300 shadow-sm tracking-[0.2em] font-medium" 
+              placeholder="0000 - 0000 - 0000" 
+              maxLength={12} 
+            />
+          </div>
+          {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
+        </div>
+      </div>
+
+      {/* Sex, DOB, Email row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Sex <span className="text-red-500">*</span></label>
-          <div className="flex bg-gray-100 p-1 rounded-lg">
+          <div className="flex bg-gray-100 p-1 rounded-lg h-11">
              <button
                 type="button"
                 onClick={() => setValue("gender", "Male", { shouldValidate: true })}
-                className={`flex-1 flex items-center justify-center py-2.5 rounded-md text-sm font-bold transition-all ${gender === 'Male' ? 'bg-[#e5edff] text-blue-600 shadow-sm border border-blue-200' : 'text-gray-500'}`}
+                className={`flex-1 flex items-center justify-center py-1 rounded-md text-sm font-bold transition-all ${gender === 'Male' ? 'bg-[#e5edff] text-blue-600 shadow-sm border border-blue-200' : 'text-gray-500'}`}
              >
-                <div className="mr-2 text-current text-lg">♂</div> Male
+                <div className="mr-1 text-lg">♂</div> Male
              </button>
              <button
                 type="button"
                 onClick={() => setValue("gender", "Female", { shouldValidate: true })}
-                className={`flex-1 flex items-center justify-center py-2.5 rounded-md text-sm font-bold transition-all ${gender === 'Female' ? 'bg-[#e5edff] text-blue-600 shadow-sm border border-blue-200' : 'text-gray-500'}`}
+                className={`flex-1 flex items-center justify-center py-1 rounded-md text-sm font-bold transition-all ${gender === 'Female' ? 'bg-[#e5edff] text-blue-600 shadow-sm border border-blue-200' : 'text-gray-500'}`}
              >
-                <div className="mr-2 text-current text-lg">♀</div> Female
+                <div className="mr-1 text-lg">♀</div> Female
              </button>
           </div>
-          {/* Hidden register */}
           <input type="hidden" {...register("gender")} />
           {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>}
         </div>
+
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Date of Birth <span className="text-red-500">*</span></label>
           <div className="relative">
-            <Input type="date" {...register("dateOfBirth")} className="h-12 border-gray-300 shadow-sm text-gray-600 font-medium" />
+            <Input type="date" {...register("dateOfBirth")} className="h-11 border-gray-300 shadow-sm text-gray-600 font-medium" />
           </div>
           {errors.dateOfBirth && <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth.message}</p>}
         </div>
-      </div>
 
-      {/* Email */}
-      <div className="w-full">
-        <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Email ID <span className="text-red-500">*</span></label>
-        <div className="relative">
-          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
-          <Input {...register("email")} type="email" className="pl-12 h-12 border-gray-300 shadow-sm" placeholder="example@email.com" />
-        </div>
-        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-      </div>
-
-      {/* Aadhaar Number */}
-      <div className="w-full">
-        <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
-        <div className="relative">
-           {/* In actual design it is 12 boxes, here rendered as a single tracking input for simplicity & UX */}
-          <div className="absolute left-0 top-0 h-full w-12 bg-blue-50 border-r border-gray-300 rounded-l-md flex items-center justify-center">
-            <User className="w-5 h-5 text-blue-400 opacity-70" />
+        <div className="w-full">
+          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Email ID <span className="text-red-500">*</span></label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
+            <Input {...register("email")} type="email" className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="example@email.com" />
           </div>
-          <Input 
-            {...register("aadhaarNumber")} 
-            className="pl-16 h-12 border-gray-300 shadow-sm tracking-[0.2em] font-medium" 
-            placeholder="0000 - 0000 - 0000" 
-            maxLength={12} 
-          />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
-        {errors.aadhaarNumber ? (
-           <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>
-        ) : (
-           <p className="text-xs text-gray-500 mt-2 font-medium">Enter 12-digit Aadhaar Number</p>
-        )}
       </div>
 
       {/* Document Upload section */}
