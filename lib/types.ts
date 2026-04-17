@@ -17,15 +17,18 @@ export interface PhoneVerificationData {
 }
 
 export interface PersonalDetailsData {
+  panNumber: string;
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-
-  gender: "Male" | "Female" | "Prefer not to say";
+  gender: "Male" | "Female";
   middleName?: string | undefined;
-  panNumber: string;
+  email: string;
+  aadhaarNumber: string;
   panImage?: File;
-  employmentType: "Salaried" | "Self employed";
+  aadhaarImage?: File;
+  salarySlipImage?: File;
+  bankStatementImage?: File;
 }
 
 export interface BasicDetailsData {
