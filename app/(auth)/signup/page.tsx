@@ -73,13 +73,25 @@ function SignupContent() {
 
   const handleEligibilitySubmit = async (data: EligibilityForm) => {
     setIsCheckingEligibility(true);
+    
+    // Explicitly update global context so the final Step 3 submission can access the loan details
+    updateFormData('basicDetails', {
+      ...formData.basicDetails,
+      loanAmount: data.loanAmount,
+      purposeOfLoan: data.purposeOfLoan,
+    });
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          loanAmount: data.loanAmount,
+          purposeOfLoan: data.purposeOfLoan,
+          occupation: data.occupation,
           salaryReceivedIn: data.salaryReceivedIn,
-          // Sending dummy or simplified values to keep logic consistent
+          monthlySalaryRange: data.monthlySalaryRange,
+          city: data.city
         })
       });
       const result = await response.json();

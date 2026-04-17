@@ -82,12 +82,10 @@ export function useSignup(): UseSignupReturn {
           }
 
         case 2:
-          // Register user with personal details
+          // === STAGE 1: Register User ===
           const name = `${data.firstName} ${data.middleName ? data.middleName + ' ' : ''}${data.lastName}`.trim();
-
-          // Clean phone number to ensure it only has digits
           const cleanerPhone = formData.phoneVerification.phoneNumber.replace(/\D/g, '');
-          const uniqueEmail = `user${cleanerPhone}@loaninneed.com`;
+          const uniqueEmail = data.email || `user${cleanerPhone}@loaninneed.com`;
 
           await apiClient.registerUser({
             name,
@@ -96,11 +94,54 @@ export function useSignup(): UseSignupReturn {
             email: uniqueEmail,
             password: "Password@123",  // Dummy password
           });
+
+          // === STAGE 2: Submit KYC for Application Creation (For 3-Step Flow) ===
+          let currentAppId = null;
+          try {
+             const kycResponse = await apiClient.submitKYC({
+                companyName: "Self",
+                companyAddress: "N/A",
+                monthlyIncome: 30000,
+                stability: "Stable",
+                currentAddress: "N/A",
+                currentAddressType: "Rented",
+                permanentAddress: "N/A",
+                currentPostalCode: "000000",
+                loanAmount: formData.basicDetails.loanAmount || 0,
+                purpose: formData.basicDetails.purposeOfLoan || "Other",
+             });
+             
+             if ((kycResponse as any)?.data?.application) {
+                currentAppId = (kycResponse as any).data.application.id;
+                setApplicationId(currentAppId);
+                setApplicationCreatedAt((kycResponse as any).data.application.createdAt);
+             }
+          } catch (kycErr) {
+             console.error("KYC Sync Error (Non-blocking): ", kycErr);
+          }
+
+          // === STAGE 3: Submit Documents (For 3-Step Flow) ===
+          try {
+             const documentFormData = new FormData();
+             let hasDocs = false;
+
+             if (data.panImage && data.panImage instanceof File) { documentFormData.append('panFile', data.panImage); hasDocs = true; }
+             if (data.aadhaarImage && data.aadhaarImage instanceof File) { documentFormData.append('aadhaarFiles', data.aadhaarImage); hasDocs = true; }
+             if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData.append('salarySlips', data.salarySlipImage); hasDocs = true; }
+             if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData.append('bankStatements', data.bankStatementImage); hasDocs = true; }
+
+             if (hasDocs) {
+                await apiClient.submitDocuments(documentFormData);
+             }
+          } catch (docErr) {
+             console.error("Document Upload Error: ", docErr);
+          }
+
           return true;
 
         case 3:
-          // Submit KYC details
-          const kycResponse = await apiClient.submitKYC({
+          // Submit KYC details (Used by apply-now flow)
+          const kycResponseSeparate = await apiClient.submitKYC({
             companyName: data.companyName,
             companyAddress: data.companyAddress,
             monthlyIncome: data.monthlyIncome,
@@ -112,34 +153,27 @@ export function useSignup(): UseSignupReturn {
             loanAmount: data.loanAmount,
             purpose: data.purposeOfLoan,
           });
-          // Capture the application ID from KYC response
-          if ((kycResponse as any)?.data?.application) {
-            setApplicationId((kycResponse as any).data.application.id);
-            setApplicationCreatedAt((kycResponse as any).data.application.createdAt);
+          if ((kycResponseSeparate as any)?.data?.application) {
+            setApplicationId((kycResponseSeparate as any).data.application.id);
+            setApplicationCreatedAt((kycResponseSeparate as any).data.application.createdAt);
           }
           return true;
 
         case 4:
-          // Submit documents (salary slips and bank statements)
-          // Note: Selfie is submitted separately in step 6
-          const documentFormData = new FormData();
+          // Submit documents (salary slips and bank statements) (Used by apply-now flow)
+          const documentFormDataSeparate = new FormData();
 
-          // Backend expects arrays, so append files correctly
-          // Only append if file exists and is a valid File object with content
           if (!data.payslipFile || !(data.payslipFile instanceof File) || data.payslipFile.size === 0) {
             throw new Error('Please upload your salary slip');
           }
-          documentFormData.append('salarySlips', data.payslipFile);
+          documentFormDataSeparate.append('salarySlips', data.payslipFile);
 
           if (!data.bankStatementFile || !(data.bankStatementFile instanceof File) || data.bankStatementFile.size === 0) {
             throw new Error('Please upload your bank statement');
           }
-          documentFormData.append('bankStatements', data.bankStatementFile);
+          documentFormDataSeparate.append('bankStatements', data.bankStatementFile);
 
-          // Note: PAN and Aadhaar numbers are not sent in document submission
-          // They should be handled separately if needed
-
-          await apiClient.submitDocuments(documentFormData);
+          await apiClient.submitDocuments(documentFormDataSeparate);
           return true;
 
         case 5:
