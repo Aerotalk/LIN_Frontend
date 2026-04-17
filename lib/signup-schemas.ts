@@ -6,8 +6,8 @@ const MAX_2MB = 2 * 1024 * 1024;
 // Step 0: Eligibility Check
 export const eligibilitySchema = z.object({
   loanAmount: z.number().min(5000, "Minimum loan amount is ₹5,000").max(150000, "Maximum loan amount is ₹1,50,000"),
-  purposeOfLoan: z.string().min(2, "Please select a purpose"),
-  occupation: z.enum(["Salaried", "Self Employed", "Business", "Student", "Other"]),
+  purposeOfLoan: z.string().min(1, "Please select purpose of loan"),
+  occupation: z.string().min(1, "Please select occupation"),
   monthlySalaryRange: z.enum([
     "Less than Rs.25,000/-",
     "Rs.25,000/- - Rs.50,000/-",
@@ -16,7 +16,7 @@ export const eligibilitySchema = z.object({
     "Rs.1,00,000/- and above"
   ]),
   salaryReceivedIn: z.enum(["Cash", "Bank Transfer", "Cheque"]),
-  city: z.string().min(2, "Please select a city"),
+  city: z.string().min(1, "Please select your city"),
 })
 
 // Step 1: Phone verification
@@ -47,30 +47,33 @@ export const otpVerificationSchema = z.object({
 
 // Step 2: Personal details
 export const personalDetailsSchema = z.object({
+  panNumber: z.string().length(10, "PAN number must be exactly 10 characters"),
   firstName: z.string()
     .min(2, "First name must be at least 2 characters")
     .max(50, "First name must be less than 50 characters")
     .regex(/^[a-zA-Z\s]+$/, "First name can only contain letters and spaces"),
   middleName: z.string().default("").optional(),
   lastName: z.string()
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must be less than 50 characters")
-    .regex(/^[a-zA-Z\s]+$/, "Last name can only contain letters and spaces"),
+    .min(2, "Surname must be at least 2 characters")
+    .max(50, "Surname must be less than 50 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Surname can only contain letters and spaces"),
+  gender: z.enum(["Male", "Female"]),
   dateOfBirth: z.string()
     .min(1, "Date of birth is required")
     .refine((date) => {
-      const parsedDate = new Date(date.split('/').reverse().join('-'))
-      const today = new Date()
-      const age = today.getFullYear() - parsedDate.getFullYear()
-      return age >= 18 && age <= 65
+      // Allow format DD/MM/YYYY or similar parsing
+      const parts = date.split('/');
+      const parsedDate = parts.length === 3 ? new Date(`${parts[2]}-${parts[1]}-${parts[0]}`) : new Date(date);
+      const today = new Date();
+      const age = today.getFullYear() - parsedDate.getFullYear();
+      return age >= 18 && age <= 65;
     }, "Age must be between 18 and 65 years"),
-  gender: z.enum(["Male", "Female", "Prefer not to say"]),
-  panNumber: z.string()
-    .length(10, "PAN number must be exactly 10 characters"),
-  panImage: z.instanceof(File)
-    .refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB")
-    .optional(), // Optional initially until uploaded
-  employmentType: z.enum(["Salaried", "Self employed"]),
+  email: z.string().email("Please enter a valid email address"),
+  aadhaarNumber: z.string().length(12, "Aadhaar number must be exactly 12 digits").regex(/^\d{12}$/, "Aadhaar number must contain only numbers"),
+  panImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
+  aadhaarImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
+  salarySlipImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
+  bankStatementImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
 })
 
 // Step 3: Basic details
