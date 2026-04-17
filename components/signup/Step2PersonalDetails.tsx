@@ -55,14 +55,41 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
        const response = await apiClient.verifyPan(pan);
        
        if (response && response.data) {
-          // Pre-fill fields from the backend
-          const parsed = response.data.client_id ? response.data : null; // Validate data shape based on your payload
-          if(parsed || response.data.firstName) {
-             if (response.data.firstName) setValue("firstName", response.data.firstName, { shouldValidate: true });
-             if (response.data.lastName) setValue("lastName", response.data.lastName, { shouldValidate: true });
-             if (response.data.middleName) setValue("middleName", response.data.middleName, { shouldValidate: true });
-             if (response.data.gender) setValue("gender", response.data.gender === "M" || response.data.gender === "Male" ? "Male" : "Female", { shouldValidate: true });
-             // We could format the DOB depending on what the Surepass wrapper returns
+          // Surepass returns properties in snake_case like full_name, first_name, dob
+          const p = response.data;
+          
+          if (p.full_name) {
+             const parts = p.full_name.trim().split(' ');
+             if (parts.length === 1) {
+                setValue("firstName", parts[0], { shouldValidate: true });
+             } else if (parts.length === 2) {
+                setValue("firstName", parts[0], { shouldValidate: true });
+                setValue("lastName", parts[1], { shouldValidate: true });
+             } else if (parts.length > 2) {
+                setValue("firstName", parts[0], { shouldValidate: true });
+                setValue("lastName", parts[parts.length - 1], { shouldValidate: true });
+                setValue("middleName", parts.slice(1, -1).join(' '), { shouldValidate: true });
+             }
+          } else {
+             // Fallback if surepass returned specific parts
+             if (p.first_name) setValue("firstName", p.first_name, { shouldValidate: true });
+             if (p.last_name) setValue("lastName", p.last_name, { shouldValidate: true });
+             if (p.middle_name) setValue("middleName", p.middle_name, { shouldValidate: true });
+          }
+
+          if (p.gender) {
+             const g = p.gender.toUpperCase();
+             setValue("gender", (g === "M" || g === "MALE") ? "Male" : "Female", { shouldValidate: true });
+          }
+
+          if (p.dob) {
+             // Assuming Surepass returns YYYY-MM-DD or DD/MM/YYYY. HTML5 date input strictly requires YYYY-MM-DD.
+             let finalDob = p.dob;
+             if (p.dob.includes('/')) {
+                const [d, m, y] = p.dob.split('/');
+                finalDob = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+             }
+             setValue("dateOfBirth", finalDob, { shouldValidate: true });
           }
        }
     } catch (e) {
