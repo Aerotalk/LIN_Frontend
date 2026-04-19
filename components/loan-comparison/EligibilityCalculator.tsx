@@ -20,7 +20,7 @@ export default function EligibilityCalculator() {
   useEffect(() => {
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ income, expense, tenure })
