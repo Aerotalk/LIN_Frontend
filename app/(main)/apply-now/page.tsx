@@ -179,7 +179,7 @@ function ApplyNowContent() {
 
     if (applicationSubmitted) {
         const appNumber = applicationId
-            ? formatAppNumber(applicationId)
+            ? formatAppNumber(applicationId, formData.personalDetails?.aadhaarNumber)
             : null;
 
         return (

@@ -291,7 +291,7 @@ function SignupContent() {
                    </div>
                    <div className="flex flex-col text-left">
                       <span className="text-xs text-gray-500 font-bold mb-0.5">Application Reference Number</span>
-                      <span className="text-[#14532d] font-black text-xl tracking-wide">{formatAppNumber(applicationId)}</span>
+                      <span className="text-[#14532d] font-black text-xl tracking-wide">{formatAppNumber(applicationId, formData.personalDetails?.aadhaarNumber)}</span>
                    </div>
                 </div>
               )}
