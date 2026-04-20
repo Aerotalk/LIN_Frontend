@@ -36,6 +36,7 @@ function SignupContent() {
     formData,
     isLoading,
     error,
+    applicationId,
     setCurrentStep,
     updateFormData,
     submitStep,
@@ -281,6 +282,13 @@ function SignupContent() {
 
               <h1 className="text-3xl font-bold text-[#14532d] mb-3">Thank You!</h1>
               <p className="font-bold text-gray-800 mb-2">Your loan application has been submitted successfully.</p>
+              
+              {applicationId && (
+                <div className="bg-[#e8f5e9] px-4 py-2 rounded-lg inline-block my-2 border border-[#bbf7d0] shadow-sm">
+                  <p className="text-sm font-bold text-[#16a34a]">Application Ref: <span className="text-[#14532d] uppercase tracking-wider">LIN-{applicationId}</span></p>
+                </div>
+              )}
+
               <p className="text-sm text-gray-500 mb-8 max-w-[400px]">
                  We appreciate your trust in us. Our team will review your application and get back to you soon.
               </p>
