@@ -9,7 +9,6 @@ export const eligibilitySchema = z.object({
   purposeOfLoan: z.string().min(1, "Please select purpose of loan"),
   occupation: z.string().min(1, "Please select occupation"),
   monthlySalaryRange: z.enum([
-    "Less than Rs.25,000/-",
     "Rs.25,000/- - Rs.50,000/-",
     "Rs.50,000/- - 75,000/-",
     "Rs.75,000/- - 1,00,000/-",
