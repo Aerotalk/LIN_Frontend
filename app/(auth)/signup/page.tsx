@@ -106,8 +106,7 @@ function SignupContent() {
       // Local fallback logic
       if (
         data.occupation !== "Salaried" ||
-        data.salaryReceivedIn !== "Bank Transfer" ||
-        data.monthlySalaryRange === "Less than Rs.25,000/-"
+        data.salaryReceivedIn !== "Bank Transfer"
       ) {
         setEligibilityStatus('rejected')
       } else {
