@@ -14,7 +14,8 @@ import {
 import { EligibilityForm } from "@/lib/signup-schemas"
 import { Suspense } from "react"
 import Image from "next/image"
-import { Loader2, CheckCircle2, Calendar, FileX2, Check, ClipboardList, Clock, IndianRupee, MessageCircle } from "lucide-react"
+import { Loader2, CheckCircle2, Calendar, FileX2, Check, ClipboardList, Clock, IndianRupee, MessageCircle, Bookmark } from "lucide-react"
+import { formatAppNumber } from "@/lib/utils"
 
 export const dynamic = "force-dynamic";
 
@@ -282,7 +283,20 @@ function SignupContent() {
 
               <h1 className="text-3xl font-bold text-[#14532d] mb-3">Thank You!</h1>
               <p className="font-bold text-gray-800 mb-2">Your loan application has been submitted successfully.</p>
-              <p className="text-sm text-gray-500 mb-8 max-w-[400px]">
+              
+              {applicationId && (
+                <div className="bg-[#f0fdf4] rounded-2xl flex items-center justify-center py-2 px-1 mb-8 mt-4 mx-auto inline-flex gap-3 pr-4 shadow-sm border border-green-100">
+                   <div className="bg-[#dcfce7] w-12 h-12 flex items-center justify-center rounded-xl shrink-0 ml-1">
+                      <Bookmark className="text-[#16a34a] w-6 h-6" />
+                   </div>
+                   <div className="flex flex-col text-left">
+                      <span className="text-xs text-gray-500 font-bold mb-0.5">Application Reference Number</span>
+                      <span className="text-[#14532d] font-black text-xl tracking-wide">{formatAppNumber(applicationId)}</span>
+                   </div>
+                </div>
+              )}
+
+              <p className="text-sm text-gray-500 mb-8 max-w-[400px] mx-auto">
                  We appreciate your trust in us. Our team will review your application and get back to you soon.
               </p>
 
