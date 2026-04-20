@@ -127,7 +127,6 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"
           >
             <option value="" disabled>Select Monthly Salary Range</option>
-            <option value="Less than Rs.25,000/-">Less than Rs.25,000/-</option>
             <option value="Rs.25,000/- - Rs.50,000/-">Rs.25,000/- - Rs.50,000/-</option>
             <option value="Rs.50,000/- - 75,000/-">Rs.50,000/- - 75,000/-</option>
             <option value="Rs.75,000/- - 1,00,000/-">Rs.75,000/- - 1,00,000/-</option>

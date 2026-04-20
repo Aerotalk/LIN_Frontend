@@ -169,7 +169,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">First Name <span className="text-red-500">*</span></label>
           <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input {...register("firstName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="First Name" />
+            <Input {...register("firstName")} className="pl-10 h-11 border-gray-300 shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0" placeholder="First Name" readOnly />
           </div>
           {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
         </div>
@@ -177,14 +177,14 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Middle Name <span className="font-normal text-gray-500">(Optional)</span></label>
            <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input {...register("middleName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="Middle Name" />
+            <Input {...register("middleName")} className="pl-10 h-11 border-gray-300 shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0" placeholder="Middle Name" readOnly />
           </div>
         </div>
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Surname <span className="text-red-500">*</span></label>
            <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input {...register("lastName")} className="pl-10 h-11 border-gray-300 shadow-sm" placeholder="Surname" />
+            <Input {...register("lastName")} className="pl-10 h-11 border-gray-300 shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0" placeholder="Surname" readOnly />
           </div>
           {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
         </div>
@@ -270,7 +270,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
             {/* Salary Slip */}
             <div className="border border-dashed border-blue-200 bg-[#f8fafe] rounded-xl p-4 text-center group hover:bg-[#f0f4ff] transition-colors relative">
                <svg className="w-8 h-8 text-blue-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-               <div className="text-sm font-bold text-[#1c2b4f]">Salary Slip Upload <span className="text-red-500">*</span></div>
+               <div className="text-sm font-bold text-[#1c2b4f]">Salary Slip (Last 3 Months) <span className="text-red-500">*</span></div>
                <div className="text-[10px] text-gray-500 mb-3">JPG, PNG or PDF<br/>(Max 5MB)</div>
                <FileUpload
                   accept=".jpg,.jpeg,.png,.pdf"
@@ -282,7 +282,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
             {/* Bank Statement */}
             <div className="border border-dashed border-blue-200 bg-[#f8fafe] rounded-xl p-4 text-center group hover:bg-[#f0f4ff] transition-colors relative">
                <svg className="w-8 h-8 text-blue-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
-               <div className="text-sm font-bold text-[#1c2b4f]">Bank Statement Upload <span className="text-red-500">*</span></div>
+               <div className="text-sm font-bold text-[#1c2b4f]">Bank Statement (Last 6 Months) <span className="text-red-500">*</span></div>
                <div className="text-[10px] text-gray-500 mb-3">PDF Only<br/>(Max 10MB)</div>
                <FileUpload
                   accept=".pdf"
