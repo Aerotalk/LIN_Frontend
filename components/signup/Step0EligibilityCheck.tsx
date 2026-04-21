@@ -106,9 +106,6 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
             <option value="" disabled>Select Occupation</option>
             <option value="Salaried">Salaried Employee</option>
             <option value="Self Employed">Self Employed</option>
-            <option value="Business Owner">Business Owner</option>
-            <option value="Freelancer">Freelancer</option>
-            <option value="Student">Student</option>
           </select>
           {errors.occupation && <p className="text-red-500 text-sm mt-1">{errors.occupation.message}</p>}
         </div>

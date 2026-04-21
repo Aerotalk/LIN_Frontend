@@ -7,7 +7,7 @@ const MAX_2MB = 2 * 1024 * 1024;
 export const eligibilitySchema = z.object({
   loanAmount: z.number().min(5000, "Minimum loan amount is ₹5,000").max(150000, "Maximum loan amount is ₹1,50,000"),
   purposeOfLoan: z.string().min(1, "Please select purpose of loan"),
-  occupation: z.string().min(1, "Please select occupation"),
+  occupation: z.enum(["Salaried", "Self Employed"]),
   monthlySalaryRange: z.enum([
     "Rs.25,000/- - Rs.50,000/-",
     "Rs.50,000/- - 75,000/-",
@@ -69,10 +69,10 @@ export const personalDetailsSchema = z.object({
     }, "Age must be between 18 and 65 years"),
   email: z.string().email("Please enter a valid email address"),
   aadhaarNumber: z.string().length(12, "Aadhaar number must be exactly 12 digits").regex(/^\d{12}$/, "Aadhaar number must contain only numbers"),
-  panImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
-  aadhaarImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
-  salarySlipImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
-  bankStatementImage: z.instanceof(File).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB").optional(),
+  panImage: z.instanceof(File, { message: "PAN image is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
+  aadhaarImage: z.instanceof(File, { message: "Aadhaar image is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
+  salarySlipImage: z.instanceof(File, { message: "Salary slip is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
+  bankStatementImage: z.instanceof(File, { message: "Bank statement is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
 })
 
 // Step 3: Basic details

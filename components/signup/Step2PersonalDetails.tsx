@@ -1,13 +1,14 @@
 "use client"
 
 import React, { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { personalDetailsSchema, type PersonalDetailsForm } from "@/lib/signup-schemas"
 import { Lock, User, Mail, FileText, UploadCloud, FileBadge2 } from "lucide-react"
 import { FileUpload } from "../ui/file-upload"
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
 
 interface Step2Props {
   onSubmit: (data: PersonalDetailsForm) => void;
@@ -21,7 +22,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifyingPan, setIsVerifyingPan] = useState(false);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors }, trigger } = useForm<PersonalDetailsForm>({
+  const { register, handleSubmit, setValue, watch, control, formState: { errors }, trigger } = useForm<PersonalDetailsForm>({
     resolver: zodResolver(personalDetailsSchema) as any,
     defaultValues: formData,
     mode: "onChange",
@@ -148,17 +149,34 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
 
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
-          <div className="relative">
-            <div className="absolute left-0 top-0 h-full w-10 bg-blue-50 border-r border-gray-300 rounded-l-md flex items-center justify-center">
-              <User className="w-4 h-4 text-blue-400 opacity-70" />
-            </div>
-            <Input 
-              {...register("aadhaarNumber")} 
-              className="pl-14 h-11 border-gray-300 shadow-sm tracking-[0.2em] font-medium" 
-              placeholder="0000 - 0000 - 0000" 
-              maxLength={12} 
-            />
-          </div>
+          <Controller
+            control={control}
+            name="aadhaarNumber"
+            render={({ field }) => (
+              <InputOTP maxLength={12} value={field.value} onChange={field.onChange}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                </InputOTPGroup>
+                <InputOTPSeparator />
+                <InputOTPGroup>
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                  <InputOTPSlot index={6} />
+                  <InputOTPSlot index={7} />
+                </InputOTPGroup>
+                <InputOTPSeparator />
+                <InputOTPGroup>
+                  <InputOTPSlot index={8} />
+                  <InputOTPSlot index={9} />
+                  <InputOTPSlot index={10} />
+                  <InputOTPSlot index={11} />
+                </InputOTPGroup>
+              </InputOTP>
+            )}
+          />
           {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
         </div>
       </div>
@@ -194,18 +212,18 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Sex <span className="text-red-500">*</span></label>
-          <div className="flex bg-gray-100 p-1 rounded-lg h-11">
+          <div className="flex bg-gray-100 p-1 rounded-lg h-11 pointer-events-none opacity-80">
              <button
                 type="button"
-                onClick={() => setValue("gender", "Male", { shouldValidate: true })}
                 className={`flex-1 flex items-center justify-center py-1 rounded-md text-sm font-bold transition-all ${gender === 'Male' ? 'bg-[#e5edff] text-blue-600 shadow-sm border border-blue-200' : 'text-gray-500'}`}
+                disabled
              >
                 <div className="mr-1 text-lg">♂</div> Male
              </button>
              <button
                 type="button"
-                onClick={() => setValue("gender", "Female", { shouldValidate: true })}
                 className={`flex-1 flex items-center justify-center py-1 rounded-md text-sm font-bold transition-all ${gender === 'Female' ? 'bg-[#e5edff] text-blue-600 shadow-sm border border-blue-200' : 'text-gray-500'}`}
+                disabled
              >
                 <div className="mr-1 text-lg">♀</div> Female
              </button>
@@ -217,7 +235,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
         <div className="w-full">
           <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Date of Birth <span className="text-red-500">*</span></label>
           <div className="relative">
-            <Input type="date" {...register("dateOfBirth")} className="h-11 border-gray-300 shadow-sm text-gray-600 font-medium" />
+            <Input type="date" {...register("dateOfBirth")} className="h-11 border-gray-300 shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0 font-medium" readOnly />
           </div>
           {errors.dateOfBirth && <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth.message}</p>}
         </div>
