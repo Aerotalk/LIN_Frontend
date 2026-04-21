@@ -29,7 +29,8 @@ const STEPS: Step[] = [
 ]
 
 import { Suspense } from "react"
-import { Loader2 } from "lucide-react"
+import { Loader2, Bookmark } from "lucide-react"
+import { formatAppNumber } from "@/lib/utils"
 
 function ApplyNowContent() {
     const { getLinkWithRef } = useAffiliate();
@@ -161,10 +162,7 @@ function ApplyNowContent() {
         );
     }
 
-    // Helper to format application number
-    const formatAppNumber = (id: number, createdAt: string) => {
-        return `LN${String(id).padStart(10, '0')}`;
-    };
+    // We use formatAppNumber from lib/utils instead
 
     const handleDownloadPdf = async () => {
         if (!applicationId) return;
@@ -180,8 +178,8 @@ function ApplyNowContent() {
     };
 
     if (applicationSubmitted) {
-        const appNumber = applicationId && applicationCreatedAt
-            ? formatAppNumber(applicationId, applicationCreatedAt)
+        const appNumber = applicationId
+            ? formatAppNumber(applicationId, formData.personalDetails?.aadhaarNumber)
             : null;
 
         return (
@@ -213,6 +211,18 @@ function ApplyNowContent() {
                             </div>
                             <h3 className="text-2xl font-bold text-gray-800 mb-2">Loan application submitted</h3>
                             <p className="text-gray-600 mb-6">Our representative will contact you soon</p>
+
+                            {appNumber && (
+                                <div className="bg-[#f0fdf4] rounded-2xl flex items-center justify-center py-2 px-1 mb-8 mx-auto inline-flex gap-3 pr-4 shadow-sm border border-green-100">
+                                   <div className="bg-[#dcfce7] w-12 h-12 flex items-center justify-center rounded-xl shrink-0 ml-1">
+                                      <Bookmark className="text-[#16a34a] w-6 h-6" />
+                                   </div>
+                                   <div className="flex flex-col text-left">
+                                      <span className="text-xs text-gray-500 font-bold mb-0.5">Application Reference Number</span>
+                                      <span className="text-[#14532d] font-black text-xl tracking-wide">{appNumber}</span>
+                                   </div>
+                                </div>
+                            )}
 
                             {/* WhatsApp Contact Link */}
                             <a 
