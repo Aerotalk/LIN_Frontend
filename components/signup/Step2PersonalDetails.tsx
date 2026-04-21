@@ -288,7 +288,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           {/* Salary Slip */}
           <div className="border border-dashed border-blue-200 bg-[#f8fafe] rounded-xl p-4 text-center group hover:bg-[#f0f4ff] transition-colors relative">
             <svg className="w-8 h-8 text-blue-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            <div className="text-sm font-bold text-[#1c2b4f]">Salary Slip (Last 3 Months) <span className="text-red-500">*</span></div>
+            <div className="text-sm font-bold text-[#1c2b4f]">salary slip (last 3-month salary slip) <span className="text-red-500">*</span></div>
             <div className="text-[10px] text-gray-500 mb-3">JPG, PNG or PDF<br />(Max 5MB)</div>
             <FileUpload
               accept=".jpg,.jpeg,.png,.pdf"
@@ -300,7 +300,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           {/* Bank Statement */}
           <div className="border border-dashed border-blue-200 bg-[#f8fafe] rounded-xl p-4 text-center group hover:bg-[#f0f4ff] transition-colors relative">
             <svg className="w-8 h-8 text-blue-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
-            <div className="text-sm font-bold text-[#1c2b4f]">Bank Statement (Last 6 Months) <span className="text-red-500">*</span></div>
+            <div className="text-sm font-bold text-[#1c2b4f]">Bank Statement (latest 6-month Bank Statement) <span className="text-red-500">*</span></div>
             <div className="text-[10px] text-gray-500 mb-3">PDF Only<br />(Max 10MB)</div>
             <FileUpload
               accept=".pdf"
@@ -312,38 +312,44 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
 
       </div>
 
-      <div className="space-y-4 text-sm text-gray-700">
-
+      <div className="space-y-4 pt-4 border-t border-gray-100">
         {/* Checkbox 1 */}
-        <label className="flex items-start gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-          <span>
-            I acknowledge that I have carefully read and understood the{" "}
-            <span className="text-blue-600 underline cursor-pointer">
-              Product Terms and Conditions
+        <div className="flex flex-col">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              {...register("consentOne")}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+            />
+            <span className="text-sm text-gray-700 leading-relaxed">
+              I acknowledge that I have carefully read and understood the{" "}
+              <span className="text-red-600 underline cursor-pointer font-bold">
+                Product Terms and Conditions
+              </span>
+              , including loan terms, charges, and disclosures, and hereby expressly
+              consent to and agree to be legally bound by the same in accordance
+              with applicable RBI regulations. <span className="text-red-500">*</span>
             </span>
-            , including loan terms, charges, and disclosures, and hereby expressly
-            consent to and agree to be legally bound by the same in accordance
-            with applicable RBI regulations.
-          </span>
-        </label>
+          </label>
+          {errors.consentOne && <p className="text-red-500 text-[10px] ml-7 mt-1">{errors.consentOne.message as string}</p>}
+        </div>
 
         {/* Checkbox 2 */}
-        <label className="flex items-start gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-          <span>
-            I expressly consent to receive transactional and service-related
-            communications through electronic modes, including WhatsApp, SMS, and
-            email, in accordance with applicable laws and regulations.
-          </span>
-        </label>
-
+        <div className="flex flex-col">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              {...register("consentTwo")}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+            />
+            <span className="text-sm text-gray-700 leading-relaxed">
+              I expressly consent to receive transactional and service-related
+              communications through electronic modes, including WhatsApp, SMS, and
+              email, in accordance with applicable laws and regulations. <span className="text-red-500">*</span>
+            </span>
+          </label>
+          {errors.consentTwo && <p className="text-red-500 text-[10px] ml-7 mt-1">{errors.consentTwo.message as string}</p>}
+        </div>
       </div>
 
 

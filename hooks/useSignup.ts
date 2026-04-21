@@ -25,7 +25,8 @@ const initialFormData: SignupFormData = {
   phoneVerification: { phoneNumber: "", otp: "" as string | undefined },
   personalDetails: {
     panNumber: "", firstName: "", lastName: "", dateOfBirth: "", gender: "Male" as "Male" | "Female",
-    middleName: "", email: "", aadhaarNumber: "", panImage: undefined, aadhaarImage: undefined, salarySlipImage: undefined, bankStatementImage: undefined
+    middleName: "", email: "", aadhaarNumber: "", panImage: undefined as unknown as File, aadhaarImage: undefined as unknown as File, salarySlipImage: undefined as unknown as File, bankStatementImage: undefined as unknown as File,
+    consentOne: false, consentTwo: false
   },
   basicDetails: {
     loanAmount: 0, purposeOfLoan: "",

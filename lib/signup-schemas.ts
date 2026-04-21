@@ -73,6 +73,8 @@ export const personalDetailsSchema = z.object({
   aadhaarImage: z.instanceof(File, { message: "Aadhaar image is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
   salarySlipImage: z.instanceof(File, { message: "Salary slip is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
   bankStatementImage: z.instanceof(File, { message: "Bank statement is required" }).refine(file => file.size <= MAX_5MB, "File size must be ≤ 5MB"),
+  consentOne: z.boolean().refine(val => val === true, "You must agree to the Terms and Conditions"),
+  consentTwo: z.boolean().refine(val => val === true, "You must consent to electronic communications"),
 })
 
 // Step 3: Basic details

@@ -347,6 +347,16 @@ function SignupContent() {
                  </a>
               </div>
 
+              <div className="w-full mt-4 mb-6">
+                 <button 
+                     onClick={handleGoToDashboard}
+                     className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white h-14 rounded-xl text-lg font-bold shadow-md transition-all flex justify-center items-center gap-2"
+                 >
+                     Go to Dashboard
+                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                 </button>
+              </div>
+
               <p className="text-[10px] text-gray-400 font-medium">We're here to make your loan journey simple and hassle-free.</p>
            </div>
         ) : (
