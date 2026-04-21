@@ -153,26 +153,26 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
             control={control}
             name="aadhaarNumber"
             render={({ field }) => (
-              <InputOTP maxLength={12} value={field.value} onChange={field.onChange}>
+              <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-center lg:justify-start flex-wrap gap-1 sm:gap-2">
                 <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={0} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={1} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={2} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={3} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
                 </InputOTPGroup>
-                <InputOTPSeparator />
+                <InputOTPSeparator className="hidden sm:block" />
                 <InputOTPGroup>
-                  <InputOTPSlot index={4} />
-                  <InputOTPSlot index={5} />
-                  <InputOTPSlot index={6} />
-                  <InputOTPSlot index={7} />
+                  <InputOTPSlot index={4} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={5} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={6} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={7} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
                 </InputOTPGroup>
-                <InputOTPSeparator />
+                <InputOTPSeparator className="hidden sm:block" />
                 <InputOTPGroup>
-                  <InputOTPSlot index={8} />
-                  <InputOTPSlot index={9} />
-                  <InputOTPSlot index={10} />
-                  <InputOTPSlot index={11} />
+                  <InputOTPSlot index={8} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={9} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={10} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={11} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
                 </InputOTPGroup>
               </InputOTP>
             )}

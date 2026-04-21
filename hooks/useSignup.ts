@@ -26,7 +26,7 @@ const initialFormData: SignupFormData = {
   personalDetails: {
     panNumber: "", firstName: "", lastName: "", dateOfBirth: "", gender: "Male" as "Male" | "Female",
     middleName: "", email: "", aadhaarNumber: "", panImage: undefined as unknown as File, aadhaarImage: undefined as unknown as File, salarySlipImage: undefined as unknown as File, bankStatementImage: undefined as unknown as File,
-    consentOne: false, consentTwo: false
+    consentOne: true, consentTwo: true
   },
   basicDetails: {
     loanAmount: 0, purposeOfLoan: "",
