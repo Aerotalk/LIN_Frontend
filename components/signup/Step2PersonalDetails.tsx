@@ -153,26 +153,26 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
             control={control}
             name="aadhaarNumber"
             render={({ field }) => (
-              <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-center lg:justify-start flex-wrap gap-1 sm:gap-2">
+              <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-center lg:justify-start gap-1">
                 <InputOTPGroup>
-                  <InputOTPSlot index={0} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={1} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={2} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={3} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={0} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={1} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={2} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={3} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
                 </InputOTPGroup>
-                <InputOTPSeparator className="hidden sm:block" />
+                <InputOTPSeparator className="scale-75" />
                 <InputOTPGroup>
-                  <InputOTPSlot index={4} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={5} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={6} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={7} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={4} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={5} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={6} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={7} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
                 </InputOTPGroup>
-                <InputOTPSeparator className="hidden sm:block" />
+                <InputOTPSeparator className="scale-75" />
                 <InputOTPGroup>
-                  <InputOTPSlot index={8} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={9} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={10} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
-                  <InputOTPSlot index={11} className="w-[1.6rem] h-8 sm:w-8 sm:h-10 md:w-7 md:h-9 lg:w-9 lg:h-10 text-xs sm:text-sm" />
+                  <InputOTPSlot index={8} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={9} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={10} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
+                  <InputOTPSlot index={11} className="w-6 h-8 sm:w-7 sm:h-9 md:w-6 md:h-8 lg:w-8 lg:h-10 text-xs" />
                 </InputOTPGroup>
               </InputOTP>
             )}
@@ -318,6 +318,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           <label className="flex items-start gap-3 cursor-pointer group">
             <input
               type="checkbox"
+              defaultChecked={true}
               {...register("consentOne")}
               className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
             />
@@ -339,6 +340,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           <label className="flex items-start gap-3 cursor-pointer group">
             <input
               type="checkbox"
+              defaultChecked={true}
               {...register("consentTwo")}
               className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
             />
