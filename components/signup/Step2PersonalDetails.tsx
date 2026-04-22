@@ -109,75 +109,61 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
         <h2 className="text-xl font-bold text-[#1c2b4f]">Personal Details</h2>
       </div>
 
-      {/* PAN & Aadhaar row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="w-full">
-          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">
+      {/* PAN row */}
+      <div className="w-full mb-6">
+        <div className="flex justify-between items-end mb-2">
+          <label className="block text-sm font-bold text-[#1c2b4f]">
             PAN Number <span className="text-red-500">*</span>
           </label>
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <FileBadge2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400" />
-              <Input
-                {...register("panNumber")}
-                placeholder="10-digit PAN"
-                className="w-full h-11 pl-10 text-sm uppercase border-gray-300 shadow-sm focus-visible:ring-red-600"
-                maxLength={10}
-              />
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-11 border-green-600 text-green-700 hover:bg-green-50 font-bold px-3 md:px-5 shadow-sm whitespace-nowrap min-w-[80px]"
-              onClick={handleVerifyPan}
-              disabled={isVerifyingPan}
-            >
-              {isVerifyingPan ? (
-                <div className="flex items-center">
-                  <div className="w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full animate-spin mr-2"></div>
-                  ...
-                </div>
-              ) : (
-                "Verify"
-              )}
-            </Button>
-          </div>
-          {errors.panNumber && (
-            <p className="text-red-500 text-sm mt-1">{errors.panNumber.message}</p>
-          )}
         </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
-          <Controller
-            control={control}
-            name="aadhaarNumber"
-            render={({ field }) => (
-              <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-start gap-[2px]">
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={1} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={2} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={3} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                </InputOTPGroup>
-                <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
-                <InputOTPGroup>
-                  <InputOTPSlot index={4} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={5} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={6} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={7} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                </InputOTPGroup>
-                <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
-                <InputOTPGroup>
-                  <InputOTPSlot index={8} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={9} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={10} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                  <InputOTPSlot index={11} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                </InputOTPGroup>
-              </InputOTP>
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
+          <div className="flex-1">
+            <Controller
+              control={control}
+              name="panNumber"
+              render={({ field }) => (
+                <InputOTP maxLength={10} value={field.value} onChange={(value) => field.onChange(value.toUpperCase())} containerClassName="justify-start gap-[2px]">
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={1} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={2} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={3} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={4} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                  </InputOTPGroup>
+                  <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={5} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={6} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={7} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                    <InputOTPSlot index={8} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                  </InputOTPGroup>
+                  <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={9} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                  </InputOTPGroup>
+                </InputOTP>
+              )}
+            />
+            {errors.panNumber && (
+              <p className="text-red-500 text-sm mt-1">{errors.panNumber.message}</p>
             )}
-          />
-          {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-10 sm:h-11 border-green-600 text-green-700 hover:bg-green-50 font-bold px-4 sm:px-6 shadow-sm whitespace-nowrap min-w-[100px] w-full sm:w-auto"
+            onClick={handleVerifyPan}
+            disabled={isVerifyingPan}
+          >
+            {isVerifyingPan ? (
+              <div className="flex items-center">
+                <div className="w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full animate-spin mr-2"></div>
+                ...
+              </div>
+            ) : (
+              "Verify"
+            )}
+          </Button>
         </div>
       </div>
 
@@ -248,6 +234,40 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           </div>
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
+      </div>
+
+      {/* Aadhaar row */}
+      <div className="w-full mt-4">
+        <label className="block text-sm font-bold text-[#1c2b4f] mb-2">Aadhaar Card Number <span className="text-red-500">*</span></label>
+        <Controller
+          control={control}
+          name="aadhaarNumber"
+          render={({ field }) => (
+            <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-start gap-[2px]">
+              <InputOTPGroup>
+                <InputOTPSlot index={0} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={1} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={2} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={3} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+              </InputOTPGroup>
+              <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
+              <InputOTPGroup>
+                <InputOTPSlot index={4} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={5} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={6} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={7} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+              </InputOTPGroup>
+              <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
+              <InputOTPGroup>
+                <InputOTPSlot index={8} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={9} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={10} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+                <InputOTPSlot index={11} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+              </InputOTPGroup>
+            </InputOTP>
+          )}
+        />
+        {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
       </div>
 
       {/* Document Upload section */}
