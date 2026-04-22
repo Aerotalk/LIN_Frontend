@@ -24,17 +24,17 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 form-fade-in">
       <div className="space-y-6">
-        
+
         {/* Step Info Box */}
         <div className="bg-red-50 rounded-xl p-4 flex items-start space-x-4 border border-red-100 mb-6">
           <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shrink-0 border border-red-200">
             <FileText className="w-6 h-6 text-red-600" />
             <div className="absolute ml-5 mt-5 bg-white rounded-full">
-               <span className="text-red-500 font-bold block bg-white rounded-full border border-red-200 w-4 h-4 flex items-center justify-center text-[10px]">₹</span>
+              <span className="text-red-500 font-bold block bg-white rounded-full border border-red-200 w-4 h-4 flex items-center justify-center text-[10px]">₹</span>
             </div>
           </div>
           <div>
-            <div className="text-sm font-bold text-red-600 mb-0.5">Step 2 of 5</div>
+            <div className="text-sm font-bold text-red-600 mb-0.5">Step 2 of 3</div>
             <h2 className="text-lg sm:text-xl font-bold text-[#1c2b4f] leading-tight mb-1">Tell Us Your Loan & Income Details</h2>
             <p className="text-xs text-gray-500 font-medium leading-relaxed mt-1">This helps us check your eligibility and give instant approval.</p>
           </div>
@@ -43,10 +43,10 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
         {/* Loan Amount Required */}
         <div>
           <div className="flex items-center mb-3">
-             <Wallet className="w-5 h-5 text-blue-500 mr-2" />
-             <label className="block text-sm font-bold text-[#1c2b4f]">
-               Loan Amount Required
-             </label>
+            <Wallet className="w-5 h-5 text-blue-500 mr-2" />
+            <label className="block text-sm font-bold text-[#1c2b4f]">
+              Loan Amount Required
+            </label>
           </div>
           <div className="relative">
             <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">
@@ -60,21 +60,21 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
             />
           </div>
           <div className="flex justify-between text-[11px] text-gray-500 mt-2 px-1 font-medium">
-             <span>Minimum: ₹5,000</span>
-             <span>Maximum: ₹1,50,000</span>
+            <span>Minimum: ₹5,000</span>
+            <span>Maximum: ₹1,50,000</span>
           </div>
           {errors.loanAmount && <p className="text-red-500 text-sm mt-1">{errors.loanAmount.message}</p>}
         </div>
 
         {/* Purpose of Loan */}
         <div>
-           <div className="flex items-center mb-3">
-             <Target className="w-5 h-5 text-blue-500 mr-2" />
-             <label className="block text-sm font-bold text-[#1c2b4f]">
-               Purpose of Loan
-             </label>
+          <div className="flex items-center mb-3">
+            <Target className="w-5 h-5 text-blue-500 mr-2" />
+            <label className="block text-sm font-bold text-[#1c2b4f]">
+              Purpose of Loan
+            </label>
           </div>
-          <select 
+          <select
             {...register("purposeOfLoan")}
             defaultValue=""
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"
@@ -92,13 +92,13 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
 
         {/* Occupation */}
         <div>
-           <div className="flex items-center mb-3">
-             <Briefcase className="w-5 h-5 text-blue-500 mr-2" />
-             <label className="block text-sm font-bold text-[#1c2b4f]">
-               Occupation
-             </label>
+          <div className="flex items-center mb-3">
+            <Briefcase className="w-5 h-5 text-blue-500 mr-2" />
+            <label className="block text-sm font-bold text-[#1c2b4f]">
+              Occupation
+            </label>
           </div>
-          <select 
+          <select
             {...register("occupation")}
             defaultValue=""
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"
@@ -112,13 +112,13 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
 
         {/* Monthly Salary Range */}
         <div>
-           <div className="flex items-center mb-3">
-             <Wallet className="w-5 h-5 text-blue-500 mr-2" />
-             <label className="block text-sm font-bold text-[#1c2b4f]">
-               Monthly Salary Range
-             </label>
+          <div className="flex items-center mb-3">
+            <Wallet className="w-5 h-5 text-blue-500 mr-2" />
+            <label className="block text-sm font-bold text-[#1c2b4f]">
+              Monthly Salary Range
+            </label>
           </div>
-          <select 
+          <select
             {...register("monthlySalaryRange")}
             defaultValue=""
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"
@@ -135,10 +135,10 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
         {/* Salary Received In (Segmented Control style) */}
         <div>
           <div className="flex items-center mb-3">
-             <Landmark className="w-5 h-5 text-blue-500 mr-2" />
-             <label className="block text-sm font-bold text-[#1c2b4f]">
-               Salary Received In
-             </label>
+            <Landmark className="w-5 h-5 text-blue-500 mr-2" />
+            <label className="block text-sm font-bold text-[#1c2b4f]">
+              Salary Received In
+            </label>
           </div>
           <div className="grid grid-cols-3 gap-2">
             {[
@@ -146,19 +146,18 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
               { id: 'Bank Transfer', icon: Landmark, label: 'Bank Transfer' },
               { id: 'Cheque', icon: CreditCard, label: 'Cheque' },
             ].map((option) => (
-               <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setValue("salaryReceivedIn", option.id as any, { shouldValidate: true })}
-                  className={`flex flex-col items-center justify-center p-3 sm:py-4 rounded-xl border sm:text-sm text-xs transition-colors font-medium h-24 ${
-                    salaryReceivedIn === option.id 
-                       ? 'bg-[#eef2ff] border-[#c7d2fe] text-blue-700' 
-                       : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => setValue("salaryReceivedIn", option.id as any, { shouldValidate: true })}
+                className={`flex flex-col items-center justify-center p-3 sm:py-4 rounded-xl border sm:text-sm text-xs transition-colors font-medium h-24 ${salaryReceivedIn === option.id
+                    ? 'bg-[#eef2ff] border-[#c7d2fe] text-blue-700'
+                    : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
                   }`}
-               >
-                 <option.icon className={`w-6 h-6 mb-2 ${salaryReceivedIn === option.id ? 'text-blue-600' : 'text-blue-400'}`} />
-                 <span className="text-center">{option.label}</span>
-               </button>
+              >
+                <option.icon className={`w-6 h-6 mb-2 ${salaryReceivedIn === option.id ? 'text-blue-600' : 'text-blue-400'}`} />
+                <span className="text-center">{option.label}</span>
+              </button>
             ))}
           </div>
           {/* Hidden input to register it */}
@@ -168,13 +167,13 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
 
         {/* City */}
         <div>
-           <div className="flex items-center mb-3 mt-2">
-             <MapPin className="w-5 h-5 text-blue-500 mr-2" />
-             <label className="block text-sm font-bold text-[#1c2b4f]">
-               City
-             </label>
+          <div className="flex items-center mb-3 mt-2">
+            <MapPin className="w-5 h-5 text-blue-500 mr-2" />
+            <label className="block text-sm font-bold text-[#1c2b4f]">
+              City
+            </label>
           </div>
-          <select 
+          <select
             {...register("city")}
             defaultValue=""
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"

@@ -264,7 +264,7 @@ export default function Navbar() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href={getLinkWithRef("/apply-now")}>
+                  <Link href={getLinkWithRef("/signup")}>
                     <Button size="default" variant="default" className="text-base">
                       Apply now
                     </Button>

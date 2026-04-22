@@ -57,14 +57,14 @@ export function Step1PhoneVerification({
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div className="space-y-6">
-        
+
         {/* Step Info Box */}
         <div className="bg-red-50 rounded-xl p-4 flex items-start space-x-4 border border-red-100">
           <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center shrink-0 border border-red-200">
             <Phone className="w-5 h-5 text-red-600" />
           </div>
           <div>
-            <div className="text-sm font-bold text-red-600 mb-0.5">Step 1 of 5</div>
+            <div className="text-sm font-bold text-red-600 mb-0.5">Step 1 of 3</div>
             <h2 className="text-xl font-bold text-gray-800 leading-tight mb-1">Verify Your Mobile Number</h2>
             <p className="text-xs text-gray-500 font-medium">We'll send you a 6-digit OTP to verify your number</p>
           </div>
@@ -91,7 +91,7 @@ export function Step1PhoneVerification({
           {errors.phoneNumber ? (
             <p className="text-red-500 text-sm mt-2">{errors.phoneNumber.message}</p>
           ) : (
-             <p className="text-xs text-gray-500 font-medium mt-2">You will receive an OTP on this number</p>
+            <p className="text-xs text-gray-500 font-medium mt-2">You will receive an OTP on this number</p>
           )}
         </div>
 
@@ -99,26 +99,26 @@ export function Step1PhoneVerification({
         {otpSent && (
           <div className="bg-[#f5f8ff] rounded-xl p-6 border border-[#e5edff]">
             <div className="flex items-center justify-between mb-4">
-               <div className="flex items-center text-blue-700 font-bold text-sm">
-                 <ShieldCheck className="w-5 h-5 mr-2" /> Enter OTP
-               </div>
-               <div className="text-sm">
-                 {resendTimer > 0 ? (
-                   <span className="text-blue-500 font-medium">
-                     Resend OTP (00:{resendTimer.toString().padStart(2, '0')})
-                   </span>
-                 ) : (
-                   <button
-                     type="button"
-                     onClick={handleResendClick}
-                     className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                   >
-                     Resend OTP
-                   </button>
-                 )}
-               </div>
+              <div className="flex items-center text-blue-700 font-bold text-sm">
+                <ShieldCheck className="w-5 h-5 mr-2" /> Enter OTP
+              </div>
+              <div className="text-sm">
+                {resendTimer > 0 ? (
+                  <span className="text-blue-500 font-medium">
+                    Resend OTP (00:{resendTimer.toString().padStart(2, '0')})
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResendClick}
+                    className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
             </div>
-            
+
             <div className="flex justify-start">
               <InputOTP
                 maxLength={6}
@@ -140,7 +140,7 @@ export function Step1PhoneVerification({
             ) : (
               <p className="text-xs text-gray-500 font-medium mt-3">Enter the 6-digit code sent to your mobile</p>
             )}
-           
+
           </div>
         )}
 
@@ -152,9 +152,9 @@ export function Step1PhoneVerification({
           {isLoading ? (otpSent ? 'Verifying...' : 'Sending...') : (otpSent ? 'Verify & Continue' : 'Get OTP')}
         </Button>
         <div className="text-center mt-4">
-            <span className="flex items-center justify-center text-xs text-gray-500 font-medium opacity-80">
-              <Lock className="w-3 h-3 mr-1 text-green-600" /> Your information is secure and encrypted
-            </span>
+          <span className="flex items-center justify-center text-xs text-gray-500 font-medium opacity-80">
+            <Lock className="w-3 h-3 mr-1 text-green-600" /> Your information is secure and encrypted
+          </span>
         </div>
       </div>
     </form>
