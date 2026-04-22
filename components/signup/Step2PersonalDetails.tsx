@@ -122,24 +122,24 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
               control={control}
               name="panNumber"
               render={({ field }) => (
-                <InputOTP maxLength={10} value={field.value} onChange={(value) => field.onChange(value.toUpperCase())} containerClassName="justify-start gap-[2px]">
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={1} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={2} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={3} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={4} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                <InputOTP maxLength={10} value={field.value} onChange={(value) => field.onChange(value.toUpperCase())} containerClassName="justify-between w-full gap-2 md:gap-4">
+                  <InputOTPGroup className="flex-1">
+                    <InputOTPSlot index={0} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={1} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={2} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={3} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={4} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
                   </InputOTPGroup>
-                  <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
-                  <InputOTPGroup>
-                    <InputOTPSlot index={5} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={6} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={7} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
-                    <InputOTPSlot index={8} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                  <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
+                  <InputOTPGroup className="flex-1">
+                    <InputOTPSlot index={5} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={6} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={7} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
+                    <InputOTPSlot index={8} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
                   </InputOTPGroup>
-                  <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
-                  <InputOTPGroup>
-                    <InputOTPSlot index={9} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs uppercase" />
+                  <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
+                  <InputOTPGroup className="flex-[0.25]">
+                    <InputOTPSlot index={9} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
                   </InputOTPGroup>
                 </InputOTP>
               )}
@@ -243,26 +243,26 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           control={control}
           name="aadhaarNumber"
           render={({ field }) => (
-            <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-start gap-[2px]">
-              <InputOTPGroup>
-                <InputOTPSlot index={0} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={1} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={2} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={3} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+            <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-between w-full gap-2 md:gap-4">
+              <InputOTPGroup className="flex-1">
+                <InputOTPSlot index={0} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={1} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={2} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={3} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
               </InputOTPGroup>
-              <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
-              <InputOTPGroup>
-                <InputOTPSlot index={4} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={5} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={6} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={7} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+              <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
+              <InputOTPGroup className="flex-1">
+                <InputOTPSlot index={4} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={5} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={6} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={7} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
               </InputOTPGroup>
-              <InputOTPSeparator className="scale-[0.6] mx-0 px-0" />
-              <InputOTPGroup>
-                <InputOTPSlot index={8} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={9} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={10} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
-                <InputOTPSlot index={11} className="w-[1.1rem] h-8 sm:w-6 sm:h-9 lg:w-8 lg:h-10 text-xs" />
+              <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
+              <InputOTPGroup className="flex-1">
+                <InputOTPSlot index={8} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={9} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={10} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
+                <InputOTPSlot index={11} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
               </InputOTPGroup>
             </InputOTP>
           )}
