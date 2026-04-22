@@ -85,7 +85,7 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
             <option value="Wedding">Wedding</option>
             <option value="Home Renovation">Home Renovation</option>
             <option value="Travel">Travel</option>
-            <option value="Other">Other</option>
+            <option value="Other">Personal</option>
           </select>
           {errors.purposeOfLoan && <p className="text-red-500 text-sm mt-1">{errors.purposeOfLoan.message}</p>}
         </div>
@@ -151,8 +151,8 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
                 type="button"
                 onClick={() => setValue("salaryReceivedIn", option.id as any, { shouldValidate: true })}
                 className={`flex flex-col items-center justify-center p-3 sm:py-4 rounded-xl border sm:text-sm text-xs transition-colors font-medium h-24 ${salaryReceivedIn === option.id
-                    ? 'bg-[#eef2ff] border-[#c7d2fe] text-blue-700'
-                    : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-[#eef2ff] border-[#c7d2fe] text-blue-700'
+                  : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
                   }`}
               >
                 <option.icon className={`w-6 h-6 mb-2 ${salaryReceivedIn === option.id ? 'text-blue-600' : 'text-blue-400'}`} />
@@ -187,7 +187,6 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
             <option value="Chennai">Chennai</option>
             <option value="Kolkata">Kolkata</option>
             <option value="Pune">Pune</option>
-            <option value="Other">Other</option>
           </select>
           {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
         </div>
