@@ -187,6 +187,7 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
             <option value="Chennai">Chennai</option>
             <option value="Kolkata">Kolkata</option>
             <option value="Pune">Pune</option>
+            <option value="Ahmedabad">Ahmedabad</option>
           </select>
           {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
         </div>

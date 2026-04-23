@@ -401,7 +401,7 @@ export default function Navbar() {
                       Login
                     </MobileLink>
                   )}
-                  <MobileLink href="/apply-now" className="w-full">
+                  <MobileLink href="/signup" className="w-full">
                     <Button variant="default" className="w-full">Apply now</Button>
                   </MobileLink>
                 </div>
