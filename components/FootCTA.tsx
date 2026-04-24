@@ -32,7 +32,7 @@ const FootCTA = () => {
               disbursal directly to your bank account—no hidden charges, no
               collateral required.
             </p>
-            <Link href={getLinkWithRef("/apply-now")}>
+            <Link href={getLinkWithRef("/signup")}>
 
               <Button
                 size="lg"
