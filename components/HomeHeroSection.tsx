@@ -29,7 +29,7 @@ const HomeHeroSection = () => {
             personal loans. Simple online process, flexible tenures, and money
             in your account within hours.
           </p>
-          <Link href={getLinkWithRef("/apply-now")}>
+          <Link href={getLinkWithRef("/signup")}>
             <Button className="w-full sm:w-56 p-5 sm:p-6 text-sm sm:text-base my-3">
               Check loan eligibility now
             </Button>
