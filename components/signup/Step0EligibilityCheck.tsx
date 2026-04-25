@@ -56,6 +56,12 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
               {...register("loanAmount", { valueAsNumber: true })}
               type="number"
               placeholder="Enter Loan Amount"
+              min={0}
+              onKeyDown={(e) => {
+                if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                  e.preventDefault();
+                }
+              }}
               className="pl-10 h-12 text-base shadow-sm focus-visible:ring-red-600 border-gray-300"
             />
           </div>

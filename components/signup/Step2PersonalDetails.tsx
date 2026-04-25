@@ -122,7 +122,21 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
               control={control}
               name="panNumber"
               render={({ field }) => (
-                <InputOTP maxLength={10} value={field.value} onChange={(value) => field.onChange(value.toUpperCase())} containerClassName="justify-between w-full gap-2 md:gap-4">
+                <InputOTP maxLength={10} value={field.value} onChange={(value) => {
+                  let val = value.toUpperCase();
+                  let cleanVal = '';
+                  for (let i = 0; i < val.length; i++) {
+                    const char = val[i];
+                    if (i < 5) {
+                      if (/[A-Z]/.test(char)) cleanVal += char;
+                    } else if (i < 9) {
+                      if (/[0-9]/.test(char)) cleanVal += char;
+                    } else if (i === 9) {
+                      if (/[A-Z]/.test(char)) cleanVal += char;
+                    }
+                  }
+                  field.onChange(cleanVal);
+                }} containerClassName="justify-between w-full gap-2 md:gap-4">
                   <InputOTPGroup className="flex-1">
                     <InputOTPSlot index={0} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
                     <InputOTPSlot index={1} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg uppercase" />
@@ -243,7 +257,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           control={control}
           name="aadhaarNumber"
           render={({ field }) => (
-            <InputOTP maxLength={12} value={field.value} onChange={field.onChange} containerClassName="justify-between w-full gap-2 md:gap-4">
+            <InputOTP maxLength={12} value={field.value} onChange={(val) => field.onChange(val.replace(/\D/g, ''))} containerClassName="justify-between w-full gap-2 md:gap-4">
               <InputOTPGroup className="flex-1">
                 <InputOTPSlot index={0} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
                 <InputOTPSlot index={1} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />

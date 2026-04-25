@@ -16,6 +16,14 @@ export const eligibilitySchema = z.object({
   ]),
   salaryReceivedIn: z.enum(["Cash", "Bank Transfer", "Cheque"]),
   city: z.string().min(1, "Please select your city"),
+}).superRefine((data, ctx) => {
+  if (data.occupation === "Self Employed" && data.salaryReceivedIn === "Bank Transfer") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Self Employed with Bank Transfer is not eligible",
+      path: ["salaryReceivedIn"]
+    });
+  }
 })
 
 // Step 1: Phone verification
@@ -46,7 +54,7 @@ export const otpVerificationSchema = z.object({
 
 // Step 2: Personal details
 export const personalDetailsSchema = z.object({
-  panNumber: z.string().length(10, "PAN number must be exactly 10 characters"),
+  panNumber: z.string().length(10, "PAN number must be exactly 10 characters").regex(/^[A-Za-z]{5}\d{4}[A-Za-z]{1}$/, "Invalid PAN format (e.g. ABCDE1234F)"),
   firstName: z.string()
     .min(2, "First name must be at least 2 characters")
     .max(50, "First name must be less than 50 characters")
