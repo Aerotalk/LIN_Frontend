@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import { toast } from "sonner"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
@@ -93,8 +94,14 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
           setValue("dateOfBirth", finalDob, { shouldValidate: true });
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("PAN Verification execution failed", e);
+      const errorMsg = e.message?.toLowerCase() || '';
+      if (errorMsg.includes('already registered') || errorMsg.includes('another account')) {
+        toast.error('This PAN number is already registered with another account.');
+      } else {
+        toast.error(e.message || 'Failed to verify PAN. Please try again.');
+      }
     } finally {
       setIsVerifyingPan(false);
     }
