@@ -1,4 +1,5 @@
 import { useState, useCallback, Dispatch, SetStateAction } from 'react';
+import { toast } from 'sonner';
 import { apiClient } from '@/lib/api';
 import { LoginStep1Form, LoginOtpForm } from '@/lib/login-schemas';
 
@@ -40,10 +41,13 @@ export function useLogin(): UseLoginReturn {
       setOtpResendTimer(30);
       return true;
     } catch (err: any) {
-      if (err.message?.toLowerCase().includes('not found') || err.message?.includes('404')) {
-        setError('User does not exist');
+      const errorMsg = err.message || '';
+      const lowerError = errorMsg.toLowerCase();
+      
+      if (lowerError.includes('not found') || lowerError.includes('404') || lowerError.includes('not present')) {
+        toast.error('User does not exist. Please sign up first.');
       } else {
-        setError(err.message || 'Login failed. Please check your credentials.');
+        toast.error(errorMsg || 'Login failed. Please check your credentials.');
       }
       return false;
     }
@@ -65,12 +69,13 @@ export function useLogin(): UseLoginReturn {
         return false;
       }
     } catch (err: any) {
-      if (err.message?.toLowerCase().includes('wrong') ||
-        err.message?.toLowerCase().includes('invalid') ||
-        err.message?.includes('400')) {
-        setError('OTP is wrong, please re-enter OTP');
+      const errorMsg = err.message || '';
+      const lowerError = errorMsg.toLowerCase();
+      
+      if (lowerError.includes('wrong') || lowerError.includes('invalid') || lowerError.includes('400')) {
+        toast.error('OTP is wrong, please re-enter OTP.');
       } else {
-        setError(err.message || 'OTP verification failed. Please try again.');
+        toast.error(errorMsg || 'OTP verification failed. Please try again.');
       }
       return false;
     } finally {
@@ -93,7 +98,7 @@ export function useLogin(): UseLoginReturn {
       setOtpResendTimer(30);
       return true;
     } catch (err: any) {
-      setError(err.message || 'Failed to resend OTP. Please try again.');
+      toast.error(err.message || 'Failed to resend OTP. Please try again.');
       return false;
     }
   }, [phoneNumber, dateOfBirth]);

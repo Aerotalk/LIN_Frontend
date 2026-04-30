@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { toast } from 'sonner';
 import { apiClient } from '@/lib/api';
 import { SignupFormData } from '@/lib/signup-schemas';
 
@@ -142,8 +143,11 @@ export function useSignup(): UseSignupReturn {
                 // If the user already pressed the button, this will act as an idempotent database overwrite update.
                 // If they didn't press the button, this gracefully registers their text input in the backend natively. 
                 await apiClient.verifyPan(data.panNumber);
-             } catch (panErr) {
+             } catch (panErr: any) {
                 console.error("PAN Background Sync Error: ", panErr);
+                if (panErr.message?.toLowerCase().includes('already registered') || panErr.message?.toLowerCase().includes('another account')) {
+                  throw new Error('This PAN number is already registered with another account.');
+                }
              }
           }
 
@@ -250,10 +254,15 @@ export function useSignup(): UseSignupReturn {
           return false;
       }
     } catch (err: any) {
-      if (err.message?.toLowerCase().includes('exist') || err.message?.toLowerCase().includes('conflict')) {
-        setError('User is already present, please login');
+      const errorMsg = err.message || '';
+      const lowerError = errorMsg.toLowerCase();
+      
+      if (lowerError.includes('exist') || lowerError.includes('conflict') || lowerError.includes('already registered with another account') === false && lowerError.includes('already')) {
+        toast.error('This mobile number is already registered. Please login.');
+      } else if (lowerError.includes('pan') || lowerError.includes('another account')) {
+        toast.error('This PAN number is already registered with another account.');
       } else {
-        setError(err.message || 'An error occurred');
+        toast.error(errorMsg || 'An error occurred during registration.');
       }
       return false;
     } finally {
