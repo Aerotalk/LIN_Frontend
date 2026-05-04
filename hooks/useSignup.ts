@@ -257,13 +257,17 @@ export function useSignup(): UseSignupReturn {
       const errorMsg = err.message || '';
       const lowerError = errorMsg.toLowerCase();
       
+      let finalErrorMsg = '';
       if (lowerError.includes('exist') || lowerError.includes('conflict') || lowerError.includes('already registered with another account') === false && lowerError.includes('already')) {
-        toast.error('This mobile number is already registered. Please login.');
+        finalErrorMsg = 'This mobile number is already registered. Please login.';
       } else if (lowerError.includes('pan') || lowerError.includes('another account')) {
-        toast.error('This PAN number is already registered with another account.');
+        finalErrorMsg = 'This PAN number is already registered with another account.';
+        toast.error(finalErrorMsg);
       } else {
-        toast.error(errorMsg || 'An error occurred during registration.');
+        finalErrorMsg = errorMsg || 'An error occurred during registration.';
+        toast.error(finalErrorMsg);
       }
+      setError(finalErrorMsg);
       return false;
     } finally {
       setIsLoading(false);

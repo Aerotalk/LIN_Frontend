@@ -446,7 +446,7 @@ function SignupContent() {
                 </div>
               ) : (
                 <div className="w-full">
-                  {error && (
+                  {error && !(currentStep === 1 && error.includes("already registered")) && (
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                       <p className="text-red-600 text-sm font-medium">{error}</p>
                     </div>
@@ -463,6 +463,7 @@ function SignupContent() {
                         formData={formData.phoneVerification}
                         setFormData={(data) => updateFormData('phoneVerification', data)}
                         isLoading={isLoading}
+                        serverError={error}
                       />
                     )}
 

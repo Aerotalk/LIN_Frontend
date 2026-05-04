@@ -20,6 +20,7 @@ interface Step1Props {
   formData: PhoneVerificationForm
   setFormData: (data: PhoneVerificationForm) => void
   isLoading?: boolean
+  serverError?: string | null
 }
 
 export function Step1PhoneVerification({
@@ -29,7 +30,8 @@ export function Step1PhoneVerification({
   onResend,
   formData,
   setFormData,
-  isLoading = false
+  isLoading = false,
+  serverError
 }: Step1Props) {
   const { getLinkWithRef } = useAffiliate();
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<PhoneVerificationForm>({
@@ -90,6 +92,10 @@ export function Step1PhoneVerification({
           </div>
           {errors.phoneNumber ? (
             <p className="text-red-500 text-sm mt-2">{errors.phoneNumber.message}</p>
+          ) : serverError && serverError.includes("already registered") ? (
+            <p className="text-red-500 text-sm mt-2 font-medium">
+              This mobile number is already registered. <Link href="/login" className="font-bold underline">Please login.</Link>
+            </p>
           ) : (
             <p className="text-xs text-gray-500 font-medium mt-2">You will receive an OTP on this number</p>
           )}
