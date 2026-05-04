@@ -46,7 +46,6 @@ function LoginForm() {
     resolver: zodResolver(loginStep1Schema),
     defaultValues: {
       phoneNumber: "",
-      dateOfBirth: ""
     }
   })
 
@@ -191,23 +190,6 @@ function LoginForm() {
                     {step1Form.formState.errors.phoneNumber && (
                       <p className="text-red-500 text-sm mt-1">
                         {step1Form.formState.errors.phoneNumber.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Enter your date of birth
-                    </label>
-                    <Input
-                      {...step1Form.register("dateOfBirth")}
-                      type="date"
-                      placeholder="DD/MM/YYYY"
-                      className="h-12"
-                    />
-                    {step1Form.formState.errors.dateOfBirth && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {step1Form.formState.errors.dateOfBirth.message}
                       </p>
                     )}
                   </div>

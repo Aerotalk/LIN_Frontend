@@ -191,12 +191,11 @@ class ApiClient {
   }
 
   // Login endpoints
-  async loginUser(phone: string, dateOfBirth: string): Promise<ApiResponse> {
+  async loginUser(phone: string): Promise<ApiResponse> {
     return this.request<ApiResponse>('/api/users/login', {
       method: 'POST',
       body: JSON.stringify({
-        phone: phone.startsWith('+91') ? phone : `+91${phone}`,
-        dob: dateOfBirth
+        phone: phone.startsWith('+91') ? phone : `+91${phone}`
       }),
     });
   }

@@ -6,14 +6,6 @@ export const loginStep1Schema = z.object({
     .min(10, "Phone number must be 10 digits")
     .max(10, "Phone number must be 10 digits")
     .regex(/^[6-9]\d{9}$/, "Please enter a valid Indian mobile number"),
-    dateOfBirth: z.string()
-    .min(1, "Date of birth is required")
-    .refine((date) => {
-      const parsedDate = new Date(date.split('/').reverse().join('-'))
-      const today = new Date()
-      const age = today.getFullYear() - parsedDate.getFullYear()
-      return age >= 18 && age <= 65
-    }, "Age must be between 18 and 65 years"),
 })
 
 // Login step 2: OTP verification

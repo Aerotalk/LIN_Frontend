@@ -23,7 +23,6 @@ interface UseLoginReturn {
 export function useLogin(): UseLoginReturn {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
   const [otpResendTimer, setOtpResendTimer] = useState(0);
   const [isVerifying, setIsVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,10 +31,9 @@ export function useLogin(): UseLoginReturn {
     try {
       setError(null);
       setPhoneNumber(data.phoneNumber);
-      setDateOfBirth(data.dateOfBirth);
 
-      // Call login API with phone and DOB
-      await apiClient.loginUser(data.phoneNumber, data.dateOfBirth);
+      // Call login API with phone
+      await apiClient.loginUser(data.phoneNumber);
 
       setStep(2);
       setOtpResendTimer(30);
@@ -87,13 +85,8 @@ export function useLogin(): UseLoginReturn {
     try {
       setError(null);
 
-      // Resend OTP using the same login endpoint with stored DOB
-      if (!dateOfBirth) {
-        setError('Date of birth is required to resend OTP');
-        return false;
-      }
-
-      await apiClient.loginUser(phoneNumber, dateOfBirth);
+      // Resend OTP using the same login endpoint
+      await apiClient.loginUser(phoneNumber);
 
       setOtpResendTimer(30);
       return true;
@@ -101,12 +94,11 @@ export function useLogin(): UseLoginReturn {
       toast.error(err.message || 'Failed to resend OTP. Please try again.');
       return false;
     }
-  }, [phoneNumber, dateOfBirth]);
+  }, [phoneNumber]);
 
   const resetLogin = useCallback(() => {
     setStep(1);
     setPhoneNumber("");
-    setDateOfBirth("");
     setOtpResendTimer(0);
     setIsVerifying(false);
     setError(null);
