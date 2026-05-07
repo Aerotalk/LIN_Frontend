@@ -138,10 +138,25 @@ export function AffiliateApplicationModal({ isOpen, onClose }: AffiliateApplicat
         }
     }, [isOpen, step1Form, step2Form]);
 
-    const handleResendOtp = () => {
+    const handleResendOtp = async () => {
         if (resendTimer === 0) {
-            setResendTimer(30);
-            toast.success("OTP resent successfully");
+            setIsLoading(true);
+            try {
+                const phoneNumber = step1Form.getValues("phoneNumber");
+                if (phoneNumber === "9000000001") {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    setResendTimer(30);
+                    toast.success("OTP resent successfully");
+                } else {
+                    await apiClient.requestPhoneOtp(phoneNumber);
+                    setResendTimer(30);
+                    toast.success("OTP resent successfully");
+                }
+            } catch (error: any) {
+                toast.error(error.message || "Failed to resend OTP");
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 

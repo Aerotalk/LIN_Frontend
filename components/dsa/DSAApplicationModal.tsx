@@ -141,11 +141,16 @@ export function DSAApplicationModal({ isOpen, onClose }: DSAApplicationModalProp
 
         setIsLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const phoneNumber = step1Form.getValues("phoneNumber");
+            if (phoneNumber === "9000000001") {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } else {
+                await apiClient.requestPhoneOtp(phoneNumber);
+            }
             toast.success("New OTP sent");
             setResendTimer(30);
-        } catch (error) {
-            toast.error("Failed to resend OTP");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to resend OTP");
         } finally {
             setIsLoading(false);
         }

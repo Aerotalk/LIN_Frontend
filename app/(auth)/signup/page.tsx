@@ -146,9 +146,14 @@ function SignupContent() {
     }, 1000)
   }
 
-  const resendOtp = (): void => {
-    setOtpResendTimer(30)
-    startTimer(setOtpResendTimer)
+  const resendOtp = async (): Promise<void> => {
+    try {
+      await submitStep(1, { phoneNumber: formData.phoneVerification.phoneNumber });
+      setOtpResendTimer(30)
+      startTimer(setOtpResendTimer)
+    } catch (error) {
+      console.error("Failed to resend OTP", error);
+    }
   }
 
   // Current Step UI Data
