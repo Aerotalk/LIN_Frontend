@@ -25,6 +25,7 @@ import {
 } from "@/lib/bc-schemas";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api";
 
 interface BCApplicationModalProps {
     isOpen: boolean;
