@@ -138,26 +138,6 @@ function DashboardContent() {
                         });
                     }
 
-                    if (p.loans && Array.isArray(p.loans)) {
-                        p.loans.forEach((loan: any) => {
-                            // Check if already captured by application (basic de-dupe attempt by amount/date if needed, but safer to show both if distinct)
-                            // Actually, just show both.
-                            allData.push({
-                                id: `LOAN-${loan.id}`,
-                                rawId: loan.id,
-                                number: formatAppNumber(loan.id, p.aadhaarVerification?.aadhaarNumber),
-                                amount: `₹${loan.loanAmount.toLocaleString()}`,
-                                rawAmount: loan.loanAmount,
-                                date: new Date(loan.createdAt).toLocaleDateString("en-GB", {
-                                    day: '2-digit', month: 'short', year: 'numeric'
-                                }),
-                                status: loan.status || "PENDING",
-                                type: loan.purposeOfLoan || "Personal Loan",
-                                source: 'Loan'
-                            });
-                        });
-                    }
-
                     setLoanHistoryData(allData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
 
                 }
