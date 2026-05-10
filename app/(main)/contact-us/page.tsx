@@ -93,7 +93,9 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-1">WhatsApp</h3>
-                <p className="text-gray-600">+91 92663 28731</p>
+                <a href="https://api.whatsapp.com/send/?phone=919217364584&text=Hi%20I%20have%20applied%20for%20a%20loan.%20I%20have%20a%20query.%20Please%20assist&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-green-600 transition-colors">
+                  +91 92663 28731
+                </a>
               </div>
             </div>
 
