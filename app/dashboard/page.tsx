@@ -158,14 +158,7 @@ function DashboardContent() {
                         });
                     }
 
-                    // De-duplicate if they have very similar traits (same date and amount)
-                    const uniqueData = allData.filter((item, index, self) =>
-                        index === self.findIndex((t) => (
-                            t.rawAmount === item.rawAmount && t.date === item.date && t.status === item.status
-                        ))
-                    );
-
-                    setLoanHistoryData(uniqueData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+                    setLoanHistoryData(allData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
 
                 }
             } catch (error) {
@@ -418,10 +411,17 @@ function DashboardContent() {
             <div>
                 <button
                     onClick={() => {
-                        const found = loanHistoryData.find(l =>
-                            l.number.toLowerCase().includes(searchQuery.appId.toLowerCase()) && searchQuery.appId.length > 3
-                        );
-                        setTrackResult(found || "NOT_FOUND");
+                        let matches = loanHistoryData;
+                        const trimmedAppId = searchQuery.appId.trim();
+                        if (trimmedAppId) {
+                            matches = matches.filter(l => l.number.toLowerCase().includes(trimmedAppId.toLowerCase()));
+                        }
+                        
+                        if (matches.length > 0) {
+                            setTrackResult(matches);
+                        } else {
+                            setTrackResult("NOT_FOUND");
+                        }
                     }}
                     className="bg-[#EF4444] text-white px-10 py-4 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100">
                     Track now
@@ -429,26 +429,30 @@ function DashboardContent() {
             </div>
 
             {trackResult && (
-                <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                <div className="mt-8 space-y-4">
                     {trackResult === "NOT_FOUND" ? (
-                        <p className="text-red-500 font-bold text-center">No application found with these details.</p>
-                    ) : (
-                        <div className="space-y-4">
-                            <div className="flex justify-between border-b pb-2">
-                                <span className="font-bold">Reference Number:</span>
-                                <span className="text-gray-600">{trackResult.number}</span>
-                            </div>
-                            <div className="flex justify-between border-b pb-2">
-                                <span className="font-bold">Status:</span>
-                                <span className={`font-bold ${trackResult.status === 'PENDING' ? 'text-amber-500' : 'text-emerald-500'}`}>
-                                    {trackResult.status}
-                                </span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="font-bold">Last Update:</span>
-                                <span className="text-gray-600">{trackResult.date}</span>
-                            </div>
+                        <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                            <p className="text-red-500 font-bold text-center">No application found with these details.</p>
                         </div>
+                    ) : (
+                        Array.isArray(trackResult) && trackResult.map((result: any, idx: number) => (
+                            <div key={idx} className="p-6 bg-gray-50 rounded-2xl border border-gray-100 space-y-4">
+                                <div className="flex justify-between border-b pb-2">
+                                    <span className="font-bold">Reference Number:</span>
+                                    <span className="text-gray-600">{result.number}</span>
+                                </div>
+                                <div className="flex justify-between border-b pb-2">
+                                    <span className="font-bold">Status:</span>
+                                    <span className={`font-bold ${result.status === 'PENDING' ? 'text-amber-500' : 'text-emerald-500'}`}>
+                                        {result.status}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-bold">Last Update:</span>
+                                    <span className="text-gray-600">{result.date}</span>
+                                </div>
+                            </div>
+                        ))
                     )}
                 </div>
             )}
