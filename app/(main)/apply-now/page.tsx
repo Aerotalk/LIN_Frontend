@@ -246,7 +246,7 @@ function ApplyNowContent() {
 
                             {/* WhatsApp Contact Link */}
                             <a 
-                                href="https://wa.me/1234567890" 
+                                href="https://api.whatsapp.com/send/?phone=919217364584&text=Hi%20I%20have%20applied%20for%20a%20loan.%20I%20have%20a%20query.%20Please%20assist&type=phone_number&app_absent=0" 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className="inline-flex items-center justify-center gap-2 mb-6 text-green-600 hover:text-green-700 font-medium transition-colors"

@@ -500,7 +500,9 @@ function DSADashboardContent() {
                     </div>
                     <p className="text-[15px] font-bold text-gray-900">WhatsApp us</p>
                 </div>
-                <button className="bg-[#25D366] text-white px-10 py-3.5 rounded-2xl font-bold hover:bg-green-600 transition-all shadow-lg shadow-green-100 text-[15px]">
+                <button 
+                    onClick={() => window.open("https://api.whatsapp.com/send/?phone=919217364584&text=Hi%20I%20have%20applied%20for%20a%20loan.%20I%20have%20a%20query.%20Please%20assist&type=phone_number&app_absent=0", "_blank")}
+                    className="bg-[#25D366] text-white px-10 py-3.5 rounded-2xl font-bold hover:bg-green-600 transition-all shadow-lg shadow-green-100 text-[15px]">
                     Click here
                 </button>
             </div>
