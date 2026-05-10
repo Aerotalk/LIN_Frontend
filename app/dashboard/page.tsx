@@ -3,6 +3,7 @@
 import React, { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAffiliate } from "@/hooks/useAffiliate";
+import { formatAppNumber } from "@/lib/utils";
 
 import {
     LayoutDashboard,
@@ -124,7 +125,7 @@ function DashboardContent() {
                             allData.push({
                                 id: `APP-${app.id}`,
                                 rawId: app.id,
-                                number: `LN${app.id.toString().padStart(10, '0')}`,
+                                number: formatAppNumber(app.id, p.aadhaarVerification?.aadhaarNumber),
                                 amount: app.loanAmount ? `₹${app.loanAmount.toLocaleString()}` : "Evaluating",
                                 rawAmount: app.loanAmount,
                                 date: new Date(app.createdAt).toLocaleDateString("en-GB", {
@@ -144,7 +145,7 @@ function DashboardContent() {
                             allData.push({
                                 id: `LOAN-${loan.id}`,
                                 rawId: loan.id,
-                                number: `LN${loan.id.toString().padStart(10, '0')}`,
+                                number: formatAppNumber(loan.id, p.aadhaarVerification?.aadhaarNumber),
                                 amount: `₹${loan.loanAmount.toLocaleString()}`,
                                 rawAmount: loan.loanAmount,
                                 date: new Date(loan.createdAt).toLocaleDateString("en-GB", {
@@ -391,11 +392,11 @@ function DashboardContent() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                 <div className="space-y-2.5">
                     <label className="text-[15px] font-bold text-gray-900 block px-1">
-                        Application number
+                        Reference number
                     </label>
                     <input
                         type="text"
-                        placeholder="Enter application number"
+                        placeholder="Enter reference number"
                         value={searchQuery.appId}
                         onChange={(e) => setSearchQuery(prev => ({ ...prev, appId: e.target.value }))}
                         className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
@@ -434,7 +435,7 @@ function DashboardContent() {
                     ) : (
                         <div className="space-y-4">
                             <div className="flex justify-between border-b pb-2">
-                                <span className="font-bold">Application Number:</span>
+                                <span className="font-bold">Reference Number:</span>
                                 <span className="text-gray-600">{trackResult.number}</span>
                             </div>
                             <div className="flex justify-between border-b pb-2">
