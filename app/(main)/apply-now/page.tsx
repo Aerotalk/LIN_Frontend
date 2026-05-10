@@ -27,7 +27,7 @@ const STEPS: Step[] = [
 ]
 
 import { Suspense } from "react"
-import { Check, ClipboardList, Clock, IndianRupee, MessageCircle } from "lucide-react"
+import { Check, ClipboardList, Clock, IndianRupee, MessageCircle, Loader2, Bookmark, FileX2, Calendar } from "lucide-react"
 import { formatAppNumber } from "@/lib/utils"
 
 function ApplyNowContent() {
