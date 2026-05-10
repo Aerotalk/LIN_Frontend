@@ -101,10 +101,20 @@ function DashboardContent() {
                     ]);
 
                     if (p.employment) {
+                        const incomeVal = p.employment.monthlyIncome;
+                        let incomeDisplay = "-";
+                        if (incomeVal) {
+                             if (incomeVal <= 25000) incomeDisplay = "Less than Rs.25,000/-";
+                             else if (incomeVal <= 50000) incomeDisplay = "Rs.25,000/- - Rs.50,000/-";
+                             else if (incomeVal <= 75000) incomeDisplay = "Rs.50,000/- - 75,000/-";
+                             else if (incomeVal <= 100000) incomeDisplay = "Rs.75,000/- - 1,00,000/-";
+                             else incomeDisplay = "Rs.1,00,000/- and above";
+                        }
+
                         setEmploymentData([
-                            { id: "emp_1", label: "Company name", value: p.employment.employerName || "-" },
-                            { id: "emp_2", label: "Company address", value: p.employment.companyAddress || "-" },
-                            { id: "emp_3", label: "Monthly income", value: p.employment.monthlyIncome ? `₹${p.employment.monthlyIncome}` : "-" },
+                            { id: "emp_1", label: "Employment Type", value: p.employment.employmentType ? p.employment.employmentType.replace(/_/g, ' ') : "-" },
+                            { id: "emp_2", label: "Company name", value: p.employment.employerName === "Self" ? "-" : (p.employment.employerName || "-") },
+                            { id: "emp_3", label: "Monthly income range", value: incomeDisplay },
                             { id: "emp_4", label: "Stability in current job", value: p.employment.stability || "-" },
                         ]);
                     }
@@ -191,11 +201,9 @@ function DashboardContent() {
         try {
             const { apiClient } = await import("@/lib/api");
 
-            // Map array back to object
-            const data = {
-                companyName: employmentData.find(i => i.id === "emp_1")?.value || "",
-                companyAddress: employmentData.find(i => i.id === "emp_2")?.value || "",
-                monthlyIncome: parseFloat((employmentData.find(i => i.id === "emp_3")?.value || "0").replace(/[^0-9.]/g, "")),
+            // Only update the fields that are actually editable (Company name, Stability)
+            const data: any = {
+                companyName: employmentData.find(i => i.id === "emp_2")?.value || "",
                 stability: employmentData.find(i => i.id === "emp_4")?.value || "",
             };
 
@@ -293,20 +301,22 @@ function DashboardContent() {
                                         value={detail.value}
                                         onChange={(e) => handleInputChange(detail.id, e.target.value, 'employment')}
                                         onBlur={() => handleBlur(detail.id)}
-                                        readOnly={!editingFields[detail.id]}
-                                        className={`w-full border rounded-2xl px-6 py-4 font-medium outline-none pr-12 transition-all shadow-sm ${editingFields[detail.id]
+                                        readOnly={!editingFields[detail.id] || detail.id === "emp_1" || detail.id === "emp_3"}
+                                        className={`w-full border rounded-2xl px-6 py-4 font-medium outline-none pr-12 transition-all shadow-sm ${editingFields[detail.id] && detail.id !== "emp_1" && detail.id !== "emp_3"
                                             ? "bg-white border-red-200 ring-2 ring-red-50 text-gray-900"
                                             : "bg-[#F9FAFB] border-gray-50 text-gray-700 cursor-default"
                                             }`}
                                     />
                                 )}
-                                <button
-                                    onMouseDown={(e) => e.preventDefault()} // Prevents blur when clicking the button
-                                    onClick={() => toggleEdit(detail.id)}
-                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors p-1"
-                                >
-                                    {editingFields[detail.id] ? <Check size={18} className="text-green-500" /> : <PencilLine size={18} />}
-                                </button>
+                                {detail.id !== "emp_1" && detail.id !== "emp_3" && (
+                                    <button
+                                        onMouseDown={(e) => e.preventDefault()} // Prevents blur when clicking the button
+                                        onClick={() => toggleEdit(detail.id)}
+                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors p-1"
+                                    >
+                                        {editingFields[detail.id] ? <Check size={18} className="text-green-500" /> : <PencilLine size={18} />}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}
