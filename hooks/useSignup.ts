@@ -36,7 +36,8 @@ const initialFormData: SignupFormData = {
     companyAddress: "", monthlyIncome: 0,
     jobStability: "" as "Very unstable" | "Somewhat unstable" | "Neutral / moderate" | "Stable" | "Very stable",
     currentAddress: "", currentAddressType: "" as "Owner(Self or Family)" | "Rented",
-    permanentAddress: "", addressProof: undefined, pinCode: ""
+    permanentAddress: "", addressProof: undefined, pinCode: "",
+    occupation: "", monthlySalaryRange: "", salaryReceivedIn: "", city: ""
   },
   documentVerification: {
     payslipFile: createEmptyFile("payslip.pdf", "application/pdf"),
@@ -100,12 +101,31 @@ export function useSignup(): UseSignupReturn {
           });
 
           // === STAGE 2: Submit KYC for Application Creation (For 3-Step Flow) ===
+          // Parse monthly income from range
+          let parsedIncome = 30000;
+          const salaryRange = formData.basicDetails.monthlySalaryRange;
+          if (salaryRange === "Rs.50,000/- - 75,000/-") parsedIncome = 75000;
+          else if (salaryRange === "Rs.75,000/- - 1,00,000/-") parsedIncome = 100000;
+          else if (salaryRange === "Rs.1,00,000/- and above") parsedIncome = 150000;
+          else if (salaryRange === "Rs.25,000/- - Rs.50,000/-") parsedIncome = 50000;
+
+          // Parse Employment Type
+          let employmentType = "OTHER";
+          let companyName = "Self";
+          if (formData.basicDetails.occupation === "Salaried") {
+            employmentType = "SALARIED";
+            companyName = "-"; // Default dash if not provided
+          } else if (formData.basicDetails.occupation === "Self Employed") {
+            employmentType = "SELF_EMPLOYED";
+            companyName = "Self";
+          }
+
           let currentAppId = null;
           try {
              const kycResponse = await apiClient.submitKYC({
-                companyName: "Self",
-                companyAddress: "N/A",
-                monthlyIncome: 30000,
+                companyName: companyName,
+                companyAddress: formData.basicDetails.city || "N/A",
+                monthlyIncome: parsedIncome,
                 stability: "Stable",
                 currentAddress: "N/A",
                 currentAddressType: "Rented",
@@ -113,87 +133,110 @@ export function useSignup(): UseSignupReturn {
                 currentPostalCode: "000000",
                 loanAmount: formData.basicDetails.loanAmount || 0,
                 purpose: formData.basicDetails.purposeOfLoan || "Other",
+                employmentType: employmentType,
              });
-             
-             if ((kycResponse as any)?.data?.application) {
-                currentAppId = (kycResponse as any).data.application.id;
-                setApplicationId(currentAppId);
-                setApplicationCreatedAt((kycResponse as any).data.application.createdAt);
-             }
+
+            if ((kycResponse as any)?.data?.application) {
+              currentAppId = (kycResponse as any).data.application.id;
+              setApplicationId(currentAppId);
+              setApplicationCreatedAt((kycResponse as any).data.application.createdAt);
+            }
           } catch (kycErr) {
-             console.error("KYC Sync Error (Non-blocking): ", kycErr);
+            console.error("KYC Sync Error (Non-blocking): ", kycErr);
           }
 
           // === STAGE 2.5: Verify & Save Aadhaar Number ===
           if (data.aadhaarNumber) {
-             const cleanAadhaar = data.aadhaarNumber.replace(/\D/g, '');
-             if (cleanAadhaar.length === 12) {
-               try {
-                  // We send a generic OTP. The backend authController will hit Surepass Aadhaar Validation API 
-                  // to verify the structure and log it to the database table AadhaarVerification.
-                  await apiClient.verifyAadhaarOtp(cleanAadhaar, "000000");
-               } catch (aadhaarErr) {
-                  console.error("Aadhaar Sync Error: ", aadhaarErr);
-                  // We catch it so failure doesn't block final document upload, or throw it to enforce validation.
-               }
-             }
+            const cleanAadhaar = data.aadhaarNumber.replace(/\D/g, '');
+            if (cleanAadhaar.length === 12) {
+              try {
+                // We send a generic OTP. The backend authController will hit Surepass Aadhaar Validation API 
+                // to verify the structure and log it to the database table AadhaarVerification.
+                await apiClient.verifyAadhaarOtp(cleanAadhaar, "000000");
+              } catch (aadhaarErr) {
+                console.error("Aadhaar Sync Error: ", aadhaarErr);
+                // We catch it so failure doesn't block final document upload, or throw it to enforce validation.
+              }
+            }
           }
 
           // === STAGE 2.6: Background Persist PAN Status ===
           if (data.panNumber) {
-             try {
-                // If the user already pressed the button, this will act as an idempotent database overwrite update.
-                // If they didn't press the button, this gracefully registers their text input in the backend natively. 
-                await apiClient.verifyPan(data.panNumber);
-             } catch (panErr: any) {
-                console.error("PAN Background Sync Error: ", panErr);
-                if (panErr.message?.toLowerCase().includes('already registered') || panErr.message?.toLowerCase().includes('another account')) {
-                  throw new Error('This PAN number is already registered with another account.');
-                }
-             }
+            try {
+              // If the user already pressed the button, this will act as an idempotent database overwrite update.
+              // If they didn't press the button, this gracefully registers their text input in the backend natively. 
+              await apiClient.verifyPan(data.panNumber);
+            } catch (panErr: any) {
+              console.error("PAN Background Sync Error: ", panErr);
+              if (panErr.message?.toLowerCase().includes('already registered') || panErr.message?.toLowerCase().includes('another account')) {
+                throw new Error('This PAN number is already registered with another account.');
+              }
+            }
           }
 
           // === STAGE 3: Submit Documents (For 3-Step Flow) ===
           try {
-             // Upload PAN separately
-             if (data.panImage && data.panImage instanceof File) {
-                 await apiClient.uploadDocument('PAN', data.panImage);
-             }
-             
-             // Upload Aadhaar separately  
-             if (data.aadhaarImage && data.aadhaarImage instanceof File) {
-                 await apiClient.uploadDocument('AADHAAR', data.aadhaarImage);
-             }
+            // Upload PAN separately
+            if (data.panImage && data.panImage instanceof File) {
+              await apiClient.uploadDocument('PAN', data.panImage);
+            }
 
-             // Upload Salary & Bank Statement via bulk endpoint
-             const documentFormData = new FormData();
-             let hasBulkDocs = false;
+            // Upload Aadhaar separately  
+            if (data.aadhaarImage && data.aadhaarImage instanceof File) {
+              await apiClient.uploadDocument('AADHAAR', data.aadhaarImage);
+            }
 
-             if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData.append('salarySlips', data.salarySlipImage); hasBulkDocs = true; }
-             if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData.append('bankStatements', data.bankStatementImage); hasBulkDocs = true; }
+            // Upload Salary & Bank Statement via bulk endpoint
+            const documentFormData = new FormData();
+            let hasBulkDocs = false;
 
-             if (hasBulkDocs) {
-                await apiClient.submitDocuments(documentFormData);
-             }
+            if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData.append('salarySlips', data.salarySlipImage); hasBulkDocs = true; }
+            if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData.append('bankStatements', data.bankStatementImage); hasBulkDocs = true; }
+
+            if (hasBulkDocs) {
+              await apiClient.submitDocuments(documentFormData);
+            }
           } catch (docErr) {
-             console.error("Document Upload Error: ", docErr);
+            console.error("Document Upload Error: ", docErr);
           }
 
           return true;
 
         case 3:
+          // Parse monthly income from range for apply-now flow
+          let parsedIncome2 = Number(data.monthlyIncome) || 30000;
+          if (data.monthlySalaryRange) {
+            const sr = data.monthlySalaryRange;
+            if (sr === "Rs.50,000/- - 75,000/-") parsedIncome2 = 75000;
+            else if (sr === "Rs.75,000/- - 1,00,000/-") parsedIncome2 = 100000;
+            else if (sr === "Rs.1,00,000/- and above") parsedIncome2 = 150000;
+            else if (sr === "Rs.25,000/- - Rs.50,000/-") parsedIncome2 = 50000;
+          }
+
+          // Parse Employment Type
+          let employmentType2 = "OTHER";
+          let companyName2 = data.companyName || "Self";
+          if (data.occupation === "Salaried") {
+            employmentType2 = "SALARIED";
+            if (!data.companyName || data.companyName === "Self") companyName2 = "-";
+          } else if (data.occupation === "Self Employed") {
+            employmentType2 = "SELF_EMPLOYED";
+            if (!data.companyName || data.companyName === "-") companyName2 = "Self";
+          }
+
           // Submit KYC details (Used by apply-now flow)
           const kycResponseSeparate = await apiClient.submitKYC({
-            companyName: data.companyName,
-            companyAddress: data.companyAddress,
-            monthlyIncome: data.monthlyIncome,
-            stability: data.jobStability,
-            currentAddress: data.currentAddress,
-            currentAddressType: data.currentAddressType,
-            permanentAddress: data.permanentAddress,
-            currentPostalCode: data.pinCode,
+            companyName: companyName2,
+            companyAddress: data.companyAddress || data.city || "N/A",
+            monthlyIncome: parsedIncome2,
+            stability: data.jobStability || "Stable",
+            currentAddress: data.currentAddress || "N/A",
+            currentAddressType: data.currentAddressType || "Rented",
+            permanentAddress: data.permanentAddress || "N/A",
+            currentPostalCode: data.pinCode || "000000",
             loanAmount: data.loanAmount,
             purpose: data.purposeOfLoan,
+            employmentType: employmentType2,
           });
           if ((kycResponseSeparate as any)?.data?.application) {
             setApplicationId((kycResponseSeparate as any).data.application.id);
@@ -258,7 +301,7 @@ export function useSignup(): UseSignupReturn {
     } catch (err: any) {
       const errorMsg = err.message || '';
       const lowerError = errorMsg.toLowerCase();
-      
+
       let finalErrorMsg = '';
       if (lowerError.includes('exist') || lowerError.includes('conflict') || (lowerError.includes('already registered with another account') === false && lowerError.includes('already'))) {
         finalErrorMsg = 'This mobile number is already registered. Please login.';

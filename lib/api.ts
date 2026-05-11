@@ -301,6 +301,7 @@ class ApiClient {
     startDate?: string;
     interestRate?: number;
     termMonths?: number;
+    employmentType?: string;
   }): Promise<ApiResponse> {
     return this.request<ApiResponse>('/api/kyc', {
       method: 'POST',
