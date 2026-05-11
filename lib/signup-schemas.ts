@@ -102,6 +102,12 @@ export const basicDetailsSchema = z.object({
   // Salaried specific
   companyName: z.string().optional(),
 
+  // Eligibility Fields
+  occupation: z.string().optional(),
+  monthlySalaryRange: z.string().optional(),
+  salaryReceivedIn: z.string().optional(),
+  city: z.string().optional(),
+
   // Self-employed specific
   professionName: z.string().optional(),
 
