@@ -121,21 +121,22 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
           <div className="flex items-center mb-3">
             <Wallet className="w-5 h-5 text-blue-500 mr-2" />
             <label className="block text-sm font-bold text-[#1c2b4f]">
-              Monthly Salary Range
+              Monthly Salary
             </label>
           </div>
-          <select
+
+          <input
+            type="number"
             {...register("monthlySalaryRange")}
-            defaultValue=""
+            placeholder="Enter Monthly Salary"
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"
-          >
-            <option value="" disabled>Select Monthly Salary Range</option>
-            <option value="Rs.25,000/- - Rs.50,000/-">Rs.25,000/- - Rs.50,000/-</option>
-            <option value="Rs.50,000/- - 75,000/-">Rs.50,000/- - 75,000/-</option>
-            <option value="Rs.75,000/- - 1,00,000/-">Rs.75,000/- - 1,00,000/-</option>
-            <option value="Rs.1,00,000/- and above">Rs.1,00,000/- and above</option>
-          </select>
-          {errors.monthlySalaryRange && <p className="text-red-500 text-sm mt-1">{errors.monthlySalaryRange.message}</p>}
+          />
+
+          {errors.monthlySalaryRange && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.monthlySalaryRange.message}
+            </p>
+          )}
         </div>
 
         {/* Salary Received In (Segmented Control style) */}
