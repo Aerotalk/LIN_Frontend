@@ -8,12 +8,7 @@ export const eligibilitySchema = z.object({
   loanAmount: z.number().min(5000, "Minimum loan amount is ₹5,000").max(150000, "Maximum loan amount is ₹1,50,000"),
   purposeOfLoan: z.string().min(1, "Please select purpose of loan"),
   occupation: z.enum(["Salaried", "Self Employed"]),
-  monthlySalaryRange: z.enum([
-    "Rs.25,000/- - Rs.50,000/-",
-    "Rs.50,000/- - 75,000/-",
-    "Rs.75,000/- - 1,00,000/-",
-    "Rs.1,00,000/- and above"
-  ]),
+  monthlySalaryRange: z.string().min(1, "Please enter your monthly salary"),
   salaryReceivedIn: z.enum(["Cash", "Bank Transfer", "Cheque"]),
   city: z.string().min(1, "Please select your city"),
 }).superRefine((data, ctx) => {

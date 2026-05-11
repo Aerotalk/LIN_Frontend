@@ -104,17 +104,13 @@ function DashboardContent() {
                         const incomeVal = p.employment.monthlyIncome;
                         let incomeDisplay = "-";
                         if (incomeVal) {
-                             if (incomeVal <= 25000) incomeDisplay = "Less than Rs.25,000/-";
-                             else if (incomeVal <= 50000) incomeDisplay = "Rs.25,000/- - Rs.50,000/-";
-                             else if (incomeVal <= 75000) incomeDisplay = "Rs.50,000/- - 75,000/-";
-                             else if (incomeVal <= 100000) incomeDisplay = "Rs.75,000/- - 1,00,000/-";
-                             else incomeDisplay = "Rs.1,00,000/- and above";
+                             incomeDisplay = `₹${incomeVal.toLocaleString('en-IN')}`;
                         }
 
                         setEmploymentData([
                             { id: "emp_1", label: "Employment Type", value: p.employment.employmentType ? p.employment.employmentType.replace(/_/g, ' ') : "-" },
                             { id: "emp_2", label: "Company name", value: p.employment.employerName === "Self" ? "-" : (p.employment.employerName || "-") },
-                            { id: "emp_3", label: "Monthly income range", value: incomeDisplay },
+                            { id: "emp_3", label: "Monthly income", value: incomeDisplay },
                             { id: "emp_4", label: "Stability in current job", value: p.employment.stability || "-" },
                         ]);
                     }
