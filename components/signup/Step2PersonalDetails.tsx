@@ -137,7 +137,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
                     maxLength={10} 
                     value={field.value} 
                     inputMode={dynamicInputMode}
-                    pattern="^[A-Z0-9]*$"
+                    pattern="^[A-Za-z0-9]*$"
                     onChange={(value) => {
                       let val = value.toUpperCase();
                       let cleanVal = '';
