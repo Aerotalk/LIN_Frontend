@@ -101,13 +101,8 @@ export function useSignup(): UseSignupReturn {
           });
 
           // === STAGE 2: Submit KYC for Application Creation (For 3-Step Flow) ===
-          // Parse monthly income from range
-          let parsedIncome = 30000;
-          const salaryRange = formData.basicDetails.monthlySalaryRange;
-          if (salaryRange === "Rs.50,000/- - 75,000/-") parsedIncome = 75000;
-          else if (salaryRange === "Rs.75,000/- - 1,00,000/-") parsedIncome = 100000;
-          else if (salaryRange === "Rs.1,00,000/- and above") parsedIncome = 150000;
-          else if (salaryRange === "Rs.25,000/- - Rs.50,000/-") parsedIncome = 50000;
+          // Parse monthly income from direct input
+          let parsedIncome = Number(formData.basicDetails.monthlySalaryRange) || 30000;
 
           // Parse Employment Type
           let employmentType = "OTHER";
@@ -203,15 +198,8 @@ export function useSignup(): UseSignupReturn {
           return true;
 
         case 3:
-          // Parse monthly income from range for apply-now flow
-          let parsedIncome2 = Number(data.monthlyIncome) || 30000;
-          if (data.monthlySalaryRange) {
-            const sr = data.monthlySalaryRange;
-            if (sr === "Rs.50,000/- - 75,000/-") parsedIncome2 = 75000;
-            else if (sr === "Rs.75,000/- - 1,00,000/-") parsedIncome2 = 100000;
-            else if (sr === "Rs.1,00,000/- and above") parsedIncome2 = 150000;
-            else if (sr === "Rs.25,000/- - Rs.50,000/-") parsedIncome2 = 50000;
-          }
+          // Parse monthly income from direct input for apply-now flow
+          let parsedIncome2 = Number(data.monthlyIncome) || Number(data.monthlySalaryRange) || 30000;
 
           // Parse Employment Type
           let employmentType2 = "OTHER";
