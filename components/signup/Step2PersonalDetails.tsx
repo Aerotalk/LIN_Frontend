@@ -129,29 +129,14 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
               control={control}
               name="panNumber"
               render={({ field }) => {
-                const currentLen = field.value?.length || 0;
-                const dynamicInputMode = (currentLen >= 5 && currentLen < 9) ? "numeric" : "text";
-
                 return (
                   <InputOTP 
                     maxLength={10} 
                     value={field.value} 
-                    inputMode={dynamicInputMode}
+                    inputMode="text"
                     pattern="^[A-Za-z0-9]*$"
                     onChange={(value) => {
-                      let val = value.toUpperCase();
-                      let cleanVal = '';
-                      for (let i = 0; i < val.length; i++) {
-                        const char = val[i];
-                        if (i < 5) {
-                          if (/[A-Z]/.test(char)) cleanVal += char;
-                        } else if (i < 9) {
-                          if (/[0-9]/.test(char)) cleanVal += char;
-                        } else if (i === 9) {
-                          if (/[A-Z]/.test(char)) cleanVal += char;
-                        }
-                      }
-                      field.onChange(cleanVal);
+                      field.onChange(value.toUpperCase());
                     }} 
                     containerClassName="justify-between w-full gap-2 md:gap-4"
                   >
