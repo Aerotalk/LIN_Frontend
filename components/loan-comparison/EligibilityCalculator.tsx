@@ -85,6 +85,11 @@ export default function EligibilityCalculator() {
                   onChange={(e) =>
                     setIncome(formatCurrencyInput(e.target.value))
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </div>
               <Slider
@@ -108,8 +113,14 @@ export default function EligibilityCalculator() {
                 <Input
                   className="justify-end w-1/6 max-w-[80px] bg-gray-200 border-0 focus:ring-0"
                   type="number"
+                  min={1}
                   value={tenure}
                   onChange={(e) => setTenure(Number(e.target.value))}
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </div>
               <Slider
@@ -133,10 +144,16 @@ export default function EligibilityCalculator() {
                 <Input
                   className="justify-end w-1/6 max-w-[80px] bg-gray-200 border-0 focus:ring-0"
                   type="number"
+                  min={0}
                   value={expense}
                   onChange={(e) =>
                     setExpense(formatPercentInput(e.target.value))
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </div>
               <Slider

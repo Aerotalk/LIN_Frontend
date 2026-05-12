@@ -82,10 +82,16 @@ export function Step3BasicDetails({ onSubmit, onBack, formData, setFormData, emp
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">₹</span>
               <Input
                 type="number"
+                min={0}
                 placeholder="Enter loan amount"
                 className="pl-8 h-12"
                 {...register("loanAmount", { valueAsNumber: true })}
                 onChange={(e) => handleNumberChange("loanAmount", e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
             {errors.loanAmount && (
@@ -190,10 +196,16 @@ export function Step3BasicDetails({ onSubmit, onBack, formData, setFormData, emp
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">₹</span>
               <Input
                 type="number"
+                min={0}
                 placeholder={employmentType === "Salaried" ? "Enter monthly salary" : "Enter monthly income"}
                 className="pl-8 h-12"
                 {...register("monthlyIncome", { valueAsNumber: true })}
                 onChange={(e) => handleNumberChange("monthlyIncome", e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
             {errors.monthlyIncome && (

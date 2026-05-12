@@ -136,6 +136,11 @@ export function Step0EligibilityCheck({ onSubmit, isLoading }: Step0Props) {
               },
             })}
             placeholder="Enter Monthly Salary"
+            onKeyDown={(e) => {
+              if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                e.preventDefault();
+              }
+            }}
             className="w-full h-12 px-4 shadow-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-700"
           />
 
