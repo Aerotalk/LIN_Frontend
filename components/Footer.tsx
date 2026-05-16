@@ -48,7 +48,7 @@ export default function Footer() {
           </address>
           <div className="flex flex-col space-y-3 text-primary">
             <div className="flex space-x-3 text-primary">
-              <Link href="#">
+              <Link href="https://www.instagram.com/loaninneed/">
                 <Image
                   src="/instagram.png"
                   alt="Instagram"
@@ -57,7 +57,7 @@ export default function Footer() {
                   className="h-5 w-5"
                 />
               </Link>
-              <Link href="#">
+              <Link href="https://www.facebook.com/loaninneed01/">
                 <Image
                   src="/facebook.png"
                   alt="Facebook"
@@ -66,7 +66,7 @@ export default function Footer() {
                   className="h-5 w-5"
                 />
               </Link>
-              <Link href="#">
+              <Link href="https://www.linkedin.com/company/loan-in-need/posts/?feedView=all">
                 <Image
                   src="/linkedin.png"
                   alt="LinkedIn"
@@ -75,7 +75,7 @@ export default function Footer() {
                   className="h-5 w-5"
                 />
               </Link>
-              <Link href="#">
+              <Link href="https://x.com/loaninneed?">
                 <Image
                   src="/twitter.png"
                   alt="Twitter"
@@ -85,26 +85,7 @@ export default function Footer() {
                 />
               </Link>
             </div>
-            <div className="flex flex-col justify-start text-primary">
-              <Link href="#">
-                <Image
-                  src="/apple-store.png"
-                  alt="Apple Store"
-                  width={500}
-                  height={500}
-                  className="h-1/2 w-36"
-                />
-              </Link>
-              <Link href="#">
-                <Image
-                  src="/google-play.png"
-                  alt="Google Play"
-                  width={500}
-                  height={500}
-                  className="h-1/2 w-44 md:-ml-3"
-                />
-              </Link>
-            </div>
+
           </div>
         </div>
 
