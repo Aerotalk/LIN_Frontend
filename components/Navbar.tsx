@@ -264,7 +264,7 @@ export default function Navbar() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href={getLinkWithRef("/signup")}>
+                  <Link href={getLinkWithRef(isLoggedIn ? "/apply-now" : "/signup")}>
                     <Button size="default" variant="default" className="text-base">
                       Apply now
                     </Button>
@@ -401,7 +401,7 @@ export default function Navbar() {
                       Login
                     </MobileLink>
                   )}
-                  <MobileLink href="/signup" className="w-full">
+                  <MobileLink href={isLoggedIn ? "/apply-now" : "/signup"} className="w-full">
                     <Button variant="default" className="w-full">Apply now</Button>
                   </MobileLink>
                 </div>

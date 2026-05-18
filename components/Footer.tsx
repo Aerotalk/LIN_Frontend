@@ -7,8 +7,17 @@ import { Button } from "./ui/button";
 import { useAffiliate } from "@/hooks/useAffiliate";
 
 
+import React, { useState, useEffect } from "react";
+
 export default function Footer() {
   const { getLinkWithRef } = useAffiliate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const userToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    const partnerToken = typeof window !== 'undefined' ? localStorage.getItem('partnerAuthToken') : null;
+    setIsLoggedIn(!!(userToken || partnerToken));
+  }, []);
   return (
 
     <footer className="bg-[#FEF5F5] py-10 px-6 md:px-12 lg:px-20 mt-32">
@@ -33,7 +42,7 @@ export default function Footer() {
               placeholder="Enter your mobile number"
               className="px-3 py-2 rounded-md border border-gray-300 text-sm w-full"
             />
-            <Link href="/signup">
+            <Link href={isLoggedIn ? "/apply-now" : "/signup"}>
               <Button
                 size="sm"
                 className="bg-primary hover:bg-primary/90 w-1/2"
@@ -48,7 +57,7 @@ export default function Footer() {
           </address>
           <div className="flex flex-col space-y-3 text-primary">
             <div className="flex space-x-3 text-primary">
-              <Link href="#">
+              <Link href="https://www.instagram.com/loaninneed/">
                 <Image
                   src="/instagram.png"
                   alt="Instagram"
@@ -57,7 +66,7 @@ export default function Footer() {
                   className="h-5 w-5"
                 />
               </Link>
-              <Link href="#">
+              <Link href="https://www.facebook.com/loaninneed01/">
                 <Image
                   src="/facebook.png"
                   alt="Facebook"
@@ -66,7 +75,7 @@ export default function Footer() {
                   className="h-5 w-5"
                 />
               </Link>
-              <Link href="#">
+              <Link href="https://www.linkedin.com/company/loan-in-need/posts/?feedView=all">
                 <Image
                   src="/linkedin.png"
                   alt="LinkedIn"
@@ -75,7 +84,7 @@ export default function Footer() {
                   className="h-5 w-5"
                 />
               </Link>
-              <Link href="#">
+              <Link href="https://x.com/loaninneed?">
                 <Image
                   src="/twitter.png"
                   alt="Twitter"
@@ -85,26 +94,7 @@ export default function Footer() {
                 />
               </Link>
             </div>
-            <div className="flex flex-col justify-start text-primary">
-              <Link href="#">
-                <Image
-                  src="/apple-store.png"
-                  alt="Apple Store"
-                  width={500}
-                  height={500}
-                  className="h-1/2 w-36"
-                />
-              </Link>
-              <Link href="#">
-                <Image
-                  src="/google-play.png"
-                  alt="Google Play"
-                  width={500}
-                  height={500}
-                  className="h-1/2 w-44 md:-ml-3"
-                />
-              </Link>
-            </div>
+
           </div>
         </div>
 
