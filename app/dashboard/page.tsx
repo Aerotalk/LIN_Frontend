@@ -36,13 +36,14 @@ function DashboardContent() {
     const [loanHistoryData, setLoanHistoryData] = React.useState<any[]>([]);
     const [searchQuery, setSearchQuery] = React.useState({ appId: "", phone: "" });
     const [trackResult, setTrackResult] = React.useState<any>(null);
+    const [reloanData, setReloanData] = React.useState({ amount: "", appNumber: "" });
 
     const [editingFields, setEditingFields] = React.useState<Record<string, boolean>>({});
 
     const sidebarItems = [
         { name: "Dashboard", icon: <LayoutDashboard size={20} /> },
         { name: "Track loan", icon: <Search size={20} /> },
-        { name: "Apply new loan", icon: <PlusCircle size={20} /> },
+        { name: "Reloan", icon: <PlusCircle size={20} /> },
         { name: "Repay loan", icon: <Wallet size={20} /> },
         { name: "Loan history", icon: <History size={20} /> },
         { name: "Support", icon: <Headphones size={20} /> },
@@ -612,6 +613,60 @@ function DashboardContent() {
         </div>
     );
 
+    const renderReloanContent = () => (
+        <div className="max-w-5xl space-y-10">
+            <div className="flex items-center justify-between">
+                <h2 className="text-[28px] font-extrabold text-[#EF4444] tracking-tight">Reloan</h2>
+            </div>
+            <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                    <div className="space-y-2.5">
+                        <label className="text-[15px] font-bold text-gray-900 block px-1">
+                            Application Number
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter application number"
+                            value={reloanData.appNumber}
+                            onChange={(e) => setReloanData(prev => ({ ...prev, appNumber: e.target.value }))}
+                            className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
+                        />
+                    </div>
+                    <div className="space-y-2.5">
+                        <label className="text-[15px] font-bold text-gray-900 block px-1">
+                            Loan Amount
+                        </label>
+                        <div className="relative">
+                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
+                            <input
+                                type="number"
+                                placeholder="Enter loan amount"
+                                value={reloanData.amount}
+                                onChange={(e) => setReloanData(prev => ({ ...prev, amount: e.target.value }))}
+                                className="w-full bg-white border border-gray-200 rounded-xl pl-12 pr-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
+                                min="0"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button
+                        onClick={() => {
+                            if (!reloanData.amount || !reloanData.appNumber) {
+                                alert("Please fill in both fields");
+                                return;
+                            }
+                            alert("Reloan request submitted successfully!");
+                            setReloanData({ amount: "", appNumber: "" });
+                        }}
+                        className="bg-[#EF4444] text-white px-10 py-4 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100">
+                        Submit Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-white pt-24 sm:pt-32 md:pt-40 pb-12 md:pb-24 px-4 md:px-12 lg:px-24">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16">
@@ -623,11 +678,7 @@ function DashboardContent() {
                                 <button
                                     key={item.name}
                                     onClick={() => {
-                                        if (item.name === "Apply new loan") {
-                                            router.push(getLinkWithRef("/apply-now"));
-                                        } else {
-                                            setActiveTab(item.name);
-                                        }
+                                        setActiveTab(item.name);
                                     }}
 
                                     className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-medium ${activeTab === item.name
@@ -662,9 +713,10 @@ function DashboardContent() {
                 <main className="flex-1">
                     {activeTab === "Dashboard" ? renderDashboardContent() :
                         activeTab === "Track loan" ? renderTrackLoanContent() :
-                            activeTab === "Repay loan" ? renderRepayLoanContent() :
-                                activeTab === "Loan history" ? renderLoanHistoryContent() :
-                                    activeTab === "Support" ? renderSupport() :
+                            activeTab === "Reloan" ? renderReloanContent() :
+                                activeTab === "Repay loan" ? renderRepayLoanContent() :
+                                    activeTab === "Loan history" ? renderLoanHistoryContent() :
+                                        activeTab === "Support" ? renderSupport() :
                                         <div className="text-center py-20 text-gray-400">Content for {activeTab} coming soon...</div>}
                 </main>
             </div>

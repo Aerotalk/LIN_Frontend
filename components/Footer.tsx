@@ -7,8 +7,17 @@ import { Button } from "./ui/button";
 import { useAffiliate } from "@/hooks/useAffiliate";
 
 
+import React, { useState, useEffect } from "react";
+
 export default function Footer() {
   const { getLinkWithRef } = useAffiliate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const userToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    const partnerToken = typeof window !== 'undefined' ? localStorage.getItem('partnerAuthToken') : null;
+    setIsLoggedIn(!!(userToken || partnerToken));
+  }, []);
   return (
 
     <footer className="bg-[#FEF5F5] py-10 px-6 md:px-12 lg:px-20 mt-32">
@@ -33,7 +42,7 @@ export default function Footer() {
               placeholder="Enter your mobile number"
               className="px-3 py-2 rounded-md border border-gray-300 text-sm w-full"
             />
-            <Link href="/signup">
+            <Link href={isLoggedIn ? "/apply-now" : "/signup"}>
               <Button
                 size="sm"
                 className="bg-primary hover:bg-primary/90 w-1/2"
