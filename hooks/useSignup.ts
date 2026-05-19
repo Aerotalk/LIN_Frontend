@@ -83,6 +83,14 @@ export function useSignup(): UseSignupReturn {
             if (response.token) {
               apiClient.setToken(response.token);
             }
+            // Smart routing: complete users go to login, incomplete users continue signup
+            if ((response as any).isProfileComplete) {
+              toast.error('Your profile is already complete. Please login to apply.');
+              setTimeout(() => {
+                router.push('/login');
+              }, 1500);
+              return false;
+            }
             return true;
           }
 
@@ -337,17 +345,15 @@ export function useSignup(): UseSignupReturn {
       const lowerError = errorMsg.toLowerCase();
 
       let finalErrorMsg = '';
-      if (lowerError.includes('exist') || lowerError.includes('conflict') || (lowerError.includes('already registered with another account') === false && lowerError.includes('already'))) {
-        finalErrorMsg = 'This mobile number is already registered. Please login.';
-        toast.error('Number already registered. Redirecting to login...');
-        setTimeout(() => {
-          router.push('/login');
-        }, 1500);
-      } else if (lowerError.includes('pan') || lowerError.includes('another account')) {
+      if (lowerError.includes('pan') || lowerError.includes('another account')) {
+        // PAN conflict — show message but don't redirect
         finalErrorMsg = 'This PAN number is already registered with another account.';
         toast.error(finalErrorMsg);
+      } else if (lowerError.includes('email already registered')) {
+        finalErrorMsg = 'This email is already in use. Please use a different email.';
+        toast.error(finalErrorMsg);
       } else {
-        finalErrorMsg = errorMsg || 'An error occurred during registration.';
+        finalErrorMsg = errorMsg || 'An error occurred. Please try again.';
         toast.error(finalErrorMsg);
       }
       setError(finalErrorMsg);
