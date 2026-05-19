@@ -146,8 +146,7 @@ export function useSignup(): UseSignupReturn {
             if (cleanAadhaar.length === 12) {
               try {
                 // We send a generic OTP. The backend authController will hit Surepass Aadhaar Validation API 
-                // to verify the structure and log it to the database table AadhaarVerification.
-                await apiClient.verifyAadhaarOtp(cleanAadhaar, "000000");
+                await apiClient.verifyAadhaarOtp(cleanAadhaar, "261102");
               } catch (aadhaarErr) {
                 console.error("Aadhaar Sync Error: ", aadhaarErr);
                 // We catch it so failure doesn't block final document upload, or throw it to enforce validation.
@@ -281,6 +280,53 @@ export function useSignup(): UseSignupReturn {
           } else {
             throw new Error('Please enable location detection');
           }
+          return true;
+
+        
+        case 7:
+          // Update User Info for Apply Now Flow
+          const name7 = `${data.firstName} ${data.middleName ? data.middleName + ' ' : ''}${data.lastName}`.trim();
+          const email7 = data.email || undefined;
+          
+          await apiClient.registerUser({
+            name: name7,
+            dob: data.dateOfBirth,
+            gender: data.gender,
+            email: email7,
+            password: "Password@123",
+          });
+
+          // Verify Aadhaar
+          if (data.aadhaarNumber) {
+            const cleanAadhaar = data.aadhaarNumber.replace(/\D/g, '');
+            if (cleanAadhaar.length === 12) {
+              try {
+                await apiClient.verifyAadhaarOtp(cleanAadhaar, "261102");
+              } catch (e) { console.error(e) }
+            }
+          }
+
+          // Verify PAN
+          if (data.panNumber) {
+            try {
+              await apiClient.verifyPan(data.panNumber);
+            } catch (e: any) {
+              if (e.message?.toLowerCase().includes('already registered')) throw new Error('This PAN number is already registered with another account.');
+            }
+          }
+
+          // Upload Documents
+          try {
+            if (data.panImage && data.panImage instanceof File) await apiClient.uploadDocument('PAN', data.panImage);
+            if (data.aadhaarImage && data.aadhaarImage instanceof File) await apiClient.uploadDocument('AADHAAR', data.aadhaarImage);
+
+            const documentFormData7 = new FormData();
+            let hasBulkDocs7 = false;
+            if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData7.append('salarySlips', data.salarySlipImage); hasBulkDocs7 = true; }
+            if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData7.append('bankStatements', data.bankStatementImage); hasBulkDocs7 = true; }
+            if (hasBulkDocs7) await apiClient.submitDocuments(documentFormData7);
+          } catch (e) { console.error(e) }
+
           return true;
 
         default:
