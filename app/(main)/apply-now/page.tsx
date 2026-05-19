@@ -400,53 +400,38 @@ function ApplyNowContent() {
     }
 
     return (
-        <div className="min-h-screen w-full max-w-7x bg-white mt-24 mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[80vh]">
-                {/* Left Panel - Branding (hidden on mobile so form shows first) */}
-                <div className="hidden lg:flex bg-gradient-to-br from-purple-50 to-pink-50 flex-col justify-center p-8 lg:p-12 rounded-l-3xl">
-                    <div className="max-w-md mx-auto">
-                        <div className="mb-8">
-                            <Link href={getLinkWithRef("/")} className="flex items-center">
-                                <Image src="/lin-logo.png" alt="Logo" width={120} height={40} />
-                            </Link>
+        <div className="min-h-screen bg-gray-50 flex flex-col pt-24 pb-10 px-4 items-center justify-center font-sans tracking-wide">
+            <div className="mb-6">
+                <Link href={getLinkWithRef("/")}>
+                    <Image src="/lin-logo.png" alt="LoanInNeed Logo" width={180} height={60} className="object-contain" />
+                </Link>
+            </div>
+            <div className="max-w-[850px] w-full bg-white rounded-3xl shadow-xl p-8 lg:p-10 transition-all duration-500">
+                <div className="w-full">
+                    {/* Step Header */}
+                    <div className="mb-8">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-red-600">{STEPS[internalStep - 1].title}</h3>
+                            <span className="text-sm text-gray-600">{internalStep}/{STEPS.length}</span>
                         </div>
-
-                        <h2 className="text-3xl font-semibold text-gray-800 mb-6 leading-tight">
-                            {STEPS[internalStep - 1].description}
-                        </h2>
-                        <p className="text-gray-600 mb-8 leading-relaxed">
-                            No paperwork. No waiting. Just quick approvals and easy access to instant funds, anytime, anywhere.
-                        </p>
-                        <Image src="/signup-money.png" alt="Wallet Illustration" width={256} height={192} />
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                                className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                        </div>
+                        <p className="mt-4 text-gray-600 text-sm font-medium">{STEPS[internalStep - 1].description}</p>
                     </div>
-                </div>
 
-                {/* Right Panel - Form */}
-                <div className="bg-white flex flex-col justify-center p-8 lg:p-12">
-                    <div className="max-w-md mx-auto w-full">
-                        {/* Step Header */}
-                        <div className="mb-8">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-xl font-bold text-red-600">{STEPS[internalStep - 1].title}</h3>
-                                <span className="text-sm text-gray-600">{internalStep}/{STEPS.length}</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                    className="bg-red-600 h-2 rounded-full transition-all duration-300"
-                                    style={{ width: `${progress}%` }}
-                                ></div>
-                            </div>
+                    {/* Error Display */}
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+                            <p className="text-red-600 text-sm">{error}</p>
                         </div>
+                    )}
 
-                        {/* Error Display */}
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-                                <p className="text-red-600 text-sm">{error}</p>
-                            </div>
-                        )}
-
-                        {/* Form Content */}
-                        <div className="space-y-6">
+                    {/* Form Content */}
+                    <div className="space-y-6">
                             {eligibilityStatus === 'rejected' ? (
                                 <div className="w-full py-8 flex flex-col items-center">
                                     <div className="w-48 h-48 bg-[#f5f3ff] rounded-full flex items-center justify-center mb-8 relative border-4 border-white shadow-sm">
@@ -501,7 +486,6 @@ function ApplyNowContent() {
                     </div>
                 </div>
             </div>
-        </div>
     )
 }
 

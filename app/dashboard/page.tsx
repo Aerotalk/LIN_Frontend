@@ -23,10 +23,246 @@ import {
     Mail,
     MessageCircle,
     Loader2,
-    ChevronDown
+    ChevronDown,
+    FileX2,
+    Bookmark
 } from "lucide-react";
+import { useSignup } from "@/hooks/useSignup";
+import { Step0EligibilityCheck } from "@/components/signup/Step0EligibilityCheck";
+import { Step4DocumentVerification } from "@/components/signup/Step4DocumentVerification";
+import { EligibilityForm, DocumentVerificationForm } from "@/lib/signup-schemas";
 
 export const dynamic = "force-dynamic";
+
+function ReloanFlow() {
+    const {
+        currentStep,
+        formData,
+        isLoading,
+        error,
+        applicationId,
+        setCurrentStep,
+        updateFormData,
+        submitStep,
+    } = useSignup()
+
+    const [internalStep, setInternalStep] = React.useState(1)
+    const [applicationSubmitted, setApplicationSubmitted] = React.useState(false)
+    const [eligibilityStatus, setEligibilityStatus] = React.useState<'pending' | 'eligible' | 'rejected'>('pending')
+    const [isCheckingEligibility, setIsCheckingEligibility] = React.useState(false)
+
+    // Pre-fill data if authenticated
+    React.useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const { apiClient } = await import("@/lib/api");
+                const res = await apiClient.getCompleteProfile();
+                if (res && res.profile) {
+                    const p = res.profile as any;
+                    if (p.panVerification || p.aadhaarVerification || p.name) {
+                        updateFormData('personalDetails', {
+                            ...formData.personalDetails,
+                            panNumber: p.panVerification?.panNumber || "",
+                            firstName: p.name || "",
+                            aadhaarNumber: p.aadhaarVerification?.aadhaarNumber || "",
+                            email: p.email || "",
+                            dateOfBirth: p.dob ? new Date(p.dob).toISOString().split('T')[0] : "",
+                            gender: p.gender === "MALE" ? "Male" : "Female",
+                        });
+                    }
+                    if (p.employment || p.address) {
+                        updateFormData('basicDetails', {
+                            loanAmount: formData.basicDetails?.loanAmount || 0,
+                            purposeOfLoan: formData.basicDetails?.purposeOfLoan || "",
+                            companyName: p.employment?.employerName || "",
+                            professionName: "",
+                            companyAddress: p.employment?.companyAddress || "",
+                            monthlyIncome: p.employment?.monthlyIncome || 0,
+                            jobStability: p.employment?.stability || "Stable",
+                            currentAddress: p.address?.currentAddress || "",
+                            currentAddressType: p.address?.currentAddressType || "Owner(Self or Family)",
+                            permanentAddress: p.address?.permanentAddress || "",
+                            pinCode: p.address?.postalCode || ""
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to load profile for reloan", e);
+            }
+        };
+        fetchProfile();
+    }, []);
+
+    const handleEligibilitySubmit = async (data: EligibilityForm) => {
+        setIsCheckingEligibility(true);
+        updateFormData('basicDetails', {
+            ...formData.basicDetails,
+            loanAmount: data.loanAmount,
+            purposeOfLoan: data.purposeOfLoan,
+            occupation: data.occupation,
+            monthlySalaryRange: data.monthlySalaryRange,
+            salaryReceivedIn: data.salaryReceivedIn,
+            city: data.city
+        });
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'}/api/loans/check-eligibility`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    loanAmount: data.loanAmount,
+                    purposeOfLoan: data.purposeOfLoan,
+                    occupation: data.occupation,
+                    salaryReceivedIn: data.salaryReceivedIn,
+                    monthlySalaryRange: data.monthlySalaryRange,
+                    city: data.city
+                })
+            });
+            const result = await response.json();
+            if (result.eligible) {
+                setEligibilityStatus('eligible');
+                const combinedData = {
+                    ...formData.basicDetails,
+                    loanAmount: data.loanAmount,
+                    purposeOfLoan: data.purposeOfLoan,
+                    occupation: data.occupation,
+                    monthlySalaryRange: data.monthlySalaryRange,
+                    salaryReceivedIn: data.salaryReceivedIn,
+                    city: data.city
+                };
+                const success = await submitStep(3, combinedData);
+                if (success) {
+                    setInternalStep(2);
+                } else {
+                    alert("Failed to create application. Please try again.");
+                }
+            } else {
+                setEligibilityStatus('rejected');
+            }
+        } catch (e) {
+            console.error("Eligibility check failed", e);
+            // Local fallback logic
+            if (
+                data.occupation !== "Salaried" ||
+                data.salaryReceivedIn !== "Bank Transfer"
+            ) {
+                setEligibilityStatus('rejected')
+            } else {
+                setEligibilityStatus('eligible')
+                const combinedData = {
+                    ...formData.basicDetails,
+                    loanAmount: data.loanAmount,
+                    purposeOfLoan: data.purposeOfLoan,
+                    occupation: data.occupation,
+                    monthlySalaryRange: data.monthlySalaryRange,
+                    salaryReceivedIn: data.salaryReceivedIn,
+                    city: data.city
+                };
+                const success = await submitStep(3, combinedData);
+                if (success) {
+                    setInternalStep(2);
+                } else {
+                    alert("Failed to create application. Please try again.");
+                }
+            }
+        } finally {
+            setIsCheckingEligibility(false);
+        }
+    }
+
+    const handleDocumentVerificationSubmit = async (data: DocumentVerificationForm): Promise<void> => {
+        updateFormData('documentVerification', data)
+        const success = await submitStep(4, data)
+        if (success) {
+            setApplicationSubmitted(true)
+        } else {
+            alert("Failed to save documents. Please try again.")
+        }
+    }
+
+    if (applicationSubmitted) {
+        return (
+            <div className="flex flex-col items-center py-10 text-center fade-in bg-white rounded-3xl border border-gray-100 p-8 shadow-sm">
+                <div className="w-20 h-20 rounded-full bg-[#e8f5e9] flex items-center justify-center mb-6 relative">
+                    <Check className="w-10 h-10 text-[#4ade80]" strokeWidth={4} />
+                </div>
+                <h3 className="text-2xl font-bold text-[#14532d] mb-3">Reloan Successful!</h3>
+                <p className="font-medium text-gray-600 mb-6">Your new loan application has been submitted.</p>
+                {applicationId && (
+                    <div className="bg-[#f0fdf4] rounded-2xl py-3 px-6 mb-8 border border-green-100 flex items-center gap-3">
+                        <Bookmark className="text-[#16a34a] w-5 h-5" />
+                        <span className="text-[#14532d] font-bold">Application ID: {formatAppNumber(applicationId, formData.personalDetails?.aadhaarNumber)}</span>
+                    </div>
+                )}
+                <button 
+                    onClick={() => window.location.reload()}
+                    className="bg-[#16a34a] text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-green-700 transition-all"
+                >
+                    View in Dashboard
+                </button>
+            </div>
+        )
+    }
+
+    return (
+        <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-bold text-red-600">{internalStep === 1 ? "Check Eligibility" : "Upload Documents"}</h3>
+                    <span className="text-sm text-gray-600">{internalStep}/2</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                        className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(internalStep / 2) * 100}%` }}
+                    ></div>
+                </div>
+            </div>
+
+            {error && (
+                <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+                    <p className="text-red-600 text-sm">{error}</p>
+                </div>
+            )}
+
+            <div className="space-y-6">
+                {eligibilityStatus === 'rejected' ? (
+                    <div className="w-full py-8 flex flex-col items-center">
+                        <div className="w-24 h-24 bg-[#f5f3ff] rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-sm">
+                            <FileX2 className="w-12 h-12 text-[#c2bdf1]" />
+                        </div>
+                        <h3 className="text-xl font-extrabold text-[#312c5b] mb-3 text-center">Application Not Approved</h3>
+                        <p className="text-[#6b7280] mb-6 text-center text-sm font-medium max-w-sm">
+                            As per our credit policy, we are currently unable to process your loan application.
+                        </p>
+                        <button 
+                            onClick={() => { setEligibilityStatus('pending'); setInternalStep(1); }}
+                            className="text-[#5b4dff] font-bold hover:underline"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        {internalStep === 1 && (
+                            <Step0EligibilityCheck
+                                onSubmit={handleEligibilitySubmit}
+                                isLoading={isCheckingEligibility}
+                            />
+                        )}
+                        {internalStep === 2 && (
+                            <Step4DocumentVerification
+                                onSubmit={handleDocumentVerificationSubmit}
+                                formData={formData.documentVerification}
+                                setFormData={(data) => updateFormData('documentVerification', data)}
+                            />
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
+    )
+}
 
 function DashboardContent() {
     const router = useRouter();
@@ -618,52 +854,7 @@ function DashboardContent() {
             <div className="flex items-center justify-between">
                 <h2 className="text-[28px] font-extrabold text-[#EF4444] tracking-tight">Reloan</h2>
             </div>
-            <div className="bg-white rounded-3xl border border-gray-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                    <div className="space-y-2.5">
-                        <label className="text-[15px] font-bold text-gray-900 block px-1">
-                            Application Number
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Enter application number"
-                            value={reloanData.appNumber}
-                            onChange={(e) => setReloanData(prev => ({ ...prev, appNumber: e.target.value }))}
-                            className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
-                        />
-                    </div>
-                    <div className="space-y-2.5">
-                        <label className="text-[15px] font-bold text-gray-900 block px-1">
-                            Loan Amount
-                        </label>
-                        <div className="relative">
-                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
-                            <input
-                                type="number"
-                                placeholder="Enter loan amount"
-                                value={reloanData.amount}
-                                onChange={(e) => setReloanData(prev => ({ ...prev, amount: e.target.value }))}
-                                className="w-full bg-white border border-gray-200 rounded-xl pl-12 pr-6 py-4 text-gray-700 font-medium outline-none focus:ring-1 focus:ring-red-100 transition-all"
-                                min="0"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <button
-                        onClick={() => {
-                            if (!reloanData.amount || !reloanData.appNumber) {
-                                alert("Please fill in both fields");
-                                return;
-                            }
-                            alert("Reloan request submitted successfully!");
-                            setReloanData({ amount: "", appNumber: "" });
-                        }}
-                        className="bg-[#EF4444] text-white px-10 py-4 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100">
-                        Submit Request
-                    </button>
-                </div>
-            </div>
+            <ReloanFlow />
         </div>
     );
 
