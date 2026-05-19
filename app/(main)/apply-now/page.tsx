@@ -25,8 +25,7 @@ interface Step {
 
 const STEPS: Step[] = [
     { id: 1, title: "Check Eligibility", description: "Get Instant Financial Support You Can Rely On" },
-    { id: 2, title: "Personal Details", description: "Verify your PAN and Aadhaar" },
-    { id: 3, title: "Verifying documents", description: "Upload the required documents for verification" },
+    { id: 2, title: "Personal Details & Documents", description: "Verify PAN/Aadhaar and upload documents" }
 ]
 
 import { Suspense } from "react"
@@ -150,9 +149,9 @@ function ApplyNowContent() {
     
     const handlePersonalDetailsSubmit = async (data: PersonalDetailsForm): Promise<void> => {
         updateFormData('personalDetails', data)
-        const success = await submitStep(2, data)
+        const success = await submitStep(7, data)
         if (success) {
-            handleNext()
+            setApplicationSubmitted(true)
         } else {
             alert("Failed to save personal details. Please try again.")
         }
@@ -495,13 +494,7 @@ function ApplyNowContent() {
                                         />
                                     )}
 
-                                    {internalStep === 3 && (
-                                        <Step4DocumentVerification
-                                            onSubmit={handleDocumentVerificationSubmit}
-                                            formData={formData.documentVerification}
-                                            setFormData={(data) => updateFormData('documentVerification', data)}
-                                        />
-                                    )}
+                                    
                                 </>
                             )}
                         </div>
