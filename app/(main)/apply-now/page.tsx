@@ -53,6 +53,7 @@ function ApplyNowContent() {
     const [isDownloadingPdf, setIsDownloadingPdf] = useState<boolean>(false)
     const [eligibilityStatus, setEligibilityStatus] = useState<'pending' | 'eligible' | 'rejected'>('pending')
     const [isCheckingEligibility, setIsCheckingEligibility] = useState(false)
+    const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false)
 
     const progress = (internalStep / STEPS.length) * 100
 
@@ -206,6 +207,10 @@ function ApplyNowContent() {
                             gender: p.gender === "MALE" ? "Male" : "Female",
                         });
                     }
+                    // Check profile completeness (Name + PAN required)
+                    const hasName = !!(p.name && p.name.trim().split(/\s+/).length >= 2);
+                    const hasPan = !!(p.panVerification?.panNumber);
+                    setIsProfileComplete(hasName && hasPan);
                     if (p.employment || p.address) {
                         updateFormData('basicDetails', {
                             loanAmount: formData.basicDetails.loanAmount || 0,
@@ -384,12 +389,23 @@ function ApplyNowContent() {
 
                         <div className="w-full mt-4 mb-6">
                             <button
-                                onClick={() => router.push(getLinkWithRef('/dashboard'))}
-                                className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white h-14 rounded-xl text-lg font-bold shadow-md transition-all flex justify-center items-center gap-2"
+                                onClick={() => isProfileComplete && router.push(getLinkWithRef('/dashboard'))}
+                                disabled={!isProfileComplete}
+                                title={!isProfileComplete ? "Complete your profile (Name + PAN required) to access the dashboard" : ""}
+                                className={`w-full h-14 rounded-xl text-lg font-bold shadow-md transition-all flex justify-center items-center gap-2 ${
+                                    isProfileComplete
+                                        ? 'bg-[#16a34a] hover:bg-[#15803d] text-white cursor-pointer'
+                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
+                                }`}
                             >
-                                Go to Dashboard
+                                {isProfileComplete ? 'Go to Dashboard' : 'Complete Profile to Access Dashboard'}
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </button>
+                            {!isProfileComplete && (
+                                <p className="text-center text-xs text-amber-600 font-medium mt-2">
+                                    ⚠️ Your profile is incomplete. Please verify your PAN and provide your full name to access the dashboard.
+                                </p>
+                            )}
                         </div>
 
                         <p className="text-[10px] text-gray-400 font-medium">We're here to make your loan journey simple and hassle-free.</p>

@@ -81,11 +81,27 @@ function LoginForm() {
   const handleOtpSubmit = async (data: LoginOtpForm) => {
     const success = await verifyOtp(data)
     if (success) {
-      // Redirect after showing success
-      setTimeout(() => {
-        router.push(getLinkWithRef("/dashboard"))
-      }, 2000)
+      // Check profile completeness before deciding where to redirect
+      setTimeout(async () => {
+        try {
+          const { apiClient } = await import("@/lib/api");
+          const res = await apiClient.getCompleteProfile();
+          const p = res?.profile as any;
+          const hasName = !!(p?.name && p.name.trim().split(/\s+/).length >= 2);
+          const hasPan = !!(p?.panVerification?.panNumber);
+          const isComplete = hasName && hasPan;
 
+          if (isComplete) {
+            router.push(getLinkWithRef("/dashboard"));
+          } else {
+            // Profile is incomplete — redirect to apply-now to complete it
+            router.push(getLinkWithRef("/apply-now"));
+          }
+        } catch {
+          // Fallback to dashboard if profile check fails
+          router.push(getLinkWithRef("/dashboard"));
+        }
+      }, 2000)
     }
   }
 
