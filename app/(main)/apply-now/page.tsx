@@ -152,6 +152,7 @@ function ApplyNowContent() {
         updateFormData('personalDetails', data)
         const success = await submitStep(7, data)
         if (success) {
+            setIsProfileComplete(true)
             setApplicationSubmitted(true)
         } else {
             alert("Failed to save personal details. Please try again.")
