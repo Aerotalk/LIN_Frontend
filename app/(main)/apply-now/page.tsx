@@ -211,6 +211,9 @@ function ApplyNowContent() {
                     const hasName = !!(p.name && p.name.trim().split(/\s+/).length >= 2);
                     const hasPan = !!(p.panVerification?.panNumber);
                     setIsProfileComplete(hasName && hasPan);
+                    if (hasName && hasPan) {
+                        setApplicationSubmitted(true);
+                    }
                     if (p.employment || p.address) {
                         updateFormData('basicDetails', {
                             loanAmount: formData.basicDetails.loanAmount || 0,

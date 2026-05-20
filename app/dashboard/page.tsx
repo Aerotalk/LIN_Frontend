@@ -321,6 +321,14 @@ function DashboardContent() {
                 if (response && response.profile) {
                     const p = response.profile as any;
 
+                    // Check profile completeness (Name + PAN required)
+                    const hasName = !!(p.name && p.name.trim().split(/\s+/).length >= 2);
+                    const hasPan = !!(p.panVerification?.panNumber);
+                    if (!hasName || !hasPan) {
+                        router.push(getLinkWithRef("/apply-now"));
+                        return;
+                    }
+
                     // Split name into first and last (simple logic)
                     const fullName = p.name || "";
                     const nameParts = fullName.split(" ");
