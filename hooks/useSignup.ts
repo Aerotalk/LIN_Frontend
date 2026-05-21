@@ -117,7 +117,7 @@ export function useSignup(): UseSignupReturn {
           let companyName = "Self";
           if (formData.basicDetails.occupation === "Salaried") {
             employmentType = "SALARIED";
-            companyName = "-"; // Default dash if not provided
+            companyName = ""; // Default empty string if not provided
           } else if (formData.basicDetails.occupation === "Self Employed") {
             employmentType = "SELF_EMPLOYED";
             companyName = "Self";
@@ -127,13 +127,13 @@ export function useSignup(): UseSignupReturn {
           try {
              const kycResponse = await apiClient.submitKYC({
                 companyName: companyName,
-                companyAddress: formData.basicDetails.city || "N/A",
+                companyAddress: formData.basicDetails.city || "",
                 monthlyIncome: parsedIncome,
                 stability: "Stable",
-                currentAddress: "N/A",
+                currentAddress: "",
                 currentAddressType: "Rented",
-                permanentAddress: "N/A",
-                currentPostalCode: "000000",
+                permanentAddress: "",
+                currentPostalCode: "",
                 loanAmount: formData.basicDetails.loanAmount || 0,
                 purpose: formData.basicDetails.purposeOfLoan || "Other",
                 employmentType: employmentType,
@@ -213,22 +213,22 @@ export function useSignup(): UseSignupReturn {
           let companyName2 = data.companyName || "Self";
           if (data.occupation === "Salaried") {
             employmentType2 = "SALARIED";
-            if (!data.companyName || data.companyName === "Self") companyName2 = "-";
+            if (!data.companyName || data.companyName === "Self") companyName2 = "";
           } else if (data.occupation === "Self Employed") {
             employmentType2 = "SELF_EMPLOYED";
-            if (!data.companyName || data.companyName === "-") companyName2 = "Self";
+            if (!data.companyName || data.companyName === "") companyName2 = "Self";
           }
 
           // Submit KYC details (Used by apply-now flow)
           const kycResponseSeparate = await apiClient.submitKYC({
             companyName: companyName2,
-            companyAddress: data.companyAddress || data.city || "N/A",
+            companyAddress: data.companyAddress || data.city || "",
             monthlyIncome: parsedIncome2,
             stability: data.jobStability || "Stable",
-            currentAddress: data.currentAddress || "N/A",
+            currentAddress: data.currentAddress || "",
             currentAddressType: data.currentAddressType || "Rented",
-            permanentAddress: data.permanentAddress || "N/A",
-            currentPostalCode: data.pinCode || "000000",
+            permanentAddress: data.permanentAddress || "",
+            currentPostalCode: data.pinCode || "",
             loanAmount: data.loanAmount,
             purpose: data.purposeOfLoan,
             employmentType: employmentType2,
