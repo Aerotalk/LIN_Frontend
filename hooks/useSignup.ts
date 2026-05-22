@@ -92,9 +92,9 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
       products: [],
       campaign: 2688093,
       customFieldValues: {
-        cfLoanAmount: getKylasLoanAmountRange(Number(loanAmount)),
-        cfSalary: getKylasSalaryRange(Number(salary)),
-        cfCibilScore: basicDetails.cibilScore || "750+ (Excellent)", // Passing a sample CIBIL
+        // cfLoanAmount: getKylasLoanAmountRange(Number(loanAmount)),
+        // cfSalary: getKylasSalaryRange(Number(salary)),
+        // cfCibilScore: basicDetails.cibilScore || "750+ (Excellent)",
       },
       source: 2650535,
       subSource: "Website Lead",
