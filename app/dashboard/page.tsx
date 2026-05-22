@@ -608,7 +608,7 @@ function DashboardContent() {
                     <div className="flex justify-end pt-2">
                         <button
                             onClick={handleUploadMissingDocs}
-                            disabled={isUploadingDocs || Object.values(uploadFiles).filter(Boolean).length === 0}
+                            disabled={isUploadingDocs || missingDocs.some(type => !uploadFiles[type])}
                             className="bg-[#EF4444] text-white px-8 py-3.5 rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-100 disabled:opacity-50 disabled:cursor-not-allowed text-[15px]"
                         >
                             {isUploadingDocs ? "Uploading documents..." : "Submit Documents"}

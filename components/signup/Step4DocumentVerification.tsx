@@ -111,7 +111,11 @@ export function Step4DocumentVerification({ onSubmit, formData, setFormData, isP
           </label>
         </div>
 
-        <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white">
+        <Button 
+          type="submit" 
+          className="w-full bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!watch("bankStatementFile") || watch("bankStatementFile")?.size === 0 || (!isPayslipOptional && (!watch("payslipFile") || watch("payslipFile")?.size === 0))}
+        >
           Next
         </Button>
       </div>
