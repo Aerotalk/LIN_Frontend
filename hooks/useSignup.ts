@@ -81,8 +81,13 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
       subSource: "Website Lead",
     };
 
-    const url = process.env.NEXT_PUBLIC_KYLAS_API || "https://api.kylas.io";
-    const apiKey = process.env.NEXT_PUBLIC_LEAD_API_KEY || "e7741344-85f0-4401-a75b-5342aecc97b0:20120";
+    const url = process.env.NEXT_PUBLIC_KYLAS_API;
+    const apiKey = process.env.NEXT_PUBLIC_LEAD_API_KEY;
+
+    if (!url || !apiKey) {
+      console.warn("⚠️ Kylas API credentials missing in environment variables. Lead not submitted.");
+      return;
+    }
 
     await fetch(`${url}/v1/leads/`, {
       method: "POST",
@@ -380,6 +385,9 @@ export function useSignup(): UseSignupReturn {
             email: email7,
             password: "Password@123",
           });
+
+          // CRM Integration: Push lead after successful user creation for apply-now flow
+          submitLeadToKylas(data, formData.phoneVerification?.phoneNumber || "", formData.basicDetails);
 
           // Verify Aadhaar
           if (data.aadhaarNumber) {

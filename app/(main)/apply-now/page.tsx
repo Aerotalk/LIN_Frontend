@@ -505,7 +505,7 @@ function ApplyNowContent() {
                                                 onSubmit={handleDocumentVerificationSubmit}
                                                 formData={formData.documentVerification}
                                                 setFormData={(data) => updateFormData('documentVerification', data)}
-                                                isPayslipOptional={true}
+                                                isPayslipOptional={false}
                                             />
                                         ) : (
                                             <Step2PersonalDetails
