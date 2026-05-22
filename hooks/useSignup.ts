@@ -42,8 +42,8 @@ const initialFormData: SignupFormData = {
   documentVerification: {
     payslipFile: createEmptyFile("payslip.pdf", "application/pdf"),
     bankStatementFile: createEmptyFile("bankstatement.pdf", "application/pdf"),
-    panImage: undefined as unknown as File,
-    aadhaarImage: undefined as unknown as File
+    panImage: createEmptyFile("pan.jpg", "image/jpeg"),
+    aadhaarImage: createEmptyFile("aadhaar.jpg", "image/jpeg")
   },
   aadhaarOtp: { aadhaarOtp: "" },
   photoAndLocationSchema: {
@@ -117,7 +117,7 @@ export function useSignup(): UseSignupReturn {
           let companyName = "Self";
           if (formData.basicDetails.occupation === "Salaried") {
             employmentType = "SALARIED";
-            companyName = ""; // Default empty string if not provided
+            companyName = "Not Provided"; // Fixed: Prevents backend 400 error
           } else if (formData.basicDetails.occupation === "Self Employed") {
             employmentType = "SELF_EMPLOYED";
             companyName = "Self";
@@ -127,7 +127,7 @@ export function useSignup(): UseSignupReturn {
           try {
              const kycResponse = await apiClient.submitKYC({
                 companyName: companyName,
-                companyAddress: formData.basicDetails.city || "",
+                companyAddress: formData.basicDetails.city || "Not Provided", // Also ensure this is not completely empty
                 monthlyIncome: parsedIncome,
                 stability: "Stable",
                 currentAddress: "",
@@ -179,12 +179,12 @@ export function useSignup(): UseSignupReturn {
           // === STAGE 3: Submit Documents (For 3-Step Flow) ===
           try {
             // Upload PAN separately
-            if (data.panImage && data.panImage instanceof File) {
+            if (data.panImage && data.panImage instanceof File && data.panImage.size > 0) {
               await apiClient.uploadDocument('PAN', data.panImage);
             }
 
             // Upload Aadhaar separately  
-            if (data.aadhaarImage && data.aadhaarImage instanceof File) {
+            if (data.aadhaarImage && data.aadhaarImage instanceof File && data.aadhaarImage.size > 0) {
               await apiClient.uploadDocument('AADHAAR', data.aadhaarImage);
             }
 
@@ -192,8 +192,8 @@ export function useSignup(): UseSignupReturn {
             const documentFormData = new FormData();
             let hasBulkDocs = false;
 
-            if (data.salarySlipImage && data.salarySlipImage instanceof File) { documentFormData.append('salarySlips', data.salarySlipImage); hasBulkDocs = true; }
-            if (data.bankStatementImage && data.bankStatementImage instanceof File) { documentFormData.append('bankStatements', data.bankStatementImage); hasBulkDocs = true; }
+            if (data.salarySlipImage && data.salarySlipImage instanceof File && data.salarySlipImage.size > 0) { documentFormData.append('salarySlips', data.salarySlipImage); hasBulkDocs = true; }
+            if (data.bankStatementImage && data.bankStatementImage instanceof File && data.bankStatementImage.size > 0) { documentFormData.append('bankStatements', data.bankStatementImage); hasBulkDocs = true; }
 
             if (hasBulkDocs) {
               await apiClient.submitDocuments(documentFormData);
@@ -213,7 +213,7 @@ export function useSignup(): UseSignupReturn {
           let companyName2 = data.companyName || "Self";
           if (data.occupation === "Salaried") {
             employmentType2 = "SALARIED";
-            if (!data.companyName || data.companyName === "Self") companyName2 = "";
+            if (!data.companyName || data.companyName === "Self") companyName2 = "Not Provided";
           } else if (data.occupation === "Self Employed") {
             employmentType2 = "SELF_EMPLOYED";
             if (!data.companyName || data.companyName === "") companyName2 = "Self";
@@ -222,7 +222,7 @@ export function useSignup(): UseSignupReturn {
           // Submit KYC details (Used by apply-now flow)
           const kycResponseSeparate = await apiClient.submitKYC({
             companyName: companyName2,
-            companyAddress: data.companyAddress || data.city || "",
+            companyAddress: data.companyAddress || data.city || "Not Provided",
             monthlyIncome: parsedIncome2,
             stability: data.jobStability || "Stable",
             currentAddress: data.currentAddress || "",

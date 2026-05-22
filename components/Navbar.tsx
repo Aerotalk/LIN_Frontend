@@ -106,20 +106,14 @@ export default function Navbar() {
       setIsLoggedIn(true);
       setDashboardLink("/dashboard");
       
-      // Load profile to check completeness
+      // Load profile to check completeness (No longer blocking dashboard access)
       import("@/lib/api").then(({ apiClient }) => {
         apiClient.getCompleteProfile().then(res => {
-          if (res && res.profile) {
-            const p = res.profile as any;
-            const hasName = !!(p.name && p.name.trim().split(/\s+/).length >= 2);
-            const hasPan = !!(p.panVerification?.panNumber);
-            setIsProfileComplete(hasName && hasPan);
-          } else {
-            setIsProfileComplete(false);
-          }
+          // Profile check logic kept for analytics/other features if needed, but not blocking navigation anymore.
+          setIsProfileComplete(true); 
         }).catch(e => {
           console.error("Failed to load profile in navbar:", e);
-          setIsProfileComplete(false);
+          setIsProfileComplete(true);
         });
       });
     } else if (partnerToken) {
@@ -263,25 +257,13 @@ export default function Navbar() {
 
               {isLoggedIn ? (
                 <NavigationMenuItem>
-                  {!isProfileComplete ? (
-                    <Button
-                      disabled
-                      size="sm"
-                      variant="outline"
-                      title="Complete your profile (Name + PAN required) to access the dashboard"
-                      className="text-gray-400 border-gray-200 cursor-not-allowed font-semibold shadow-sm opacity-60"
-                    >
-                      View Dashboard
-                    </Button>
-                  ) : (
-                    <NavigationMenuLink asChild>
-                      <Link href={getLinkWithRef(dashboardLink)}>
-                        <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 font-semibold shadow-sm">
-                          View Dashboard
-                        </Button>
-                      </Link>
-                    </NavigationMenuLink>
-                  )}
+                  <NavigationMenuLink asChild>
+                    <Link href={getLinkWithRef(dashboardLink)}>
+                      <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 font-semibold shadow-sm">
+                        View Dashboard
+                      </Button>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               ) : (
                 <NavigationMenuItem>
@@ -425,13 +407,9 @@ export default function Navbar() {
 
                 <div className="pt-4 flex flex-col space-y-3">
                   {isLoggedIn ? (
-                    !isProfileComplete ? (
-                      <Button disabled variant="outline" className="w-full text-gray-400 border-gray-200 opacity-60 cursor-not-allowed">View Dashboard</Button>
-                    ) : (
-                      <MobileLink href={dashboardLink}>
-                        <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">View Dashboard</Button>
-                      </MobileLink>
-                    )
+                    <MobileLink href={dashboardLink}>
+                      <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">View Dashboard</Button>
+                    </MobileLink>
                   ) : (
                     <MobileLink href="/login" className="text-sm font-medium py-2 hover:text-primary transition-colors">
                       Login
