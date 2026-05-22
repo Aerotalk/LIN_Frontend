@@ -228,7 +228,7 @@ export function Step0EligibilityCheck({ onSubmit, isLoading, formData, isProfile
             >
               <option value="" disabled>Select City</option>
               <option value="Mumbai">Mumbai</option>
-              <option value=""> </option>
+              <option value="Delhi">Delhi</option>
               <option value="Bangalore">Bangalore</option>
               <option value="Hyderabad">Hyderabad</option>
               <option value="Ahmedabad">Ahmedabad</option>

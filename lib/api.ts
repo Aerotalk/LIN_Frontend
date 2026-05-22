@@ -54,7 +54,11 @@ class ApiClient {
     const normalizedHeaders: Record<string, string> = {};
 
     // Add token if available (use partner token if specified)
-    const tokenToUse = usePartnerToken ? this.partnerToken : this.token;
+    // Dynamically fetch from localStorage to ensure we have the latest token
+    const dynamicToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : this.token;
+    const dynamicPartnerToken = typeof window !== 'undefined' ? localStorage.getItem('partnerAuthToken') : this.partnerToken;
+    const tokenToUse = usePartnerToken ? dynamicPartnerToken : dynamicToken;
+    
     if (tokenToUse) {
       normalizedHeaders['Authorization'] = `Bearer ${tokenToUse}`;
     }
