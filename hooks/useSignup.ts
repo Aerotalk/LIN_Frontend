@@ -23,6 +23,81 @@ const createEmptyFile = (name: string, type: string): File => {
   return new File([blob], name, { type });
 };
 
+// CRM Integration Helper
+const submitLeadToKylas = async (personalData: any, phone: string, basicDetails: any) => {
+  try {
+    const loanAmount = basicDetails.loanAmount || 0;
+    const salary = Number(basicDetails.monthlyIncome) || Number(basicDetails.monthlySalaryRange) || 30000;
+    const city = basicDetails.city || "";
+    
+    const kylasPayload = {
+      firstName: personalData.firstName || personalData.name?.split(" ")[0] || "",
+      lastName: personalData.lastName || personalData.name?.split(" ").slice(1).join(" ") || "",
+      phoneNumbers: [
+        {
+          type: "MOBILE",
+          code: "IN",
+          value: phone || "",
+          dialCode: "+91",
+          primary: true
+        }
+      ],
+      salutation: null,
+      emails: [],
+      timezone: "Asia/Kolkata",
+      city: city,
+      state: "",
+      zipcode: "",
+      country: "IN",
+      department: "",
+      dnd: false,
+      facebook: "",
+      twitter: "",
+      linkedIn: "",
+      address: basicDetails.currentAddress || "",
+      companyName: basicDetails.companyName || "",
+      designation: "",
+      companyAddress: basicDetails.companyAddress || "",
+      companyCity: "",
+      companyState: "",
+      companyZipcode: "",
+      companyCountry: "IN",
+      companyEmployees: null,
+      companyAnnualRevenue: null,
+      companyWebsite: "",
+      companyPhones: [],
+      companyIndustry: "",
+      companyBusinessType: "",
+      requirementName: `Loan Amount: ${loanAmount}`,
+      requirementCurrency: "INR",
+      requirementBudget: loanAmount ? Number(loanAmount) : null,
+      products: [],
+      campaign: 2688093,
+      customFieldValues: {
+        cfLoanAmount: Number(loanAmount) || null,
+        cfSalary: Number(salary) || null,
+      },
+      source: 2650535,
+      subSource: "Website Lead",
+    };
+
+    const url = process.env.NEXT_PUBLIC_KYLAS_API || "https://api.kylas.io";
+    const apiKey = process.env.NEXT_PUBLIC_LEAD_API_KEY || "e7741344-85f0-4401-a75b-5342aecc97b0:20120";
+
+    await fetch(`${url}/v1/leads/`, {
+      method: "POST",
+      headers: {
+        "api-key": apiKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(kylasPayload)
+    });
+    console.log("✅ Lead submitted successfully to Kylas");
+  } catch (err) {
+    console.error("⚠️ Failed to submit lead to Kylas:", err);
+  }
+};
+
 const initialFormData: SignupFormData = {
   phoneVerification: { phoneNumber: "", otp: "" as string | undefined },
   personalDetails: {
@@ -107,6 +182,9 @@ export function useSignup(): UseSignupReturn {
             email: uniqueEmail,
             password: "Password@123",  // Dummy password
           });
+
+          // CRM Integration: Push lead after successful user creation
+          submitLeadToKylas(data, formData.phoneVerification.phoneNumber, formData.basicDetails);
 
           // === STAGE 2: Submit KYC for Application Creation (For 3-Step Flow) ===
           // Parse monthly income from direct input
