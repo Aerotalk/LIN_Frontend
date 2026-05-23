@@ -273,8 +273,8 @@ export default function PartnerForm() {
             </form.Field>
 
             {/* Submit Button */}
-            <form.Subscribe selector={(state) => [state.isSubmitting, state.values]}>
-                {([isSubmitting, values]) => {
+            <form.Subscribe selector={(state) => ({ isSubmitting: state.isSubmitting, values: state.values })}>
+                {({ isSubmitting, values }) => {
                     const isValid = partnerSchema.safeParse(values).success;
                     return (
                         <Button
