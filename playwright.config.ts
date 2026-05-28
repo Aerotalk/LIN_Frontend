@@ -6,7 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['@artilleryio/playwright-reporter', { name: 'LoanInNeed E2E Suite' }]
+  ],
   use: {
     baseURL: 'https://test.loaninneed.in/', // Setting to UAT UI URL
     trace: 'on-first-retry',
