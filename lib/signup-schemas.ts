@@ -71,7 +71,7 @@ export const personalDetailsSchema = z.object({
       return age >= 18 && age <= 65;
     }, "Age must be between 18 and 65 years"),
   email: z.string().email("Please enter a valid email address"),
-  aadhaarNumber: z.string().length(12, "oops invalid adhar number").regex(/^\d{12}$/, "oops invalid adhar number"),
+  aadhaarNumber: z.string().length(12, "oops invalid Aadhaar number").regex(/^\d{12}$/, "oops invalid Aadhaar number"),
   panImage: z.instanceof(File, { message: "PAN image is required" }),
   aadhaarImage: z.instanceof(File, { message: "Aadhaar image is required" }),
   salarySlipImage: z.instanceof(File).optional(),
