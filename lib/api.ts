@@ -449,10 +449,17 @@ class ApiClient {
   }
 
   async verifyAadhaarOtp(aadhaarNumber: string, otp: string): Promise<ApiResponse> {
-    // Note: This endpoint may not exist in backend yet
     return this.request<ApiResponse>('/api/auth/aadhaar/verify-otp', {
       method: 'POST',
       body: JSON.stringify({ aadhaarNumber, otp }),
+    });
+  }
+
+  // Real-time Aadhaar existence check — lightweight, no DB writes
+  async validateAadhaar(aadhaarNumber: string): Promise<ApiResponse> {
+    return this.request<ApiResponse>('/api/auth/aadhaar/validate', {
+      method: 'POST',
+      body: JSON.stringify({ aadhaarNumber }),
     });
   }
 
