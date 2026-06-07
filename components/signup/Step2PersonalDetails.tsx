@@ -22,6 +22,8 @@ interface Step2Props {
 export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setFormData, phoneNumber }: Step2Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifyingPan, setIsVerifyingPan] = useState(false);
+  const [aadhaarStatus, setAadhaarStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
+  const [aadhaarError, setAadhaarError] = useState<string | null>(null);
 
   const { register, handleSubmit, setValue, watch, control, formState: { errors, isValid }, trigger } = useForm<PersonalDetailsForm>({
     resolver: zodResolver(personalDetailsSchema) as any,
@@ -104,6 +106,30 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
       }
     } finally {
       setIsVerifyingPan(false);
+    }
+  };
+
+  const handleAadhaarChange = async (val: string, fieldOnChange: (v: string) => void) => {
+    const digits = val.replace(/\D/g, '');
+    fieldOnChange(digits);
+
+    // Reset status on edit
+    if (digits.length < 12) {
+      setAadhaarStatus('idle');
+      setAadhaarError(null);
+      return;
+    }
+
+    // Trigger real-time validation as soon as all 12 digits are entered
+    setAadhaarStatus('checking');
+    setAadhaarError(null);
+    try {
+      const { apiClient } = await import('@/lib/api');
+      await apiClient.validateAadhaar(digits);
+      setAadhaarStatus('valid');
+    } catch (e: any) {
+      setAadhaarStatus('invalid');
+      setAadhaarError('Please enter a valid Aadhaar card number.');
     }
   };
 
@@ -260,39 +286,66 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
         <Controller
           control={control}
           name="aadhaarNumber"
-          render={({ field }) => (
-            <InputOTP 
-              maxLength={12} 
-              value={field.value} 
-              inputMode="numeric"
-              pattern="^[0-9]*$"
-              onChange={(val) => field.onChange(val.replace(/\D/g, ''))} 
-              containerClassName="justify-between w-full gap-2 md:gap-4"
-            >
-              <InputOTPGroup className="flex-1">
-                <InputOTPSlot index={0} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={1} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={2} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={3} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-              </InputOTPGroup>
-              <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
-              <InputOTPGroup className="flex-1">
-                <InputOTPSlot index={4} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={5} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={6} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={7} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-              </InputOTPGroup>
-              <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
-              <InputOTPGroup className="flex-1">
-                <InputOTPSlot index={8} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={9} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={10} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-                <InputOTPSlot index={11} className="w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg" />
-              </InputOTPGroup>
-            </InputOTP>
-          )}
+          render={({ field }) => {
+            const slotBase = "w-full h-10 sm:h-12 lg:h-14 text-sm sm:text-base lg:text-lg transition-colors duration-200";
+            const slotClass = aadhaarStatus === 'valid'
+              ? `${slotBase} border-green-500 bg-green-50 text-green-700 ring-green-400`
+              : aadhaarStatus === 'invalid'
+              ? `${slotBase} border-red-500 bg-red-50 text-red-700 ring-red-400`
+              : slotBase;
+            return (
+              <div className="relative">
+                <InputOTP
+                  maxLength={12}
+                  value={field.value}
+                  inputMode="numeric"
+                  pattern="^[0-9]*$"
+                  onChange={(val) => handleAadhaarChange(val, field.onChange)}
+                  containerClassName="justify-between w-full gap-2 md:gap-4"
+                >
+                  <InputOTPGroup className="flex-1">
+                    <InputOTPSlot index={0} className={slotClass} />
+                    <InputOTPSlot index={1} className={slotClass} />
+                    <InputOTPSlot index={2} className={slotClass} />
+                    <InputOTPSlot index={3} className={slotClass} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
+                  <InputOTPGroup className="flex-1">
+                    <InputOTPSlot index={4} className={slotClass} />
+                    <InputOTPSlot index={5} className={slotClass} />
+                    <InputOTPSlot index={6} className={slotClass} />
+                    <InputOTPSlot index={7} className={slotClass} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator className="scale-[0.8] mx-0 px-0" />
+                  <InputOTPGroup className="flex-1">
+                    <InputOTPSlot index={8} className={slotClass} />
+                    <InputOTPSlot index={9} className={slotClass} />
+                    <InputOTPSlot index={10} className={slotClass} />
+                    <InputOTPSlot index={11} className={slotClass} />
+                  </InputOTPGroup>
+                </InputOTP>
+                {/* Inline status indicator */}
+                {aadhaarStatus === 'checking' && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                    <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    Verifying Aadhaar...
+                  </div>
+                )}
+                {aadhaarStatus === 'valid' && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-green-600 font-medium">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    Aadhaar verified successfully!
+                  </div>
+                )}
+              </div>
+            );
+          }}
         />
-        {errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>}
+        {/* Show Aadhaar API error OR zod format error */}
+        {aadhaarError
+          ? <p className="text-red-500 text-sm mt-1">{aadhaarError}</p>
+          : errors.aadhaarNumber && <p className="text-red-500 text-sm mt-1">{errors.aadhaarNumber.message}</p>
+        }
       </div>
 
       {/* Document Upload section */}
@@ -409,7 +462,7 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
         <Button
           type="submit"
           className="w-full bg-[#c81e1e] hover:bg-red-700 text-white h-14 rounded-xl text-lg font-bold shadow-md transition-all"
-          disabled={isLoading || !isValid}
+          disabled={isLoading || !isValid || aadhaarStatus === 'checking' || aadhaarStatus === 'invalid' || aadhaarStatus === 'idle'}
         >
           {isLoading ? "Submitting..." : "Review & Submit Application"}
         </Button>
