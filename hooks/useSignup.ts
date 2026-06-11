@@ -49,6 +49,7 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
     const city = basicDetails.city || "";
     
     const kylasPayload = {
+      ownerId: 72388,
       firstName: personalData.firstName || personalData.name?.split(" ")[0] || "",
       lastName: personalData.lastName || personalData.name?.split(" ").slice(1).join(" ") || "",
       phoneNumbers: [
@@ -61,7 +62,13 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
         }
       ],
       salutation: null,
-      emails: [],
+      emails: personalData.email ? [
+        {
+          type: "OFFICE",
+          value: personalData.email,
+          primary: true
+        }
+      ] : [],
       timezone: "Asia/Kolkata",
       city: city,
       state: "",
@@ -92,9 +99,10 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
       products: [],
       campaign: 2688093,
       customFieldValues: {
-        // cfLoanAmount: getKylasLoanAmountRange(Number(loanAmount)),
-        // cfSalary: getKylasSalaryRange(Number(salary)),
-        // cfCibilScore: basicDetails.cibilScore || "750+ (Excellent)",
+        cfPan: personalData.panNumber || "",
+        cfAadhar: personalData.aadhaarNumber ? Number(personalData.aadhaarNumber.replace(/\D/g, '')) : null,
+        cfCibilScoreRange: 2669967,
+        cfSalary: Number(salary) || 2812268
       },
       source: 2650535,
       subSource: "Website Lead",
@@ -108,6 +116,8 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
       return;
     }
 
+    console.log("🗻🗻🗻🗻🗻 KYLAS PAYLOAD (OUTBOUND) 🗻🗻🗻🗻🗻\n", JSON.stringify(kylasPayload, null, 2));
+
     if (leadId) {
       // Update existing lead
       const getRes = await fetch(`${url}/v1/leads/${leadId}`, {
@@ -118,13 +128,25 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
       const existingLead = await getRes.json();
       
       const updatedLead = { ...existingLead, ...kylasPayload };
+      
       const res = await fetch(`${url}/v1/leads/${leadId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", "api-key": apiKey },
         body: JSON.stringify(updatedLead)
       });
-      if (!res.ok) throw new Error(`PUT failed: ${res.status}`);
-      console.log(`✅ Kylas Lead ${leadId} updated successfully`);
+      
+      if (!res.ok) {
+        console.error("❌ Kylas PUT failed:", await res.text());
+        throw new Error(`PUT failed: ${res.status}`);
+      }
+      
+      if (res.status === 200) {
+        console.log(`🗻🗻🗻🗻🗻 Kylas Response 200: Lead ${leadId} updated successfully 🗻🗻🗻🗻🗻`);
+      } else {
+        console.log(`🗻🗻🗻🗻🗻 Kylas Response ${res.status}: Lead ${leadId} updated 🗻🗻🗻🗻🗻`);
+      }
+      
+      console.log("Jai Kailashpati🕉️");
       return leadId;
     } else {
       // Create new lead
@@ -133,13 +155,25 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
         headers: { "Content-Type": "application/json", "api-key": apiKey },
         body: JSON.stringify(kylasPayload)
       });
-      if (!res.ok) throw new Error(`POST failed: ${res.status}`);
+      
+      if (!res.ok) {
+        console.error("❌ Kylas POST failed:", await res.text());
+        throw new Error(`POST failed: ${res.status}`);
+      }
+      
       const data = await res.json();
-      console.log("✅ Lead submitted to Kylas successfully:", data);
+      
+      if (res.status === 200 || res.status === 201) {
+        console.log(`🗻🗻🗻🗻🗻 Kylas Response ${res.status}: Lead submitted successfully 🗻🗻🗻🗻🗻`);
+        console.log("Response Data:", data);
+      }
+      
+      console.log("Jai Kailashpati🕉️");
       return data.id; // Return the created lead ID
     }
   } catch (error) {
     console.error("❌ Error submitting to Kylas API:", error);
+    console.log("Jai Kailashpati🕉️ (With Errors)");
     return undefined;
   }
 };
