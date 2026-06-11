@@ -99,10 +99,10 @@ const submitLeadToKylas = async (personalData: any, phone: string, basicDetails:
       products: [],
       campaign: 2688093,
       customFieldValues: {
-        cfPan: personalData.panNumber || "",
-        cfAadhar: personalData.aadhaarNumber ? Number(personalData.aadhaarNumber.replace(/\D/g, '')) : null,
+        ...(personalData.panNumber ? { cfPan: personalData.panNumber } : {}),
+        ...(personalData.aadhaarNumber ? { cfAadhar: Number(personalData.aadhaarNumber.replace(/\D/g, '')) } : {}),
         cfCibilScoreRange: 2669967,
-        cfSalary: Number(salary) || 2812268
+        cfSalary: 2812268
       },
       source: 2650535,
       subSource: "Website Lead",
