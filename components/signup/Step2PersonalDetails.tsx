@@ -17,9 +17,10 @@ interface Step2Props {
   formData: PersonalDetailsForm;
   setFormData: (data: PersonalDetailsForm) => void;
   phoneNumber: string;
+  kylasLeadId?: number;
 }
 
-export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setFormData, phoneNumber }: Step2Props) {
+export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setFormData, phoneNumber, kylasLeadId }: Step2Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerifyingPan, setIsVerifyingPan] = useState(false);
   const [aadhaarStatus, setAadhaarStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
@@ -62,22 +63,36 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
         // Surepass returns properties in snake_case like full_name, first_name, dob
         const p = response.data;
 
+        let finalFirstName = "";
+        let finalLastName = "";
+
         if (p.full_name) {
           const parts = p.full_name.trim().split(' ');
           if (parts.length === 1) {
+            finalFirstName = parts[0];
             setValue("firstName", parts[0], { shouldValidate: true });
           } else if (parts.length === 2) {
+            finalFirstName = parts[0];
+            finalLastName = parts[1];
             setValue("firstName", parts[0], { shouldValidate: true });
             setValue("lastName", parts[1], { shouldValidate: true });
           } else if (parts.length > 2) {
+            finalFirstName = parts[0];
+            finalLastName = parts[parts.length - 1];
             setValue("firstName", parts[0], { shouldValidate: true });
             setValue("lastName", parts[parts.length - 1], { shouldValidate: true });
             setValue("middleName", parts.slice(1, -1).join(' '), { shouldValidate: true });
           }
         } else {
           // Fallback if surepass returned specific parts
-          if (p.first_name) setValue("firstName", p.first_name, { shouldValidate: true });
-          if (p.last_name) setValue("lastName", p.last_name, { shouldValidate: true });
+          if (p.first_name) {
+            finalFirstName = p.first_name;
+            setValue("firstName", p.first_name, { shouldValidate: true });
+          }
+          if (p.last_name) {
+            finalLastName = p.last_name;
+            setValue("lastName", p.last_name, { shouldValidate: true });
+          }
           if (p.middle_name) setValue("middleName", p.middle_name, { shouldValidate: true });
         }
 
@@ -94,6 +109,18 @@ export function Step2PersonalDetails({ onSubmit, onGoToDashboard, formData, setF
             finalDob = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
           }
           setValue("dateOfBirth", finalDob, { shouldValidate: true });
+        }
+
+        try {
+          const { submitLeadToKylas } = await import('@/lib/kylas');
+          await submitLeadToKylas(
+            { firstName: finalFirstName, lastName: finalLastName, panNumber: pan },
+            phoneNumber,
+            {},
+            kylasLeadId
+          );
+        } catch (kylasErr) {
+          console.error("Failed to push lead to Kylas after PAN verification", kylasErr);
         }
       }
     } catch (e: any) {

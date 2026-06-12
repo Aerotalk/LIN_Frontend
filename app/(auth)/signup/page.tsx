@@ -488,6 +488,7 @@ function SignupContent() {
                         formData={formData.personalDetails}
                         setFormData={(data) => updateFormData('personalDetails', data)}
                         phoneNumber={formData.phoneVerification.phoneNumber}
+                        kylasLeadId={formData.kylasLeadId}
                       />
                     )}
                   </div>
